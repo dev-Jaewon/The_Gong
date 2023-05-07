@@ -4,6 +4,7 @@ import { ChangeEvent } from 'react';
 
 export type InputLabelProps = {
   id?: string;
+  type?: string;
   label?: string;
   value?: string;
   isValid?: boolean;
@@ -14,6 +15,7 @@ export type InputLabelProps = {
 
 export const InputLabel = ({
   id,
+  type,
   value,
   label,
   isValid,
@@ -30,6 +32,7 @@ export const InputLabel = ({
       {label && <Label htmlFor={id}>{label}</Label>}
       <Input
         id={id}
+        type={type || 'text'}
         value={value}
         isValid={isValid}
         placeholder={placeholder}
