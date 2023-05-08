@@ -1,6 +1,7 @@
 package com.codestates.member.entity;
 
 import com.codestates.common.entity.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,12 @@ public class Member extends BaseEntity {
 
     @Column
     private int favoriteCount;
+
+    @Column
+    private int createdCount;
+
+    @Column
+    private int recordeCount;
 
     @Enumerated(value = EnumType.STRING)
     private MemberStatus status = MemberStatus.ACTIVE;
