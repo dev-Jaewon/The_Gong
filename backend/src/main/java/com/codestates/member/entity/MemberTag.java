@@ -2,6 +2,7 @@ package com.codestates.member.entity;
 
 import com.codestates.tag.entity.Tag;
 import com.codestates.common.entity.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
