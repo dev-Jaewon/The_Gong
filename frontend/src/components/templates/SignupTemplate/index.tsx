@@ -1,32 +1,36 @@
+import { useState } from 'react';
+import { SignupData, SignupForm } from '../../organisms/SignupForm';
+import { StepProgressBar } from '../../atoms/StepProgressBar';
+import { SignupComplete } from '../../organisms/SignupComplete';
+import { useMutation } from '@tanstack/react-query';
+import { SIGNUP_STEP } from '../../../constans';
+import { api } from '../../../util/api';
 import styled from 'styled-components';
-import { InputLabel } from '../../moecules/InputLabel';
-import { FormEvent } from 'react';
 
-export type SignupFormProps = {
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
-};
+export const SignupTemplate = () => {
+  const [step, setStep] = useState<number>(SIGNUP_STEP.SET_INFO);
 
-export const SignupTemplate = ({ onSubmit }: SignupFormProps) => {
+  const mutation = useMutation({
+    mutationFn: async (data: SignupData) => api.post('/signup', data),
+    onSuccess: () => setStep(SIGNUP_STEP.DONE),
+  });
+
+  const handleSubmit = (data: SignupData) => {
+    mutation.mutate(data);
+  };
+
+  const stepComponent = [
+    <SignupForm onSubmit={handleSubmit} isLoading={mutation.isLoading} />,
+    <SignupComplete />,
+  ];
+
   return (
     <Container>
-      <SignupForm onSubmit={onSubmit}>
-        <InputContainer>
-          <Header>
-            <h1>회원가입</h1>
-          </Header>
-          <InputLabel label="닉네임" placeholder="닉네임을 입력해주세요." />
-          <InputLabel label="이메일" placeholder="이메일을 입력해주세요." />
-          <InputLabel
-            label="비밀번호"
-            placeholder="영문, 숫자 8자이상의 비밀번호를 입력해주세요."
-          />
-          <InputLabel
-            label="비밀번호 확인"
-            placeholder="비밀번호를 재확인해주세요."
-          />
-          <button>회원가입</button>
-        </InputContainer>
-      </SignupForm>
+      <InputContainer>
+        <h1>회원가입</h1>
+        <StepProgressBar steps={['정보입력', '완료']} currentStep={step} />
+        {stepComponent[step - 1]}
+      </InputContainer>
     </Container>
   );
 };
@@ -36,26 +40,16 @@ const Container = styled.div`
   width: 100%;
   height: 100vh;
   justify-content: center;
-`;
-
-const SignupForm = styled.form`
-  display: flex;
-  justify-content: center;
-  min-width: 400px;
-  font-family: Noto Sans KR;
-`;
-
-const Header = styled.div`
-  padding-bottom: 15px;
 
   h1 {
     font-size: 25px;
     font-weight: 500;
+    text-align: center;
+    padding-bottom: 15px;
   }
 `;
 
 const InputContainer = styled.div`
-  padding: 20px;
   display: flex;
   gap: 20px;
   width: 400px;

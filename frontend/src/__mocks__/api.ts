@@ -9,4 +9,9 @@ export const handlers = [
     const data = await req.json();
     return res(ctx.status(200), ctx.json({ result: data }));
   }),
+
+  rest.post('/signup', async (req, res, ctx) => {
+    const data = await req.json();
+    return res(ctx.delay(1500), ctx.json({ result: data }));
+  }),
 ];
