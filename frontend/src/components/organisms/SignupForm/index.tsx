@@ -3,7 +3,7 @@ import { Button } from '../../atoms/Button';
 import { useForm } from '../../../hooks/useForm';
 import { InputLabel } from '../../moecules/InputLabel';
 
-export type SignupForm = {
+export type SignupData = {
   nicnName: string;
   email: string;
   password: string;
@@ -12,11 +12,11 @@ export type SignupForm = {
 
 export type SignupFormProps = {
   isLoading: boolean;
-  onSubmit: (value: SignupForm) => void;
+  onSubmit: (value: SignupData) => void;
 };
 
 export const SignupForm = (props: SignupFormProps) => {
-  const { data, errors, handleChange, handleSubmit } = useForm<SignupForm>({
+  const { data, errors, handleChange, handleSubmit } = useForm<SignupData>({
     validations: {
       nicnName: {
         required: {
