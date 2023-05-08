@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import TagBox from "../Molecules/TagBox";
-import BorderBox from "../Atoms/BorderBox";
-import XMark from "../Atoms/XMark";
+import BorderBox from "../atoms/Tag/BorderBox";
+import XMark from "../atoms/Tag/XMark";
 
 const TagFormContainer = styled.div`
   position: absolute;
@@ -24,9 +24,10 @@ const TagFormContainer = styled.div`
   display: flex;
   justify-content: end;
  }
-`
+`;
 
-function TagForm(){
+
+function TagForm() {
 
   //임시 데이터
   const tagData = [
@@ -64,7 +65,6 @@ function TagForm(){
         <XMark func={consolelog} />
       </div>
 
-      {/* 폼용 리스트 타이틀이 있다면 변경하도록 하겠습니다. */}
       <h2>전체 태그</h2>
       <BorderBox>
         <TagBox tagData={tagData} fontSize={1} func={consolelog} isDeleteTag={false}></TagBox>
@@ -75,7 +75,7 @@ function TagForm(){
         <TagBox tagData={tagData} fontSize={1} func={consolelog} isDeleteTag={true}></TagBox>
       </BorderBox>
     </TagFormContainer>
-  )
+  );
 }
 
 export default TagForm;
