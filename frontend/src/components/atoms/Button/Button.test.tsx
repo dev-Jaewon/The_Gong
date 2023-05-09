@@ -4,11 +4,12 @@ import { DEFAULT_BUTTON_HEIGHT, DEFAULT_BUTTON_WIDTH } from '../../../constans';
 
 describe('<Button />', () => {
   const ins = (props: ButtonProps = {}) => {
-    const { getByRole } = render(<Button {...props} />);
+    const { getByRole, queryByLabelText } = render(<Button {...props} />);
 
     const button = getByRole('button') as HTMLInputElement;
+    const spinner = queryByLabelText('spinner');
 
-    return { button };
+    return { button, spinner };
   };
 
   test('render', () => {
@@ -55,5 +56,15 @@ describe('<Button />', () => {
   test('props.outline = false', () => {
     const { button } = ins({ outline: false });
     expect(button).toHaveStyle(`outline: unset;`);
+  });
+
+  test('props.isLoading = true', () => {
+    const { spinner } = ins({ isLoading: true });
+    expect(spinner).toBeInTheDocument();
+  });
+
+  test('props.isLoading = false', () => {
+    const { spinner } = ins({ isLoading: false });
+    expect(spinner).not.toBeInTheDocument();
   });
 });
