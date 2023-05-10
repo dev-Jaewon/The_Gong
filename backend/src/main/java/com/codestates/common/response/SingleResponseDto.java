@@ -1,5 +1,4 @@
 package com.codestates.common.response;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -5,13 +5,13 @@ import com.codestates.common.entity.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "member_room")
 public class MemberRoom extends BaseEntity {
 
     @Id
@@ -22,22 +22,34 @@ public class MemberRoom extends BaseEntity {
     private Favorite favorite;
 
     @Enumerated(value = EnumType.STRING)
+    private History history;
+
+    @Enumerated(value = EnumType.STRING)
     private Authority authority;
 
     @ManyToOne
-    @JoinColumn(name = "ROOM_ID")
+    @JoinColumn(name = "room_id")
     private Room room;
 
-    @ManyToOne
-    @JoinColumn(name = "MEMBER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
-    public enum Favorite {
-        NONE , LIKE
 
+    @Getter
+    public enum Authority {
+        ADMIN, USER
     }
 
-    public enum Authority {
-        ADMIN , USER
+
+    @Getter
+    public enum Favorite {
+        NONE , LIKE
+    }
+
+
+    @Getter
+    public enum History {
+        VISITED
     }
 }

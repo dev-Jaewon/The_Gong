@@ -7,6 +7,8 @@ type CustomType = {
   height?: string;
   outline?: boolean;
   fillColor?: boolean;
+  isLoading?: boolean;
+  children?: React.ReactNode;
 };
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
@@ -14,8 +16,16 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
     children?: React.ReactNode;
   };
 
-export const Button = (props: ButtonProps) => {
-  return <Container {...props} />;
+export const Button = ({ isLoading, children, ...props }: ButtonProps) => {
+  return (
+    <Container {...props}>
+      {isLoading ? (
+        <LoadingSpinner fillColor={props.fillColor} aria-label="spinner" />
+      ) : (
+        children
+      )}
+    </Container>
+  );
 };
 
 const Container = styled.button<CustomType>`
@@ -33,4 +43,22 @@ const Container = styled.button<CustomType>`
   color: ${({ fillColor }) => (fillColor ? 'white' : 'black')};
   outline: ${({ outline }) => (outline ? '1px solid #4fafb1' : 'unset')};
   background-color: ${({ fillColor }) => (fillColor ? ' #4fafb1' : 'unset')};
+`;
+
+const LoadingSpinner = styled.div<CustomType>`
+  width: 20px;
+  height: 20px;
+  border: 4px solid transparent;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+  border-top-color: ${({ fillColor }) => (fillColor ? '#ffffff' : '#4fafb1')};
+
+  @keyframes button-loading-spinner {
+    from {
+      transform: rotate(0turn);
+    }
+    to {
+      transform: rotate(1turn);
+    }
+  }
 `;
