@@ -5,6 +5,7 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { Signup } from './pages/Signup/index.tsx';
+import { Signin } from './pages/Signin/index.tsx';
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./__mocks__/browser');
@@ -15,6 +16,10 @@ let router = createBrowserRouter([
   {
     path: '/signup',
     Component: () => <Signup />,
+  },
+  {
+    path: '/signin',
+    Component: () => <Signin />,
   },
 ]);
 
