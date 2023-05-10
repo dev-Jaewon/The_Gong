@@ -1,4 +1,4 @@
-package com.codestates.common.dto;
+package com.codestates.common.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
