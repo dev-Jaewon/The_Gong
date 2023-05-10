@@ -11,6 +11,7 @@ import javax.validation.constraints.Positive;
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class MemberRoomTagDtos {
+
     @Positive
     private long tagId;
 

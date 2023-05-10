@@ -1,11 +1,9 @@
 package com.codestates.member.entity;
 
 import com.codestates.common.entity.BaseEntity;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +38,9 @@ public class Member extends BaseEntity {
 
     @Column
     private int recordeCount;
+
+    @Column
+    private boolean isVoted;
 
     @Enumerated(value = EnumType.STRING)
     private MemberStatus status = MemberStatus.ACTIVE;
