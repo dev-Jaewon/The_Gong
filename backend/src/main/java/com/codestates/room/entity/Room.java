@@ -5,7 +5,6 @@ import com.codestates.common.entity.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +22,14 @@ public class Room extends BaseEntity {
     @Column(nullable = false)
     private Long adminMemberId;
 
+    @Column
+    private String adminNickname;
+
     @Column(nullable = false)
     private String title;
+
+    @Column
+    private String info;
 
     @Column
     private String imageUrl;
@@ -50,8 +55,11 @@ public class Room extends BaseEntity {
     @OneToMany(mappedBy = "room")
     private List<MemberRoom> memberRoomList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "room")
+
+    @OneToMany(mappedBy = "room" , cascade = CascadeType.ALL)
     private List<RoomTag> roomTagList = new ArrayList<>();
+
 }
+
 
 
