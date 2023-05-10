@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,10 +18,10 @@ public class ChatMessageDto {
     private String message;
     private String time;
     private MessageType type;
+    private List<String> nicknames;
     public enum MessageType {
 
-        ENTER, LEAVE,
-        TALK
+        ENTER, LEAVE, TALK
     }
 
     /*
