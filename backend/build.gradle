@@ -43,6 +43,8 @@ dependencies {
 	implementation 'org.webjars:sockjs-client:1.5.1'
 	// stomp
 	implementation 'org.webjars:stomp-websocket:2.3.4'
+	// 임시 테스트용 추가
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 tasks.named('test') {
