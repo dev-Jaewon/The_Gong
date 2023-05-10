@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class RoomService {
 
