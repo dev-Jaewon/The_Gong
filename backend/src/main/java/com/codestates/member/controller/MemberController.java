@@ -59,27 +59,27 @@ public class MemberController {
 
 
 
-    @GetMapping //회원 전체조회 필요없음
-    public ResponseEntity getMembers(@Positive @RequestParam("page") int page,
-                                     @Positive @RequestParam("size") int size) {
-        Page<Member> memberPage = memberService.findMembers(page-1, size);
-        List<Member> memberList = memberPage.getContent();
-        List<MemberDto.GetResponseDtos> responseDtosList = mapper.memberToGetResponseDtos(memberList);
-
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(responseDtosList, memberPage), HttpStatus.OK);
-    }
+//    @GetMapping //회원 전체조회 필요없음
+//    public ResponseEntity getMembers(@Positive @RequestParam("page") int page,
+//                                     @Positive @RequestParam("size") int size) {
+//        Page<Member> memberPage = memberService.findMembers(page-1, size);
+//        List<Member> memberList = memberPage.getContent();
+//        List<MemberDto.GetResponseDtos> responseDtosList = mapper.memberToGetResponseDtos(memberList);
+//
+//        return new ResponseEntity<>(
+//                new MultiResponseDto<>(responseDtosList, memberPage), HttpStatus.OK);
+//    }
 
 
 
     @GetMapping("/{member-id}/like")
-    public ResponseEntity getLikeRooms(@Positive @RequestParam("page") int page,
-                                       @Positive @RequestParam("size") int size,
-                                       @PathVariable("member-id") @Positive long memberId) {
+    public ResponseEntity getLikeRooms(@PathVariable("member-id") @Positive long memberId,
+                                       @Positive @RequestParam("page") int page,
+                                       @Positive @RequestParam("size") int size) {
 
-        Page<MemberRoom> memberRoomPage = memberService.findLikeRooms(page-1, size, memberId);
+        Page<MemberRoom> memberRoomPage = memberService.findLikeRooms(page -1, size, memberId);
         List<MemberRoom> memberRoomList = memberRoomPage.getContent();
-        List<MemberDto.LikeRoomResponseDtos> responseDtosList = mapper.memberToLikeResponseDtos(memberRoomList);
+        List<MemberDto.LikeRoomResponseDtos> responseDtosList = mapper.memberToLikeResponseDtos(memberRoomList, memberId);
 
         return new ResponseEntity<>(
                 new MultiResponseDto<>(responseDtosList, memberRoomPage) , HttpStatus.OK);
@@ -88,10 +88,10 @@ public class MemberController {
 
 
     @GetMapping("/{member-id}/created")
-    public ResponseEntity getCreatedRoom(@Positive @RequestParam("page") int page,
-                                         @Positive @RequestParam("size") int size,
-                                         @PathVariable("member-id") @Positive long memberId) {
-        Page<MemberRoom> memberRoomPage = memberService.findCreatedRooms(page-1, size, memberId);
+    public ResponseEntity getCreatedRoom(@PathVariable("member-id") @Positive long memberId,
+                                         @Positive @RequestParam("page") int page,
+                                         @Positive @RequestParam("size") int size) {
+        Page<MemberRoom> memberRoomPage = memberService.findCreatedRooms(page -1, size, memberId);
         List<MemberRoom> memberRoomList = memberRoomPage.getContent();
         List<MemberDto.CreatedRoomResponseDtos> responseDtosList = mapper.memberToCreatedResponseDtos(memberRoomList);
 
@@ -100,11 +100,12 @@ public class MemberController {
     }
 
 
+
     @GetMapping("/{member-id}/record")
-    public ResponseEntity getRecordRoom(@Positive @RequestParam("page") int page,
-                                        @Positive @RequestParam("size") int size,
-                                        @PathVariable("member-id") @Positive long memberId) {
-        Page<MemberRoom> memberRoomPage = memberService.findRecordRooms(page-1, size, memberId);
+    public ResponseEntity getRecordRoom(@PathVariable("member-id") @Positive long memberId,
+                                        @Positive @RequestParam("page") int page,
+                                        @Positive @RequestParam("size") int size) {
+        Page<MemberRoom> memberRoomPage = memberService.findRecordRooms(page -1, size, memberId);
         List<MemberRoom> memberRoomList = memberRoomPage.getContent();
         List<MemberDto.RecordRoomResponseDtos> responseDtosList = mapper.memberToRecordResponseDtos(memberRoomList);
 
