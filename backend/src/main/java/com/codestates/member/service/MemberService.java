@@ -144,4 +144,13 @@ public class MemberService {
         }
         return findMember;
     }
+
+    public Member findVerifiedMember(String nickname) {
+        Optional<Member> member = memberRepository.findByNickname(nickname);
+        Member findMember = member.orElseThrow(()->new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        if(findMember.getStatus().equals(Member.MemberStatus.DELETE)) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+        return findMember;
+    }
 }

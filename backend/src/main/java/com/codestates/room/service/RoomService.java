@@ -4,18 +4,14 @@ package com.codestates.room.service;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.room.entity.Room;
 import com.codestates.room.repository.RoomRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.codestates.exception.BusinessLogicException;
 import com.codestates.exception.ExceptionCode;
 import com.codestates.member.entity.Member;
-import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.repository.MemberRepository;
 import com.codestates.member.repository.MemberRoomRepository;
 import com.codestates.member.service.MemberService;
-import com.codestates.room.entity.Room;
 import com.codestates.room.entity.RoomTag;
-import com.codestates.room.repository.RoomRepository;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -23,42 +19,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import java.util.List;
 
 @Service
 @Slf4j
 public class RoomService {
-
-    public void enterMember(Long roomId) {
-        /*
-        * 1. 방을 찾고
-        * 2. 새로운 멤버 룸 생성
-        * 3. 현재 인원 1증가
-        * 4. 현재 연관관계 메서드가 없으나, 룸리스트에 새로운 멤버룸 추가
-        * */
-        // 1
-        Room foundRoom = roomRepository.findById(roomId).get();
-        log.info("Room {} is founded", foundRoom.getRoomId());
-        // 2
-        MemberRoom madeMemberRoom = new MemberRoom();
-        log.info("Member {} is entering the room. . . ", madeMemberRoom.getMember().getMemberId());
-        // 3
-        foundRoom.setMemberCurrentCount(foundRoom.getMemberCurrentCount() + 1);
-        log.info("Current Count is {} of {}", foundRoom.getMemberCurrentCount(), foundRoom.getMemberMaxCount());
-        // 4
-        foundRoom.getMemberRoomList().add(madeMemberRoom);
-        log.info("New member {} is in Room {}", madeMemberRoom.getMember().getMemberId(), roomId);
-    }
-
-    public void leaveSession(String roomId) {
-        Long longRoomId = Long.parseLong(roomId);
-        Room foundRoom = roomRepository.findById(longRoomId).get();
-        log.info("A member leave {} room", foundRoom.getRoomId());
-
-
-        foundRoom.setMemberCurrentCount(foundRoom.getMemberCurrentCount() -1);
-        log.info("Current count of this room is  {} of {}", foundRoom.getMemberCurrentCount(), foundRoom.getMemberMaxCount());
-    }
 
     private final MemberService memberService;
     private final RoomRepository roomRepository;

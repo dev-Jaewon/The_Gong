@@ -1,7 +1,10 @@
 package com.codestates.socket.controller;
 
-import com.codestates.room.service.RoomService;
+import com.codestates.room.service.RoomServiceTransient;
 import com.codestates.socket.dto.ChatMessageDto;
+import com.codestates.socket.service.ChatRoomService;
+import com.codestates.socket.service.WebSocketSessionService;
+import com.codestates.socket.service.WebSocketSessionService.UserSessionInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -10,8 +13,11 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,12 +26,14 @@ public class StompChatController {
 
     //특정 메세지를 전달
     private final SimpMessageSendingOperations template;
-    private final RoomService roomService;
+    private final RoomServiceTransient roomService;
+    private final ChatRoomService chatRoomService;
+    private final WebSocketSessionService sessionService;
+
     /*
      *  1. 방 입장
      *  2. 메시지 전송
      *  3. 방 퇴장(세션만 종료)
-     *
      * */
 
     //Client 가 SEND할 수 있는 경로
@@ -34,42 +42,57 @@ public class StompChatController {
     @MessageMapping("/chat/enter")
     public void enterMember(@Payload ChatMessageDto message, SimpMessageHeaderAccessor headerAccessor) {
         //DB, 방 인원수 +1 증가 & 유저추가
-        Long roomId = Long.parseLong(message.getRoomId());
-        roomService.enterMember(roomId);
+        Long longroomId = Long.parseLong(message.getRoomId());
+        roomService.enterChatRoom(longroomId, message.getWriter());
 
-        //Session, 새로운 멤버 정보 소켓세션에 저장
-        headerAccessor.getSessionAttributes().put("nickname", message.getWriter());
-        headerAccessor.getSessionAttributes().put("roomId", message.getRoomId());
-        log.info("{} info is saved in session", message.getWriter());
+        //Session, 새로운 멤버 정보 세션서비스로 저장
+        String writer = message.getWriter();
+        String roomId = message.getRoomId();
+        String sessionId = headerAccessor.getSessionId();
+        sessionService.registerSession(sessionId, writer, roomId);
+        log.info("{} info is saved in session", writer);
+
+        //서버에 싱글톤 형태로 채팅룸에 저장
+        chatRoomService.addParticipant(writer, roomId);
+        log.info("{} info is saved in server", writer);
 
         //새로운 멤버 입장을 Sub 에게 전달
         message.setMessage(message.getMessage() + "님이 채팅방에 입장하였습니다");
-        template.convertAndSend("/sub/chat.room/" + message.getRoomId(), message);
+        message.setType(ChatMessageDto.MessageType.ENTER);
+
+        //유저 목록을 어떻게 넘길 것인가 2가지 방법이 존재함
+        // 1. 만약 dto에 값을 설정해서 보낸다 -> null 값처리에 대한 문제가 발생할 수 있음
+        // 2. 메시지를 2번 보낸다. -> 클라이언트에서 2개를 다 처리해야하지만. 데어터 전송량을 최소화 할 수 있음(최종선택)
+        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatRoomService.getParticipants(message.getRoomId()));
     }
 
-    @MessageMapping("/chat/sendMessage")
+    @MessageMapping("/chat/message")
     public void sendMessage(@Payload ChatMessageDto message) {
-        // !왜하는지 모름, 나중에 한번 뺴보자
-        message.setMessage(message.getMessage());
-        template.convertAndSend("/sub/chat/room" + message.getRoomId(), message);
+        message.setType(ChatMessageDto.MessageType.TALK);
+        //pub 으로 전달된 메세지를 다시 sub에게 전달하자
+        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
     }
 
     @EventListener
     public void webSocketDisconnectListener(SessionDisconnectEvent event) {
-
-        //이벤트 발생을 STOMP 객체로 받음
+        //이벤트 발생 로그 찍기
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        //세션에 있던 내용을 불러옴
-        String nickname = (String) headerAccessor.getSessionAttributes().get("nickname");
-        String roomId = (String) headerAccessor.getSessionAttributes().get("roomId");
-
         log.info("headAccessor {}", headerAccessor);
 
-        //세션 내용을 이용하여 DB 에서 값을 지우지는 않고, 현재 인원 수만 1 감소시킴
-        roomService.leaveSession(roomId);
+        //이벤트에서 세션 찾아와서 값 불러오기
+        String sessionId = event.getSessionId();
+        UserSessionInfo sessionInfo = sessionService.getSessionInfo(sessionId);
+        String nickname = sessionInfo.getNickname();
+        String roomId = sessionInfo.getRoomId();
 
-        //세션 변경 내용을 sub에게 전달
+        // 세션 내용을 이용하여 DB 에서 값을 지우지는 않고, 현재 인원 수만 1 감소시킴
+        // 해당 부분을 고도화 가능함 -> 현재 세션은 종료되었지만, 서버에서 값을 좀 가지고 있을 수 있음.
+        roomService.leaveSession(roomId);
+        sessionService.removeSession(sessionId);
+        chatRoomService.removeParticipant(roomId,nickname);
+
+        // 세션 변경 내용을 sub 에게 전달
         if (nickname != null) {
             log.info("User Disconnected : " + nickname);
 
@@ -79,6 +102,14 @@ public class StompChatController {
                     .build();
 
             template.convertAndSend("/sub/chat/room/" + roomId, chat);
+            template.convertAndSend("/sub/chat/room/" + roomId, chatRoomService.getParticipants(roomId));
         }
     }
+
+    @GetMapping("/chat/userlist")
+    public List<String> userList(String roomId) {
+        return chatRoomService.getParticipants(roomId);
+    }
+
+
 }

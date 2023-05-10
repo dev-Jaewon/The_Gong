@@ -22,10 +22,11 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // 2. 일부 Proxy가 HTTP요청의 Upgrade 헤더를 처리하지 못할 수 있음
         // 3. 유휴 상태에서 소켓 연결이 끊어질 수 있다
         // -> SockJS() 사용
-        registry.addEndpoint("/stomp/chat")
+
+        // GET /stomp/info 요청이 들어오고
+        // Json으로 웹소켓 요청에 관한 응답이 전달됨
+        registry.addEndpoint("/stomp")
                 .withSockJS();
-
-
     }
 
     @Override
