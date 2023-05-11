@@ -29,8 +29,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 
-
-@CrossOrigin
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity(debug = true)
@@ -70,10 +68,10 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
-//        cors.setAllowCredentials(true);
-        cors.setAllowedOrigins(Arrays.asList("*")); //"http://localhost:3000"
+        cors.setAllowCredentials(true);
+        cors.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         cors.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
-//        cors.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+        cors.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cors);
         return source;
