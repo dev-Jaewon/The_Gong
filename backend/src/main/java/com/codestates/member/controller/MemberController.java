@@ -51,7 +51,7 @@ public class MemberController {
                                       Authentication authentication) {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("sub")).longValue();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
         if(jwtMemberId != (memberId)) {
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
@@ -82,28 +82,14 @@ public class MemberController {
 
 
 
-//    @GetMapping //회원 전체조회 필요없음
-//    public ResponseEntity getMembers(@Positive @RequestParam("page") int page,
-//                                     @Positive @RequestParam("size") int size) {
-//        Page<Member> memberPage = memberService.findMembers(page-1, size);
-//        List<Member> memberList = memberPage.getContent();
-//        List<MemberDto.GetResponseDtos> responseDtosList = mapper.memberToGetResponseDtos(memberList);
-//
-//        return new ResponseEntity<>(
-//                new MultiResponseDto<>(responseDtosList, memberPage), HttpStatus.OK);
-//    }
-
-
-
-
     @GetMapping("/{member-id}/like")
     public ResponseEntity getLikeRooms(@Positive @RequestParam("page") int page,
                                        @Positive @RequestParam("size") int size,
                                        @PathVariable("member-id") @Positive long memberId,
                                        Authentication authentication) {
 
-        Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("sub")).longValue();
+        Map<String, Object> principal = (Map<String, Object>) authentication.getPrincipal();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
         if(jwtMemberId != (memberId)) {
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
@@ -128,7 +114,7 @@ public class MemberController {
                                          Authentication authentication) {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("sub")).longValue();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
         if(jwtMemberId != (memberId)) {
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
@@ -153,7 +139,7 @@ public class MemberController {
                                         Authentication authentication) {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("sub")).longValue();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
         if(jwtMemberId != (memberId)) {
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
@@ -176,7 +162,7 @@ public class MemberController {
                                        Authentication authentication) {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("sub")).longValue();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
         if(jwtMemberId != (memberId)) {
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
@@ -187,3 +173,20 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
+
+
+
+
+
+
+//    @GetMapping //회원 전체조회 필요없음
+//    public ResponseEntity getMembers(@Positive @RequestParam("page") int page,
+//                                     @Positive @RequestParam("size") int size) {
+//        Page<Member> memberPage = memberService.findMembers(page-1, size);
+//        List<Member> memberList = memberPage.getContent();
+//        List<MemberDto.GetResponseDtos> responseDtosList = mapper.memberToGetResponseDtos(memberList);
+//
+//        return new ResponseEntity<>(
+//                new MultiResponseDto<>(responseDtosList, memberPage), HttpStatus.OK);
+//    }
+

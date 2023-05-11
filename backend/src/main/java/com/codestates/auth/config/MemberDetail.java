@@ -3,11 +3,15 @@ package com.codestates.auth.config;
 import com.codestates.member.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.Collections;
 
 public class MemberDetail extends Member implements UserDetails {
-    MemberDetail(Member member){
+
+    private Member member;
+
+    MemberDetail(Member member){ //s가 영향이 있다.
         setMemberId(member.getMemberId());
         setNickname(member.getNickname());
         setImageUrl(member.getImageUrl());

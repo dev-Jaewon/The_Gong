@@ -1,6 +1,7 @@
 package com.codestates.auth.handler;
 
 import com.codestates.auth.config.MemberDetail;
+import com.codestates.auth.config.MemberDetailService;
 import com.codestates.auth.login.LoginResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ public class MemberAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("Login Successful 로그인 인증성공");
 
-        MemberDetail memberDetail = (MemberDetail) authentication.getPrincipal();
+        MemberDetailService.MemberDetail memberDetail = (MemberDetailService.MemberDetail) authentication.getPrincipal();
         Long memberId = memberDetail.getMemberId();
         String nickname = memberDetail.getNickname();
         String imageUrl = memberDetail.getImageUrl(); //이미지 포함여부
