@@ -19,20 +19,20 @@ import java.util.stream.Collectors;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberRoomRepository memberRoomRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository, MemberRoomRepository memberRoomRepository, PasswordEncoder passwordEncoder) {
+    public MemberService(MemberRepository memberRepository, MemberRoomRepository memberRoomRepository) {
         this.memberRepository = memberRepository;
         this.memberRoomRepository = memberRoomRepository;
-        this.passwordEncoder = passwordEncoder;
+//        this.passwordEncoder = passwordEncoder;
     }
 
 
 
     public Member createMember(Member member) {
         verifyExistsEmail(member.getEmail());
-        String encryptedPassword = passwordEncoder.encode(member.getPassword());
-        member.setPassword(encryptedPassword);
+//        String encryptedPassword = passwordEncoder.encode(member.getPassword());
+        member.setPassword(member.getPassword());
         Member saveMember = memberRepository.save(member);
         return saveMember;
     }

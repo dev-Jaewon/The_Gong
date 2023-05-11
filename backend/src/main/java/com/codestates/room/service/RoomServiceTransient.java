@@ -21,6 +21,8 @@ public class RoomServiceTransient {
     private final MemberService memberService;
     private final MemberRoomRepository memberRoomRepository;
 
+
+
     public void enterChatRoom(Long roomId, String nickname) {
         /*
          * 1. 방, 멤버 엔티티 찾기
