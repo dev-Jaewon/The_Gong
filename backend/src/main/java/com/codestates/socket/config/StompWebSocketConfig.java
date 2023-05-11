@@ -26,6 +26,7 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // GET /stomp/info 요청이 들어오고
         // Json으로 웹소켓 요청에 관한 응답이 전달됨
         registry.addEndpoint("/stomp")
+                .setAllowedOrigins("http://localhost:3000")
                 .withSockJS();
     }
 
