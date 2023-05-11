@@ -1,6 +1,5 @@
 package com.codestates.room.service;
 
-
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.room.entity.Room;
 import com.codestates.room.repository.RoomRepository;
@@ -19,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -253,5 +254,6 @@ public class RoomService {
         if(optionalRoom.isPresent()){
             throw new BusinessLogicException(ExceptionCode.ROOM_EXIST);
         }
+
     }
 }

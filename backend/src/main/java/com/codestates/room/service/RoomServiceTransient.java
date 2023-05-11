@@ -9,15 +9,19 @@ import com.codestates.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class RoomServiceTransient {
 
     private final RoomRepository roomRepository;
     private final MemberService memberService;
     private final MemberRoomRepository memberRoomRepository;
+
+
 
     public void enterChatRoom(Long roomId, String nickname) {
         /*
@@ -30,7 +34,6 @@ public class RoomServiceTransient {
         Room foundRoom = roomRepository.findById(roomId).get();
         Member foundMember = memberService.findVerifiedMember(nickname);
         log.info("Room {} is founded", foundRoom.getRoomId());
-
         // 2
         MemberRoom memberRoom = new MemberRoom();
         memberRoom.setMember(foundMember);
@@ -40,19 +43,12 @@ public class RoomServiceTransient {
         memberRoom.setHistory(MemberRoom.History.VISITED);
         MemberRoom madeMemberRoom = memberRoomRepository.save(memberRoom);
         log.info("Member {} is entering the room. . . ", madeMemberRoom.getMember().getMemberId());
-
         // 3
         foundRoom.setMemberCurrentCount(foundRoom.getMemberCurrentCount() + 1);
         log.info("Current Count is {} of {}", foundRoom.getMemberCurrentCount(), foundRoom.getMemberMaxCount());
-
         // 4
         foundRoom.getMemberRoomList().add(madeMemberRoom);
         log.info("New member {} is in Room {}", madeMemberRoom.getMember().getMemberId(), roomId);
-
-//        return foundRoom.getMemberRoomList().stream().map(a -> {
-//            Member member = memberService.findVerifiedMember(a.getMember().getMemberId());
-//            return member.getNickname();
-//        }).collect(Collectors.toList());
     }
 
     public void leaveSession(String roomId) {

@@ -7,12 +7,13 @@ import com.codestates.room.dto.RoomUserDtos;
 import com.codestates.room.entity.Room;
 import com.codestates.room.entity.RoomTag;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RoomMapper {
 
     Room postDtoToRoom(RoomDto.Post requestBody);
