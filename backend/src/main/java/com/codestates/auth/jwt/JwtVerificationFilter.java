@@ -1,5 +1,7 @@
 package com.codestates.auth.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,8 +23,16 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        Map<String, Object> claims = verifyJws(request);
-        setAuthenticationToContext(claims);
+        try {
+            Map<String, Object> claims = verifyJws(request);
+            setAuthenticationToContext(claims);
+        } catch (SignatureException se) {
+            request.setAttribute("exception", se);
+        } catch (ExpiredJwtException ee) {
+            request.setAttribute("exception", ee);
+        } catch (Exception e) {
+            request.setAttribute("exception", e);
+        }
         filterChain.doFilter(request,response);
     }
 
@@ -37,7 +47,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private void setAuthenticationToContext(Map<String, Object> claims) { // 사용자 인증•권한정보 생성해서 SecurityContextHolder 에 저장
         Map<String, Object> principal = new HashMap<>();
-        principal.put("sub", claims.get("sub"));
+        principal.put("memberId", claims.get("memberId"));
         principal.put("username", claims.get("username"));
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null);

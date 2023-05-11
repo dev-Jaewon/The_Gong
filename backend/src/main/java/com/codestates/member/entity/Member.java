@@ -1,6 +1,7 @@
 package com.codestates.member.entity;
 
 import com.codestates.common.entity.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "members")
 public class Member extends BaseEntity {
 
     @Id

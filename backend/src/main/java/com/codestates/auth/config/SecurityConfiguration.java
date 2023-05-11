@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,19 +27,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity(debug = true)
 public class SecurityConfiguration {
 
     private final JwtTokenizer jwtTokenizer;
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
 
         http
-                .formLogin().disable()
-                .httpBasic().disable()
                 .headers().frameOptions().sameOrigin()
                 .and()
                 .csrf().disable()
@@ -46,11 +48,14 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .apply(new CustomFilterConfigurer())
+                .and()
+
                 .exceptionHandling()
                 .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
                 .accessDeniedHandler(new MemberAccessDeniedHandler())
-                .and()
-                .apply(new CustomFilterConfigurer())
 
                 .and()
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
@@ -63,10 +68,10 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
-        cors.setAllowCredentials(true);
-        cors.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+//        cors.setAllowCredentials(true);
+        cors.setAllowedOrigins(Arrays.asList("*")); //"http://localhost:3000"
         cors.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
-        cors.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+//        cors.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cors);
         return source;
@@ -77,14 +82,15 @@ public class SecurityConfiguration {
     public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
+
             AuthenticationManager manager = builder.getSharedObject(AuthenticationManager.class);
             JwtAuthenticationFilter authentication = new JwtAuthenticationFilter(manager, jwtTokenizer);
-            authentication.setFilterProcessesUrl("/users/login");
+            authentication.setFilterProcessesUrl("/members/login");
             authentication.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
             authentication.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
-            JwtVerificationFilter verification = new JwtVerificationFilter(jwtTokenizer);
 
-            builder.addFilter(authentication)
+            JwtVerificationFilter verification = new JwtVerificationFilter(jwtTokenizer);
+            builder .addFilter(authentication)
                     .addFilterAfter(verification, JwtAuthenticationFilter.class);
 
         }
