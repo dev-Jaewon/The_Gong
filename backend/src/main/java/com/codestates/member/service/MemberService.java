@@ -8,12 +8,10 @@ import com.codestates.member.entity.Member;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.repository.MemberRepository;
 import org.springframework.data.domain.*;
-<<<<<<< Updated upstream
-=======
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
->>>>>>> Stashed changes
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,37 +21,25 @@ import java.util.stream.Collectors;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-<<<<<<< Updated upstream
-    private final MemberRoomRepository memberRoomRepository;
-   // private final PasswordEncoder passwordEncoder;
-
-=======
     private final PasswordEncoder passwordEncoder;
->>>>>>> Stashed changes
 
     public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
-<<<<<<< Updated upstream
-        this.memberRoomRepository = memberRoomRepository;
-=======
         this.passwordEncoder = passwordEncoder;
->>>>>>> Stashed changes
     }
 
 
+
     public Member createMember(Member member) {
-<<<<<<< Updated upstream
         verifyExistsEmail(member.getEmail());
-       // String encryptedPassword = passwordEncoder.encode(member.getPassword());
-       //  member.setPassword(encryptedPassword);
-=======
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
->>>>>>> Stashed changes
+        member.setPassword(member.getPassword());
         Member saveMember = memberRepository.save(member);
         return saveMember;
     }
 
+  
 
     public Member updateMemberNickname(Member member, long memberId){
         Member findMember = findVerifiedMember(memberId);
@@ -62,6 +48,7 @@ public class MemberService {
         return memberRepository.save(findMember);
     }
 
+  
 
     public Member updateMemberImage(Member member, long memberId){
         Member findMember = findVerifiedMember(memberId);
@@ -70,6 +57,7 @@ public class MemberService {
         return memberRepository.save(findMember);
     }
 
+  
 
     public Member updateMemberPassword(MemberDto.PatchPassword requestBody, long memberId){
         Member findMember = findVerifiedMember(memberId);
@@ -77,7 +65,6 @@ public class MemberService {
         findMember.setPassword(newEncryptedPassword);
         return memberRepository.save(findMember);
     }
-
 
 
 
@@ -150,9 +137,7 @@ public class MemberService {
         }
         return findMember;
     }
-<<<<<<< Updated upstream
-=======
-
+  
 
 
     public Member findVerifiedMember(String nickname) {
@@ -196,6 +181,8 @@ public class MemberService {
         }
         return null;
     }
+  
+  
 
     public ResponseEntity<ErrorResponse> checkPassword(MemberDto.PatchPassword requestBody, long memberId){
         Member findMember = findVerifiedMember(memberId);
@@ -207,19 +194,19 @@ public class MemberService {
         }
         return null;
     }
->>>>>>> Stashed changes
+
+  
+
+    public Member findVerifiedMember(String nickname) {
+        Optional<Member> member = memberRepository.findByNickname(nickname);
+        Member findMember = member.orElseThrow(()->new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        if(findMember.getStatus().equals(Member.MemberStatus.DELETE)) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+        return findMember;
+    }
 }
 
-
-
-
-
-
-//    public Page<Member> findMembers(int page, int size) { //전체조회사용 X
-//        Page<Member> memberPage = memberRepository.findAll(PageRequest.of(page,size, Sort.by("memberId").descending()));
-//        List<Member> memberList = memberPage.getContent();
-//        return new PageImpl<>(memberList, memberPage.getPageable(), memberPage.getTotalElements());
-//    }
 
 
 
