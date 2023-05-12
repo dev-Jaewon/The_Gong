@@ -11,7 +11,6 @@ import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -194,36 +193,4 @@ public class MemberService {
         }
         return null;
     }
-
-  
-
-    public Member findVerifiedMember(String nickname) {
-        Optional<Member> member = memberRepository.findByNickname(nickname);
-        Member findMember = member.orElseThrow(()->new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        if(findMember.getStatus().equals(Member.MemberStatus.DELETE)) {
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
-        }
-        return findMember;
-    }
 }
-
-
-
-
-//    public Member updateMember(Member member){
-//        Member findMember = findVerifiedMember(member.getMemberId());
-//        Optional.ofNullable(member.getNickname())
-//                .ifPresent(nickname->findMember.setNickname(nickname));
-//        Optional.ofNullable(member.getImageUrl())
-//                .ifPresent(image->findMember.setImageUrl(image));
-//        Optional.ofNullable(member.getMemberTagList())
-//                .ifPresent(tagList-> {
-//                    findMember.getMemberTagList().clear();
-//
-//                    for(MemberTag tag : tagList) {
-//                        tag.setMember(findMember);
-//                        findMember.getMemberTagList().add(tag);
-//                    }});
-//
-//        return memberRepository.save(findMember);
-//    }
