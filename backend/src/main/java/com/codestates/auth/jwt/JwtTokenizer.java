@@ -9,18 +9,23 @@ import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import com.codestates.member.repository.MemberRepository;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenizer {
 
     @Getter
@@ -34,6 +39,27 @@ public class JwtTokenizer {
     @Getter
     @Value("${jwt.refresh-token-expiration-minutes}")
     private int refreshTokenExpirationMinutes;
+
+    @Value("${jwt.access.header")
+    @Getter
+    private final String accessHeader;
+
+    @Value("${jwt.refresh.header")
+    @Getter
+    private final String refreshHeader;
+
+    private Key key;
+
+    @PostConstruct
+    public void init() {
+        log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 시작 ", secretKey);
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        key = Keys.hmacShaKeyFor(keyBytes);
+        log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 완료", secretKey);
+    }
+
+
 
     private final MemberRepository memberRepository;
 
@@ -129,6 +155,26 @@ public class JwtTokenizer {
             new IllegalArgumentException("잘못된 리프레시 토큰입니다",e);
         }
         return false;
+    }
+
+    public String getUserEmail(String token) {
+        log.info("토큰 기반 회원 구별 정보 추출");
+        String info = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+
+        log.info("토큰 기반 회원 구별 정보 추출 완료, info : {}", info);
+        return info;
+    }
+    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        response.setHeader(accessHeader, accessToken);
+        response.setHeader(refreshHeader, refreshToken);
+        log.info("Access Token, Refresh Token 헤더 설정");
     }
 
 
