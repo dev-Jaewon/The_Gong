@@ -27,61 +27,91 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberMapper mapper;
 
-    public MemberController(MemberService memberService, MemberMapper mapper) {
+    public MemberController (MemberService memberService, MemberMapper mapper) {
         this.memberService = memberService;
         this.mapper = mapper;
     }
 
 
-
+  
     @PostMapping("/add")
     public ResponseEntity postMember (@Valid @RequestBody MemberDto.Post requestBody) {
         Member member = mapper.postDtoToMember(requestBody);
-        Member createMember = memberService.createMember(member);
+        ResponseEntity checkMember = memberService.verifyExistsCheck(member.getEmail(), member.getNickname());
+        if(checkMember!=null){return checkMember;}
 
-        return new ResponseEntity<>(mapper.memberToPostResponseDto(createMember), HttpStatus.CREATED);
+        memberService.createMember(member);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
+  
 
-
-    @PatchMapping("/{member-id}/edit")
-    public ResponseEntity patchMember(@PathVariable("member-id") @Positive long memberId,
-                                      @Valid @RequestBody MemberDto.Patch requestBody,
+    @PatchMapping("/{member-id}/nickname/edit")
+    public ResponseEntity patchMemberNickname(@PathVariable("member-id") @Positive long memberId,
+                                      @Valid @RequestBody MemberDto.PatchNickname requestBody,
                                       Authentication authentication) {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
         if(jwtMemberId != (memberId)) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
+        // requestBody.setMemberId(memberId);
+        Member member = mapper.patchNicknameDtoToMember(requestBody);
+        ResponseEntity checkMember = memberService.verifyExistsNickname(member.getNickname());
+        if(checkMember != null){return checkMember;}
 
-        requestBody.setMemberId(memberId);
-        Member member = memberService.updateMember(mapper.patchDtoToMember(requestBody));
-        return new ResponseEntity<>(mapper.memberToPatchResponseDto(member),HttpStatus.OK);
+        Member responseMember = memberService.updateMemberNickname(member, memberId);
+        return new ResponseEntity<>(mapper.memberToPatchResponseDto(responseMember),HttpStatus.OK);
     }
 
+  
 
 
+    @PatchMapping("/{member-id}/image/edit")
+    public ResponseEntity patchMemberImage(@PathVariable("member-id") @Positive long memberId,
+                                           @Valid @RequestBody MemberDto.PatchImage requestBody,
+                                           Authentication authentication) {
 
-    @GetMapping("/{member-id}")
-    public ResponseEntity getMember(@PathVariable("member-id") @Positive long memberId,
-                                    Authentication authentication) {
+        Map<String, Object> principal = (Map) authentication.getPrincipal();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
-        if(authentication == null) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED, "미인증 사용자 : 토큰이 존재하지 않습니다.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        if(jwtMemberId != (memberId)) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
-
-        Member member = memberService.findMember(memberId);
-        return new ResponseEntity<>(mapper.memberToGetResponseDto(member), HttpStatus.OK);
+        Member member = mapper.patchImageDtoToMember(requestBody);
+        Member responseMember = memberService.updateMemberImage(member, memberId);
+        return new ResponseEntity<>(mapper.memberToPatchImageResponseDto(responseMember),HttpStatus.OK);
     }
 
 
 
 
+    @PatchMapping("/{member-id}/password/edit")
+    public ResponseEntity patchMemberPassword(@PathVariable("member-id") @Positive long memberId,
+                                      @Valid @RequestBody MemberDto.PatchPassword requestBody,
+                                      Authentication authentication) {
+
+        Map<String, Object> principal = (Map) authentication.getPrincipal();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
+
+        if(jwtMemberId != (memberId)) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        }
+        ResponseEntity<ErrorResponse> checkMemberPassword = memberService.checkPassword(requestBody, memberId);
+        if(checkMemberPassword != null){return checkMemberPassword;}
+        memberService.updateMemberPassword(requestBody, memberId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+  
+  
+  
     @GetMapping("/{member-id}/like")
     public ResponseEntity getLikeRooms(@Positive @RequestParam("page") int page,
                                        @Positive @RequestParam("size") int size,
@@ -92,7 +122,7 @@ public class MemberController {
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
         if(jwtMemberId != (memberId)) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
 
@@ -117,7 +147,7 @@ public class MemberController {
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
         if(jwtMemberId != (memberId)) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
 
@@ -142,7 +172,7 @@ public class MemberController {
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
         if(jwtMemberId != (memberId)) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
 
@@ -155,38 +185,21 @@ public class MemberController {
     }
 
 
-
-
-    @DeleteMapping("/{member-id}")
+  
+  
+  
+   @DeleteMapping("/{member-id}")
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId,
                                        Authentication authentication) {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
-        if(jwtMemberId != (memberId)) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "토큰 불일치 : 권한이 없는 사용자 입니다.");
+        if (jwtMemberId != (memberId)) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
-
         memberService.removeUser(memberId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
-
-
-
-
-
-
-//    @GetMapping //회원 전체조회 필요없음
-//    public ResponseEntity getMembers(@Positive @RequestParam("page") int page,
-//                                     @Positive @RequestParam("size") int size) {
-//        Page<Member> memberPage = memberService.findMembers(page-1, size);
-//        List<Member> memberList = memberPage.getContent();
-//        List<MemberDto.GetResponseDtos> responseDtosList = mapper.memberToGetResponseDtos(memberList);
-//
-//        return new ResponseEntity<>(
-//                new MultiResponseDto<>(responseDtosList, memberPage), HttpStatus.OK);
-//    }
-
