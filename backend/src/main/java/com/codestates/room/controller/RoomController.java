@@ -1,5 +1,6 @@
 package com.codestates.room.controller;
 
+import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.common.response.MultiResponseDto;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.room.dto.RoomDto;
@@ -10,11 +11,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Map;
 
 @Validated
 @RestController
@@ -30,7 +33,17 @@ public class RoomController {
 
 
     @PostMapping("/add")
-    public ResponseEntity postRoom(@Valid @RequestBody RoomDto.Post requestBody) {
+    public ResponseEntity postRoom(@Valid @RequestBody RoomDto.Post requestBody,
+                                   Authentication authentication) {
+
+        Map<String, Object> principal = (Map) authentication.getPrincipal();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
+
+        if(jwtMemberId != requestBody.getAdminMemberId()) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        }
+
         Room room = mapper.postDtoToRoom(requestBody);
         room = roomService.createRoom(room, requestBody.getAdminMemberId());
         return new ResponseEntity<>(mapper.roomToPostResponseDto(room), HttpStatus.CREATED);
@@ -40,7 +53,17 @@ public class RoomController {
 
     @PatchMapping("/{room-id}/edit")
     public ResponseEntity patchRoom(@PathVariable("room-id") @Positive long roomId,
-                                    @Valid @RequestBody RoomDto.Patch requestBody) {
+                                    @Valid @RequestBody RoomDto.Patch requestBody,
+                                    Authentication authentication) {
+
+        Map<String, Object> principal = (Map) authentication.getPrincipal();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
+
+        if(jwtMemberId != requestBody.getAdminMemberId()) {
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        }
+        //roomId 사용부분 체크하기
         requestBody.setRoomId(roomId);
         Room room = mapper.patchDtoToRoom(requestBody);
         room = roomService.updateRoom(room, requestBody.getAdminMemberId());
@@ -51,46 +74,48 @@ public class RoomController {
 
     @PatchMapping("/{room-id}/switch")
     public ResponseEntity patchAdmin(@PathVariable("room-id") @Positive long roomId,
-                                     @Valid @RequestBody RoomDto.PatchAdmin requestBody) {
-       requestBody.setRoomId(roomId);
-       Room room = mapper.patchAdminDtoToRoom(requestBody);
-       room = roomService.switchAdmin(room, requestBody.getNewAdminId());
-       return new ResponseEntity<>(mapper.roomToPatchAdminResponseDto(room),HttpStatus.OK);
-    }
+                                     @Valid @RequestBody RoomDto.PatchAdmin requestBody,
+                                     Authentication authentication) {
 
+        Map<String, Object> principal = (Map) authentication.getPrincipal();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
+        Room findRoom = roomService.findVerifiedRoom(roomId);
 
+        if (jwtMemberId != findRoom.getAdminMemberId()){
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        }
 
-    @DeleteMapping("/{room-id}")
-    public ResponseEntity deleteRoom(@PathVariable("room-id") @Positive long roomId){
-        roomService.deleteRoom(roomId); //완전삭제 or 상태여부
-        return new ResponseEntity<>(HttpStatus.OK);
+        Room room = mapper.patchAdminDtoToRoom(requestBody);
+        room = roomService.switchAdmin(room, requestBody.getNewAdminId());
+        return new ResponseEntity<>(mapper.roomToPatchAdminResponseDto(room),HttpStatus.OK);
     }
 
 
 
     @PostMapping("/{room-id}/favorite")
     public ResponseEntity postFavorite(@PathVariable("room-id") @Positive long roomId,
-                                       @Valid @RequestBody RoomDto.PostFavorite requestBody) {
+                                       @Valid @RequestBody RoomDto.PostFavorite requestBody,
+                                       Authentication authentication) {
+
+        if(authentication.getPrincipal().equals(null)){
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "로그인을 해주세요.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        }
         requestBody.setRoomId(roomId);
         Room room = mapper.PostFavoriteDtoToRoom(requestBody);
-        roomService.addFavorite(room, requestBody.isFavorite(), requestBody.getMemberId());
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
-
-
-    @PostMapping("/{room-id}/undo_favorite")
-    public ResponseEntity postUndoFavorite(@PathVariable("room-id") @Positive long roomId,
-                                           @Valid @RequestBody RoomDto.PostUndoFavorite requestBody) {
-        requestBody.setRoomId(roomId);
-        Room room = mapper.PostUndoDtoToRoom(requestBody);
+        if(requestBody.isFavorite()) {
+            roomService.addFavorite(room, requestBody.isFavorite(), requestBody.getMemberId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         roomService.undoFavorite(room, requestBody.isFavorite(), requestBody.getMemberId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
 
-    @GetMapping("/{room-id}/users")
+    @GetMapping("/{room-id}/users") // 소켓쪽에서 연결
     public ResponseEntity getRoomUsers(@PathVariable("room-id") @Positive long roomId,
                                        @Positive @RequestParam("page") int page,
                                        @Positive @RequestParam("size") int size) {
@@ -116,14 +141,44 @@ public class RoomController {
 
 
 
-    @GetMapping("/recommend")
-    public ResponseEntity getRecommendRooms(@Positive @RequestParam("page") int page,
-                                            @Positive @RequestParam("size") int size) {
-        Page<Room> roomPage = roomService.findRecommendRooms(page -1, size);
+
+    @GetMapping("/{memberId}/{sort}/recommend")
+    public ResponseEntity getRecommendRooms(@PathVariable("member-id") long memberId,
+                                                     @PathVariable("sort") String sort,
+                                                     @Positive @RequestParam("page") int page,
+                                                     @Positive @RequestParam("size") int size,
+                                                     Authentication authentication) {
+        if(authentication.equals(null)){
+            Page<Room> roomPage = roomService.findUnauthorizedRooms(page -1, size, sort);
+            List<Room> roomList = roomPage.getContent();
+            List<RoomDto.GetRecommendRoomResponseDtos> responseDtosList = mapper.roomToRecommendRoomResponseDtos(roomList);
+            return new ResponseEntity<>(
+                    new MultiResponseDto<>(responseDtosList, roomPage), HttpStatus.OK);
+        }
+
+        Page<Room> roomPage = roomService.findRecommendRooms(page -1, size, sort, memberId);
         List<Room> roomList = roomPage.getContent();
         List<RoomDto.GetRecommendRoomResponseDtos> responseDtosList = mapper.roomToRecommendRoomResponseDtos(roomList);
         return new ResponseEntity<>(
                 new MultiResponseDto<>(responseDtosList, roomPage), HttpStatus.OK);
+    }
+
+
+
+    @DeleteMapping("/{room-id}")
+    public ResponseEntity deleteRoom(@PathVariable("room-id") @Positive long roomId,
+                                     Authentication authentication){
+
+        Map<String, Object> principal = (Map)authentication.getPrincipal();
+        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
+        Room findRoom = roomService.findVerifiedRoom(roomId);
+
+        if(jwtMemberId != findRoom.getAdminMemberId()){
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        }
+        roomService.deleteRoom(roomId); //완전삭제
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

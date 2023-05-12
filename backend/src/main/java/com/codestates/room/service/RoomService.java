@@ -1,6 +1,7 @@
 package com.codestates.room.service;
 
 import com.codestates.member.entity.MemberRoom;
+import com.codestates.member.entity.MemberTag;
 import com.codestates.room.entity.Room;
 import com.codestates.room.repository.RoomRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -39,11 +37,11 @@ public class RoomService {
 
 
     public Room createRoom(Room room, long adminMemberId) {
-        Member findMember = memberRepository.findById(adminMemberId).orElseThrow(()-> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member findMember = memberRepository.findById(adminMemberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         verifyExistsTitle(room.getTitle());
 
         room.setAdminNickname(findMember.getNickname());
-        findMember.setCreatedCount(findMember.getCreatedCount()+1);
+        findMember.setCreatedCount(findMember.getCreatedCount() + 1);
 
         memberRepository.save(findMember);
         roomRepository.save(room);
@@ -60,30 +58,26 @@ public class RoomService {
     }
 
 
-
     public Room updateRoom(Room room, long adminMemberId) {
         Room findRoom = findVerifiedRoom(room.getRoomId());
         Member findMember = memberService.findMember(adminMemberId);
-        if(!findRoom.getAdminMemberId().equals(findMember.getMemberId())){
+        if (!findRoom.getAdminMemberId().equals(findMember.getMemberId())) {
             throw new BusinessLogicException(ExceptionCode.ONLY_ADMIN);
         }
-
         Optional.ofNullable(room.getTitle())
                 .ifPresent(title -> findRoom.setTitle(title));
         Optional.ofNullable(room.getInfo())
                 .ifPresent(info -> findRoom.setInfo(info));
-        Optional.ofNullable(room.getNotice())
-                .ifPresent(notice->findRoom.setNotice(notice));
         Optional.ofNullable(room.getImageUrl())
                 .ifPresent(image -> findRoom.setImageUrl(image));
         Optional.ofNullable(room.getMemberMaxCount())
                 .ifPresent(max -> findRoom.setMemberMaxCount(max));
 
         Optional.ofNullable(room.isPrivate())
-                        .ifPresent(is -> findRoom.setPrivate(is));
+                .ifPresent(is -> findRoom.setPrivate(is));
 
         if (room.isPrivate() && room.getPassword().isEmpty() || room.getPassword().equals(null)) {
-                throw new BusinessLogicException(ExceptionCode.NEED_PASSWORD);
+            throw new BusinessLogicException(ExceptionCode.NEED_PASSWORD);
 
         } else if (!room.isPrivate() && !room.getPassword().isEmpty() || !room.getPassword().equals(null)) {
             findRoom.setPassword(null);
@@ -93,13 +87,14 @@ public class RoomService {
         }
 
         Optional.ofNullable(room.getRoomTagList())
-                .ifPresent(tagList-> {
+                .ifPresent(tagList -> {
                     findRoom.getRoomTagList().clear();
 
-                    for(RoomTag tag : tagList){
+                    for (RoomTag tag : tagList) {
                         tag.setRoom(findRoom);
                         findRoom.getRoomTagList().add(tag);
-                    }});
+                    }
+                });
 
         roomRepository.save(findRoom);
         return findRoom;
@@ -108,31 +103,15 @@ public class RoomService {
 
 
     public Room switchAdmin(Room room, long newAdminId) {
-        Member findMember = memberRepository.findById(room.getAdminMemberId()).get();
         Member newAdminMember = memberRepository.findById(newAdminId).get();
 
         Room findRoom = findVerifiedRoom(room.getRoomId());
-        findRoom.setAdminMemberId(newAdminMember.getMemberId());
-        findRoom.setAdminNickname(newAdminMember.getNickname());
-
-
-        //새로운방장회원의 권한은 ADMIN 으로 변경
-        MemberRoom memberRoom = new MemberRoom();
+        MemberRoom memberRoom = memberRoomRepository.findByRoom(findRoom);
         memberRoom.setMember(newAdminMember);
         memberRoom.setRoom(findRoom);
         memberRoom.setAuthority(MemberRoom.Authority.ADMIN);
         memberRoomRepository.save(memberRoom);
-
-
-        //기존방장회원의 권한은 User 로 변경
-        findMember.getMemberRoomList().stream()
-                .filter(r -> !r.getRoom().getRoomId().equals(findRoom.getRoomId()))
-                        .findFirst()
-                                .ifPresent(mr -> mr.setAuthority(MemberRoom.Authority.USER));
-        memberRepository.save(findMember);
-        roomRepository.save(findRoom);
-
-        return findRoom;
+        return memberRoom.getRoom();
     }
 
 
@@ -145,10 +124,10 @@ public class RoomService {
 
 
     public void addFavorite(Room room, boolean isFavorite, long memberId) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(()-> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Room findRoom = findVerifiedRoom(room.getRoomId());
 
-        if(findMember.isVoted()) {
+        if (findMember.isVoted()) {
             throw new BusinessLogicException(ExceptionCode.DOUBLE_VOTE);
 
         } else if (isFavorite) {
@@ -159,16 +138,15 @@ public class RoomService {
             Optional<MemberRoom> optionalMemberRoom = findRoom.getMemberRoomList()
                     .stream()
                     .filter(r -> r.getRoom().equals(findRoom))
-                            .findFirst();
+                    .findFirst();
 
-            if(optionalMemberRoom.isPresent()) { //수정
+            if (optionalMemberRoom.isPresent()) { //수정
                 MemberRoom memberRoom = optionalMemberRoom.get();
                 memberRoom.setMember(findMember);
                 memberRoom.setRoom(findRoom);
                 memberRoom.setFavorite(MemberRoom.Favorite.LIKE);
                 memberRoomRepository.save(memberRoom);
             }
-
             memberRepository.save(findMember);
             roomRepository.save(findRoom);
         }
@@ -177,11 +155,12 @@ public class RoomService {
 
 
     public void undoFavorite(Room room, boolean isFavorite, long memberId) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(()-> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Room findRoom = findVerifiedRoom(room.getRoomId());
 
-        if(findMember.isVoted()) {
+        if (!findMember.isVoted()) {
             throw new BusinessLogicException(ExceptionCode.PLEASE_VOTE);
+
         } else if (!isFavorite) {
             findMember.setFavoriteCount(findMember.getFavoriteCount() - 1);
             findRoom.setFavoriteCount(findRoom.getFavoriteCount() - 1);
@@ -202,9 +181,8 @@ public class RoomService {
     }
 
 
-
-    public Page<MemberRoom> findRoomUsers(int page, int size, long roomId){
-        Pageable pageable = PageRequest.of(page,size,Sort.by("roomId").descending());
+    public Page<MemberRoom> findRoomUsers(int page, int size, long roomId) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("roomId").descending());
         Room room = findVerifiedRoom(roomId);
 
         List<MemberRoom> memberList = room.getMemberRoomList()
@@ -212,7 +190,7 @@ public class RoomService {
                 .filter(member -> !member.getRoom().getRoomId().equals(room.getRoomId()))
                 .collect(Collectors.toList());
 
-        if(memberList == null || memberList.isEmpty()) {
+        if (memberList == null || memberList.isEmpty()) {
             return new PageImpl<>(new ArrayList<>(), pageable, 0);
         }
         return new PageImpl<>(memberList, pageable, memberList.size());
@@ -220,8 +198,8 @@ public class RoomService {
 
 
 
-    public Page<Room> findNewRooms(int page, int size){
-        Page<Room> roomPage = roomRepository.findAll(PageRequest.of(page,size,Sort.by("roomId").descending()));
+    public Page<Room> findNewRooms(int page, int size) {
+        Page<Room> roomPage = roomRepository.findAll(PageRequest.of(page, size, Sort.by("roomId").descending()));
         List<Room> roomList = roomPage.getContent();
 
         return new PageImpl<>(roomList, roomPage.getPageable(), roomPage.getTotalElements());
@@ -229,31 +207,75 @@ public class RoomService {
 
 
 
-    public Page<Room> findRecommendRooms(int page, int size){
-        return null; //추천알고리즘
+
+    //Todo : (미회원) 태그포함 + 찜많은순/생성순 정렬
+    public Page<Room> findUnauthorizedRooms(int page, int size, String sort) {
+        Page<Room> roomPage;
+        List<Room> roomList;
+        if (!sort.isEmpty() && !sort.isEmpty() && sort.equals("createdAt")) {
+            roomPage = roomRepository.findAll(PageRequest.of(page, size, getSortingMethod(sort).descending()));
+        } else if (!sort.isEmpty() && !sort.isEmpty() && sort.equals("favoriteCount")) {
+            roomPage = roomRepository.findAll(PageRequest.of(page, size, getSortingMethod(sort).descending()));
+        } else {
+            throw new BusinessLogicException(ExceptionCode.SORT_DOSE_NOT_EXIST);
+        }
+        roomList = roomPage.getContent();
+        return new PageImpl<>(roomList, roomPage.getPageable(), roomPage.getTotalElements());
     }
 
 
 
-    private Room findVerifiedRoom(Long roomId) {
+    //Todo : (회원) 태그포함 + 찜많은순/생성순 정렬
+    public Page<Room> findRecommendRooms(int page, int size, String sort, long memberId) {
+        Member findMember = memberService.findVerifiedMember(memberId);
+        List<MemberTag> memberTags = findMember.getMemberTagList();
+        Page<Room> roomPage;
+        List<Room> roomList;
+
+        if (!sort.isEmpty() && !sort.isEmpty() && sort.equals("createdAt")) {
+            roomPage = roomRepository.findAll(PageRequest.of(page, size, getSortingMethod(sort).descending()));
+        } else if (!sort.isEmpty() && !sort.isEmpty() && sort.equals("favoriteCount")) {
+            roomPage = roomRepository.findAll(PageRequest.of(page, size, getSortingMethod(sort).descending()));
+        } else {
+            throw new BusinessLogicException(ExceptionCode.SORT_DOSE_NOT_EXIST);
+        }
+
+        roomList = roomPage.getContent();
+        List<Room> recommendList = roomList.stream().filter(room -> room.getRoomTagList().stream()
+                .anyMatch(memberTags::contains)).collect(Collectors.toList());
+
+        return new PageImpl<>(recommendList, roomPage.getPageable(), recommendList.size());
+    }
+
+
+    public Room findVerifiedRoom(Long roomId) {
         Optional<Room> room = roomRepository.findById(roomId);
-        Room findRoom = room.orElseThrow(()->new BusinessLogicException(ExceptionCode.ROOM_NOT_FOUND));
+        Room findRoom = room.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ROOM_NOT_FOUND));
         return findRoom;
     }
 
 
-
-    public Page<Room> searchRoomsByKeyword(String keyword, Pageable pageable) {
-        return roomRepository.findByTitleContainingIgnoreCaseOrRoomTagListContainingIgnoreCase(keyword,keyword,pageable);
+    private void verifyExistsTitle(String title) {
+        Optional<Room> optionalRoom = roomRepository.findByTitle(title);
+        if (optionalRoom.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.ROOM_EXIST);
+        }
     }
 
 
-
-    private void verifyExistsTitle(String title) {
-        Optional<Room> optionalRoom = roomRepository.findByTitle(title);
-        if(optionalRoom.isPresent()){
-            throw new BusinessLogicException(ExceptionCode.ROOM_EXIST);
+    private Sort getSortingMethod(String sort) {
+        switch (sort) {
+            case "createdAt":
+                return Sort.by("createdAt").descending();
+            case "favoriteCount":
+                return Sort.by("favoriteCount").descending();
+            default:
+                return null;
         }
+    }
 
+
+    public Page<Room> searchRoomsByKeyword(String keyword, Pageable pageable) {
+        return roomRepository.findByTitleContainingIgnoreCaseOrRoomTagListContainingIgnoreCase(keyword, keyword, pageable);
     }
 }

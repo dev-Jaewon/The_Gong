@@ -20,7 +20,7 @@ public class RoomDto {
         @JsonProperty("admin_member_id")
         private long adminMemberId;
         private String title;
-        private String info; //info 제거유무
+        private String info;
         @JsonProperty("image_url")
         private String imageUrl;
         private int MemberMaxCount;
@@ -62,7 +62,7 @@ public class RoomDto {
     public static class PostResponseDto {
         private long roomId;
         private String title;
-        private String info; //info 제거유무
+        private String info;
         @JsonProperty("admin_member_id")
         private long adminMemberId;
         @JsonProperty("admin_nickname")
@@ -110,9 +110,9 @@ public class RoomDto {
     public static class PatchResponseDto {
         private long roomId;
         private String title;
-        private String info; //info 제거여부
+        private String info;
         @JsonProperty("admin_nickname")
-        private String adminNickname; //adminMemberId 추가여부 체크
+        private String adminNickname;
         @JsonProperty("image_url")
         private String imageUrl;
         private int MemberMaxCount;
@@ -120,8 +120,6 @@ public class RoomDto {
         @JsonProperty("is_private")
         private boolean isPrivate;
         private String password;
-        private LocalDateTime createdAt;
-        private LocalDateTime lastModifiedAt;
         private int favoriteCount; //추가
         private List<RoomTagDtos> tags;
         private List<RoomUserDtos> participantList;
@@ -145,22 +143,12 @@ public class RoomDto {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class PatchAdminResponseDto {
         private long roomId;
-        private String title;
-        private String info; //info 제거여부
+        @JsonProperty("admin_member_id")
+        private long adminMemberId;
         @JsonProperty("admin_nickname")
-        private String adminNickname; //adminMemberId 추가여부 체크
+        private String adminNickname;
         @JsonProperty("image_url")
         private String imageUrl;
-        private int MemberMaxCount;
-        private int MemberCurrentCount;
-        @JsonProperty("is_private")
-        private boolean isPrivate;
-        private String password;
-        private LocalDateTime createdAt;
-        private LocalDateTime lastModifiedAt;
-        private int favoriteCount; //추가
-        private List<RoomTagDtos> tags;
-        private List<RoomUserDtos> participantList;
     }
 
 
@@ -168,12 +156,12 @@ public class RoomDto {
     @Setter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class GetRoomUserResponseDtos { //참여자 조회 보완필요!
-        private long roomId; //방정보 필요할듯
+        private long roomId;
         private long memberId;
         private String nickname;
         @JsonProperty("image_url")
         private String imageUrl;
-        private MemberRoom.Authority authority; //고민
+        private MemberRoom.Authority authority; //방장일 경우에만 ADMIN 보이게
     }
 
 
@@ -184,17 +172,15 @@ public class RoomDto {
     public static class GetNewRoomResponseDtos {
         private long roomId;
         private String title;
-        private String info; //제거여부
-        private List<RoomDto.RoomAdminDto> admin;
+        private String info;
         @JsonProperty("image_url")
         private String imageUrl;
         private int MemberMaxCount;
         private int MemberCurrentCount;
         @JsonProperty("is_private")
         private boolean isPrivate;
-        private LocalDateTime createdAt;
-        private LocalDateTime lastModifiedAt;
-        private int favoriteCount; //추가
+        private int favoriteCount;
+        private MemberRoom.Favorite favoriteStatus;
         private List<RoomTagDtos> tags;
     }
 
@@ -206,17 +192,15 @@ public class RoomDto {
     public static class GetRecommendRoomResponseDtos {
         private long roomId;
         private String title;
-        private String info; //제거여부
-        private List<RoomDto.RoomAdminDto> admin;
+        private String info;
         @JsonProperty("image_url")
         private String imageUrl;
         private int MemberMaxCount;
         private int MemberCurrentCount;
         @JsonProperty("is_private")
         private boolean isPrivate;
-        private LocalDateTime createdAt;
-        private LocalDateTime lastModifiedAt;
-        private int favoriteCount; //추가
+        private int favoriteCount;
+        private MemberRoom.Favorite favoriteStatus;
         private List<RoomTagDtos> tags;
     }
 
@@ -229,8 +213,8 @@ public class RoomDto {
         private long memberId;
         @JsonProperty("admin_nickname")
         private String adminNickname;
-//        @JsonProperty("image_url")
-//        private String imageUrl;
+        @JsonProperty("image_url")
+        private String imageUrl;
     }
 
 
@@ -242,17 +226,14 @@ public class RoomDto {
         private long roomId;
         private String title;
         private String info;
-        @JsonProperty("admin_nickname")
-        private String adminNickname;
         @JsonProperty("image_url")
         private String imageUrl;
         private int MemberMaxCount;
         private int MemberCurrentCount;
         @JsonProperty("is_private")
         private boolean isPrivate;
-        private LocalDateTime createdAt;
-        private LocalDateTime lastModifiedAt;
-        private int favoriteCount; //추가
+        private int favoriteCount;
+        private MemberRoom.Favorite favoriteStatus;
         private List<RoomTagDtos> tags;
     }
 }
