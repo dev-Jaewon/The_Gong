@@ -19,7 +19,7 @@ public class MemberRoom extends BaseEntity {
     private Long memberRoomId;
 
     @Enumerated(value = EnumType.STRING)
-    private Favorite favorite;
+    private Favorite favorite = Favorite.NONE;
 
     @Enumerated(value = EnumType.STRING)
     private History history;

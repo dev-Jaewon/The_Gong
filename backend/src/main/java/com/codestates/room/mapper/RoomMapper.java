@@ -33,16 +33,6 @@ public interface RoomMapper {
         return room;
     }
 
-    default Room PostUndoDtoToRoom(RoomDto.PostUndoFavorite requestBody){
-        if ( requestBody == null ) {
-            return null;
-        }
-        Room room = new Room();
-        room.setRoomId( requestBody.getRoomId() );
-        room.setFavoriteCount( room.getFavoriteCount() );
-        return room;
-    }
-
 
 
 
@@ -63,17 +53,13 @@ public interface RoomMapper {
         if ( createRoom.getAdminMemberId() != null ) {
             postResponseDto.setAdminMemberId( createRoom.getAdminMemberId() );
         }
-        postResponseDto.setAdminNickname( createRoom.getAdminNickname() );
         postResponseDto.setImageUrl( createRoom.getImageUrl() );
         postResponseDto.setMemberMaxCount( createRoom.getMemberMaxCount() );
         postResponseDto.setMemberCurrentCount( createRoom.getMemberCurrentCount() );
         postResponseDto.setPrivate( createRoom.isPrivate() );
         postResponseDto.setPassword( createRoom.getPassword() );
-        postResponseDto.setCreatedAt( createRoom.getCreatedAt() );
-        postResponseDto.setLastModifiedAt( createRoom.getLastModifiedAt() );
         postResponseDto.setFavoriteCount( createRoom.getFavoriteCount());
         postResponseDto.setTags( getRoomTags(createRoom.getRoomTagList()) );
-        postResponseDto.setParticipantList( getRoomParticipants(createRoom.getMemberRoomList()) );
         return postResponseDto;
     }
 
@@ -121,21 +107,11 @@ public interface RoomMapper {
         RoomDto.PatchAdminResponseDto patchAdminResponseDto = new RoomDto.PatchAdminResponseDto();
 
         if ( room.getRoomId() != null ) {
-            patchAdminResponseDto.setRoomId( room.getRoomId() );
+            patchAdminResponseDto.setRoomId(room.getRoomId());
         }
-        patchAdminResponseDto.setTitle( room.getTitle() );
-        patchAdminResponseDto.setInfo( room.getInfo() );
-        patchAdminResponseDto.setAdminNickname( room.getAdminNickname() );
-        patchAdminResponseDto.setImageUrl( room.getImageUrl() );
-        patchAdminResponseDto.setMemberMaxCount( room.getMemberMaxCount() );
-        patchAdminResponseDto.setMemberCurrentCount( room.getMemberCurrentCount() );
-        patchAdminResponseDto.setPrivate( room.isPrivate() );
-        patchAdminResponseDto.setPassword( room.getPassword() );
-        patchAdminResponseDto.setCreatedAt( room.getCreatedAt() );
-        patchAdminResponseDto.setLastModifiedAt( room.getLastModifiedAt() );
-        patchAdminResponseDto.setFavoriteCount( room.getFavoriteCount() );
-        patchAdminResponseDto.setTags(getRoomTags(room.getRoomTagList()));
-        patchAdminResponseDto.setParticipantList(getRoomParticipants(room.getMemberRoomList()));
+        patchAdminResponseDto.setAdminMemberId(room.getAdminMemberId());
+        patchAdminResponseDto.setAdminNickname(room.getAdminNickname());
+        patchAdminResponseDto.setImageUrl(room.getImageUrl());
         return patchAdminResponseDto;
     }
 
@@ -164,8 +140,6 @@ public interface RoomMapper {
         if(room.isPrivate() == true) {
             patchResponseDto.setPassword( room.getPassword());
         }
-        patchResponseDto.setCreatedAt(room.getCreatedAt());
-        patchResponseDto.setLastModifiedAt(room.getLastModifiedAt());
         patchResponseDto.setFavoriteCount(room.getFavoriteCount());
         patchResponseDto.setTags(getRoomTags(room.getRoomTagList()));
         patchResponseDto.setParticipantList(getRoomParticipants(room.getMemberRoomList()));
@@ -227,18 +201,24 @@ public interface RoomMapper {
         }
         getNewRoomResponseDtos.setTitle(room.getTitle());
         getNewRoomResponseDtos.setInfo(room.getInfo());
-        getNewRoomResponseDtos.setAdmin(getRoomAdmin(room));
         getNewRoomResponseDtos.setImageUrl(room.getImageUrl());
         getNewRoomResponseDtos.setMemberMaxCount(room.getMemberMaxCount());
         getNewRoomResponseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
         getNewRoomResponseDtos.setPrivate(room.isPrivate());
-        getNewRoomResponseDtos.setCreatedAt(room.getCreatedAt());
-        getNewRoomResponseDtos.setLastModifiedAt(room.getLastModifiedAt());
         getNewRoomResponseDtos.setFavoriteCount(room.getFavoriteCount());
+        getNewRoomResponseDtos.setFavoriteStatus(getRoomFavorite(room, room.getMemberRoomList()));
         getNewRoomResponseDtos.setTags(getRoomTags(room.getRoomTagList()));
-
         return getNewRoomResponseDtos;
     }
+
+    default MemberRoom.Favorite getRoomFavorite(Room room, List<MemberRoom> memberRoomList){
+        if (memberRoomList == null) {
+            return null;
+        }
+        MemberRoom memberRoom = memberRoomList.stream().filter(r -> r.getRoom().getRoomId().equals(room.getRoomId())).findFirst().get();
+        return memberRoom.getFavorite();
+    }
+
 
     default List<RoomDto.RoomAdminDto> getRoomAdmin(Room room){
         if(room == null) {

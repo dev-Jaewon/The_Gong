@@ -13,7 +13,8 @@ public enum ExceptionCode {
     PLEASE_VOTE(404, "Please vote"),
     DOUBLE_VOTE(409, "You cannot vote in duplicate"),
 
-    ONLY_ADMIN(404, "Administrator only");
+    ONLY_ADMIN(404, "Administrator only"),
+    SORT_DOSE_NOT_EXIST(404, "정렬필터를 입력하지 않았거나 오타가 있습니다.");
 
 
     @Getter
