@@ -15,37 +15,19 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface MemberMapper {
     Member postDtoToMember(MemberDto.Post requestBody);
-    Member patchDtoToMember(MemberDto.Patch requestBody);
-
-
-
-
-    //Todo : 회원생성 응답
-    default MemberDto.PostResponseDto memberToPostResponseDto(Member createMember) {
-        if (createMember == null) {
-            return null;
-        }
-        MemberDto.PostResponseDto postResponseDto = new MemberDto.PostResponseDto();
-
-        if (createMember.getMemberId() != null) {
-            postResponseDto.setMemberId(createMember.getMemberId());
-        }
-        postResponseDto.setMemberId(createMember.getMemberId());
-        postResponseDto.setEmail(createMember.getEmail());
-        postResponseDto.setNickname(createMember.getNickname());
-        postResponseDto.setFavoriteCount(createMember.getFavoriteCount());
-        postResponseDto.setCreationCount(createMember.getCreatedCount());
-        postResponseDto.setRecordRoomCount(createMember.getRecordeCount());
-        postResponseDto.setCreatedAt(createMember.getCreatedAt());
-        postResponseDto.setLastModifiedAt(createMember.getLastModifiedAt());
-        return postResponseDto;
+    Member patchNicknameDtoToMember(MemberDto.PatchNickname requestBody);
+    Member patchImageDtoToMember(MemberDto.PatchImage requestBody);
+    default MemberDto.PatchImageResponseDto memberToPatchImageResponseDto(Member responseMember){
+        if(responseMember == null) {return null;}
+        MemberDto.PatchImageResponseDto responseDto = new MemberDto.PatchImageResponseDto();
+        responseDto.setMemberId(responseMember.getMemberId());
+        responseDto.setImageUrl(responseMember.getImageUrl());
+        return  responseDto;
     }
 
 
 
-
-
-    //Todo : 회원수정 응답
+    //Todo : 회원수정 응답 : 응답물어보기
     default MemberDto.PatchResponseDto memberToPatchResponseDto(Member createMember) {
         if (createMember == null) {
             return null;
@@ -59,13 +41,7 @@ public interface MemberMapper {
         patchResponseDto.setNickname(createMember.getNickname());
         patchResponseDto.setEmail(createMember.getEmail());
         patchResponseDto.setImageUrl(createMember.getImageUrl());
-        patchResponseDto.setFavoriteCount(createMember.getFavoriteCount());
-        patchResponseDto.setCreationCount(createMember.getCreatedCount());
-        patchResponseDto.setRecordRoomCount(createMember.getRecordeCount());
-        patchResponseDto.setCreatedAt(createMember.getCreatedAt());
-        patchResponseDto.setLastModifiedAt(createMember.getLastModifiedAt());
         patchResponseDto.setTags(getMemberTags(createMember.getMemberTagList()));
-
         return patchResponseDto;
     }
 
@@ -83,34 +59,6 @@ public interface MemberMapper {
 
 
 
-
-    //Todo : 회원조회 응답
-    default MemberDto.GetResponseDto memberToGetResponseDto(Member member) {
-        if (member == null) {
-            return null;
-        }
-        MemberDto.GetResponseDto getResponseDto = new MemberDto.GetResponseDto();
-
-        if (member.getMemberId() != null) {
-            getResponseDto.setMemberId(member.getMemberId());
-        }
-        getResponseDto.setMemberId(member.getMemberId());
-        getResponseDto.setNickname(member.getNickname());
-        getResponseDto.setEmail(member.getEmail());
-        getResponseDto.setImageUrl(member.getImageUrl());
-        getResponseDto.setFavoriteCount(member.getFavoriteCount());
-        getResponseDto.setCreationCount(member.getCreatedCount());
-        getResponseDto.setRecordRoomCount(member.getRecordeCount());
-        getResponseDto.setCreatedAt(member.getCreatedAt());
-        getResponseDto.setLastModifiedAt(member.getLastModifiedAt());
-        getResponseDto.setTags(getMemberTags(member.getMemberTagList()));
-        return getResponseDto;
-    }
-
-
-
-
-
     //Todo : 찜한채팅방 목록
     default List<MemberDto.LikeRoomResponseDtos> memberToLikeResponseDtos(List<MemberRoom> memberRoomList, long memberId){
 
@@ -120,15 +68,13 @@ public interface MemberMapper {
                     MemberDto.LikeRoomResponseDtos responseDtos = new MemberDto.LikeRoomResponseDtos();
                     responseDtos.setRoomId(room.getMemberRoomId());
                     responseDtos.setTitle(room.getRoom().getTitle());
-                    //인포빠져있음
+                    responseDtos.setInfo(room.getRoom().getInfo());
                     responseDtos.setImageUrl(room.getRoom().getImageUrl());
-                    responseDtos.setAdminNickname(room.getRoom().getAdminNickname());
                     responseDtos.setFavoriteCount(room.getRoom().getFavoriteCount());
                     responseDtos.setMemberMaxCount(room.getRoom().getMemberMaxCount());
-                    responseDtos.setMemberCurrentCount(room.getRoom().getMemberCurrentCount());
+                    //responseDtos.setMemberCurrentCount(room.getRoom().getMemberCurrentCount());
                     responseDtos.setPrivate(room.getRoom().isPrivate());
-                    responseDtos.setCreatedAt(room.getCreatedAt());
-                    responseDtos.setLastModifiedAt(room.getLastModifiedAt()); //
+                    responseDtos.setFavoriteStatus(room.getFavorite());
                     responseDtos.setTags(getRoomTags(room.getRoom().getRoomTagList()));
                     return responseDtos;
                 })
@@ -160,15 +106,12 @@ public interface MemberMapper {
                     MemberDto.CreatedRoomResponseDtos responseDtos = new MemberDto.CreatedRoomResponseDtos();
                     responseDtos.setRoomId(room.getRoomId());
                     responseDtos.setTitle(room.getTitle());
-                    //인포빠져있음
+                    responseDtos.setInfo(room.getInfo());
                     responseDtos.setImageUrl(room.getImageUrl());
-                    responseDtos.setAdminNickname(room.getAdminNickname());
                     responseDtos.setFavoriteCount(room.getFavoriteCount());
                     responseDtos.setMemberMaxCount(room.getMemberMaxCount());
-                    responseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
+                    //responseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
                     responseDtos.setPrivate(room.isPrivate());
-                    responseDtos.setCreatedAt(room.getCreatedAt());
-                    responseDtos.setLastModifiedAt(room.getLastModifiedAt()); //
                     responseDtos.setTags(getRoomTags(room.getRoomTagList()));
                     return responseDtos;
                 })
@@ -188,45 +131,15 @@ public interface MemberMapper {
                     MemberDto.RecordRoomResponseDtos responseDtos = new MemberDto.RecordRoomResponseDtos();
                     responseDtos.setRoomId(room.getRoomId());
                     responseDtos.setTitle(room.getTitle());
-                    //인포빠져있음
+                    responseDtos.setInfo(room.getInfo());
                     responseDtos.setImageUrl(room.getImageUrl());
-                    responseDtos.setAdminNickname(room.getAdminNickname());
                     responseDtos.setFavoriteCount(room.getFavoriteCount());
                     responseDtos.setMemberMaxCount(room.getMemberMaxCount());
-                    responseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
                     responseDtos.setPrivate(room.isPrivate());
-                    responseDtos.setCreatedAt(room.getCreatedAt());
-                    responseDtos.setLastModifiedAt(room.getLastModifiedAt()); //
                     responseDtos.setTags(getRoomTags(room.getRoomTagList()));
                     return responseDtos;
                 })
                 .collect(Collectors.toList());
     }
-
-
-
-
-
-
-//    전체채팅방조회 사용 X
-//    default List<MemberDto.GetResponseDtos> memberToGetResponseDtos(List<Member> memberList) {
-//        return memberList.stream()
-//                .map(member -> {
-//                    MemberDto.GetResponseDtos getResponseDtos = new MemberDto.GetResponseDtos();
-//                    getResponseDtos.setMemberId(member.getMemberId());
-//                    getResponseDtos.setEmail(member.getEmail());
-//                    getResponseDtos.setNickname(member.getNickname());
-//                    getResponseDtos.setImageUrl(member.getImageUrl());
-//                    getResponseDtos.setFavoriteCount(member.getFavoriteCount());
-//                    getResponseDtos.setCreationCount(member.getCreatedCount());
-//                    getResponseDtos.setRecordRoomCount(member.getRecordeCount());
-//                    getResponseDtos.setCreatedAt(member.getCreatedAt());
-//                    getResponseDtos.setLastModifiedAt(member.getLastModifiedAt());
-//                    getResponseDtos.setTags(getMemberTags(member.getMemberTagList()));
-//                    return getResponseDtos;
-//                })
-//                .collect(Collectors.toList());
-//    }
-
 }
 
