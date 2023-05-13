@@ -1,26 +1,53 @@
 package com.codestates.auth.oauth.handler;
 
+import com.codestates.auth.jwt.JwtTokenizer;
+import com.codestates.auth.oauth.CustomOAuth2User;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-public class OAuth2LoginSuccessHandler
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-        implements AuthenticationSuccessHandler {
-
-
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        AuthenticationSuccessHandler.super.onAuthenticationSuccess(request, response, chain, authentication);
-    }
+    private final JwtTokenizer jwtTokenProvider;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
+        log.info("Oauth 로그인 성공");
+        CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        loginSuccess(response, oAuth2User);
     }
+
+    private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+        String accessToken = jwtTokenProvider.generateAccessToken(oAuth2User.getEmail(), oAuth2User.getRole());
+        String refreshToken = jwtTokenProvider.generateRefreshToken();
+        response.setHeader("Authorization", "Bearer " + accessToken);
+        response.setHeader("Refresh", refreshToken);
+        log.info("accessToken : {}", accessToken);
+        log.info("refreshToken : {}", refreshToken);
+
+        jwtTokenProvider.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        response.sendRedirect(createURI());
+    }
+
+    private String createURI() {
+        return UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host("localhost")
+                .port("3000")
+                .encode(StandardCharsets.UTF_8)
+                .build()
+                .toUriString();
+    }
+
 }
