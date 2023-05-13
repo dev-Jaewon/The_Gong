@@ -35,9 +35,6 @@ public class Room extends BaseEntity {
     private String imageUrl;
 
     @Column
-    private String notice;
-
-    @Column
     private String password;
 
     @Column(nullable = false)
