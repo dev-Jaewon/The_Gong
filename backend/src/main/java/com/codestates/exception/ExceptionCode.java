@@ -13,7 +13,10 @@ public enum ExceptionCode {
     PLEASE_VOTE(404, "Please vote"),
     DOUBLE_VOTE(409, "You cannot vote in duplicate"),
 
-    ONLY_ADMIN(404, "Administrator only");
+    ONLY_ADMIN(404, "Administrator only"),
+    PROVIDER_NOT_FOUND(404, "지원하지 않는 OAuth 입니다.");
+
+
 
 
     @Getter
