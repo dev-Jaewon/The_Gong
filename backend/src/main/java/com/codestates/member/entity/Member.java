@@ -54,8 +54,18 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<MemberTag> memberTagList = new ArrayList<>();
 
+    private String provider;
+    private String providerId;
+
     public enum MemberStatus {
         ACTIVE,
         DELETE
+    }
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
+
+    public void assignRoles(List<String> roles) {
+        this.roles = roles;
     }
 }
