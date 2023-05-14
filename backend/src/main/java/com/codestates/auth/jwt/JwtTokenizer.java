@@ -32,11 +32,11 @@ public class JwtTokenizer {
     @Value("${jwt.refresh-token-expiration-minutes}")
     private int refreshTokenExpirationMinutes;
 
-    @Value("${jwt.access.header")
+    @Value("${jwt.access.header}")
     @Getter
     private final String accessHeader;
 
-    @Value("${jwt.refresh.header")
+    @Value("${jwt.refresh.header}")
     @Getter
     private final String refreshHeader;
     private Key key;

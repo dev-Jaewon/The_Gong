@@ -18,6 +18,29 @@ spring:
   sql:
     init:
       data-locations: classpath:data.sql
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id:
+            client-secret:
+            scope:
+              - email
+              - profile
+          naver:
+            clientId: '{네이버 client-id}'
+            clientSecret: '{네이버 client-secret}'
+            clientAuthenticationMethod: post
+            authorizationGrantType: authorization_code
+            redirectUri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            scope:
+              - nickname
+              - email
+              - profile_image
+            clientName: Naver
+
+
 logging:
   level:
     org:
@@ -26,5 +49,9 @@ logging:
           jpa: DEBUG
 jwt:
   key: "맑은눈의광인메인프로젝트"
+  access:
+    header: "Authorization"
+  refresh:
+    header: "Refresh"
   access-token-expiration-minutes: 40
   refresh-token-expiration-minutes: 420
