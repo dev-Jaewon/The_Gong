@@ -6,6 +6,7 @@ import com.codestates.member.dto.MemberTagDtos;
 import com.codestates.member.entity.Member;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.entity.MemberTag;
+import com.codestates.room.entity.Room;
 import com.codestates.room.entity.RoomTag;
 import org.mapstruct.Mapper;
 import java.util.List;
@@ -24,6 +25,7 @@ public interface MemberMapper {
         responseDto.setImageUrl(responseMember.getImageUrl());
         return  responseDto;
     }
+
 
 
 
@@ -55,6 +57,7 @@ public interface MemberMapper {
                 })
                 .collect(Collectors.toList());
     }
+
 
 
 
@@ -109,6 +112,7 @@ public interface MemberMapper {
                     responseDtos.setInfo(room.getInfo());
                     responseDtos.setImageUrl(room.getImageUrl());
                     responseDtos.setFavoriteCount(room.getFavoriteCount());
+                    responseDtos.setFavoriteStatus(getRoomFavorite(room,room.getMemberRoomList()));
                     responseDtos.setMemberMaxCount(room.getMemberMaxCount());
                     //responseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
                     responseDtos.setPrivate(room.isPrivate());
@@ -118,6 +122,13 @@ public interface MemberMapper {
                 .collect(Collectors.toList());
     }
 
+    default MemberRoom.Favorite getRoomFavorite(Room room, List<MemberRoom> memberRoomList){
+        if (memberRoomList == null) {
+            return null;
+        }
+        MemberRoom memberRoom = memberRoomList.stream().filter(r -> r.getRoom().getRoomId().equals(room.getRoomId())).findFirst().get();
+        return memberRoom.getFavorite();
+    }
 
 
 
