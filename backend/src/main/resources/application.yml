@@ -28,17 +28,22 @@ spring:
             scope:
               - email
               - profile
-          naver:
-            clientId: '{네이버 client-id}'
-            clientSecret: '{네이버 client-secret}'
-            clientAuthenticationMethod: post
-            authorizationGrantType: authorization_code
-            redirectUri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
-            scope:
-              - nickname
-              - email
-              - profile_image
-            clientName: Naver
+#          naver:
+#            client-id:
+#            client-secret:
+#            redirect-uri: http://localhost:8080/login/oauth2/code/naver
+#            authorization-grant-type: authorization_code
+#            scope:
+#              - name
+#              - email
+#              - profile_image
+#            client-name: Naver
+#        provider:
+#          naver:
+#            authorizationUri:
+#            tokenUri:
+#            userInfoUri:
+#            userNameAttribute:
 
 
 logging:
