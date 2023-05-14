@@ -14,7 +14,11 @@ public enum ExceptionCode {
     DOUBLE_VOTE(409, "You cannot vote in duplicate"),
 
     ONLY_ADMIN(404, "Administrator only"),
+  
+    PROVIDER_NOT_FOUND(404, "지원하지 않는 OAuth 입니다."),
+  
     SORT_DOSE_NOT_EXIST(404, "정렬필터를 입력하지 않았거나 오타가 있습니다.");
+
 
 
     @Getter
