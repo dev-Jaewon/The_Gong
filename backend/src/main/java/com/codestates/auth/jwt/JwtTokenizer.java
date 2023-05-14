@@ -34,11 +34,11 @@ public class JwtTokenizer {
 
     @Value("${jwt.access.header}")
     @Getter
-    private final String accessHeader;
+    private String accessHeader;
 
     @Value("${jwt.refresh.header}")
     @Getter
-    private final String refreshHeader;
+    private String refreshHeader;
     private Key key;
 
     @PostConstruct
