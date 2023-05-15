@@ -49,6 +49,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         log.info("provider : {} ", provider);
         log.info("providerId : {}", providerId);
+        log.info("attributes : {}", attributes);
 
         OAuthAttributes oAuthAttributes = OAuthAttributes.of(providerType, providerId, attributes);
 
