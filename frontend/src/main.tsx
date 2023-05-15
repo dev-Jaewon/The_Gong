@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { GlobalStyles } from './styles/GlobalStyle';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Carousel from "./components/Organisms/Carousel/Carousel";
+import MainPage from './pages/Main/Main.tsx';
+import CreateRoomPage from './pages/CreateRoom/CreateRoom.tsx';
 import { Signup } from './pages/Signup/index.tsx';
 import { Signin } from './pages/Signin/index.tsx';
 import { Oauth } from './pages/Oauth/index.tsx';
@@ -16,12 +17,16 @@ if (process.env.NODE_ENV === 'development') {
 
 let router = createBrowserRouter([
   {
+    path: '/',
+    Component: () => <MainPage />,
+  },
+  {
     path: '/signup',
     Component: () => <Signup />,
   },
   {
-    path: '/signin',
-    Component: () => <Signin />,
+    path: '/createRoom',
+    Component: () => <CreateRoomPage />,
   },
   {
     path: '/oauth',
@@ -34,10 +39,7 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Stule>
-       <GlobalStyles />
-      </Stule>
-      {/* <Carousel contentList={['1', '2', '3', '4', '5', '6', '7', '8']} contentNumber={2} contentwidth={50} contentheight={20} contentDot={true}></Carousel> */}
+      <GlobalStyles />
       <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
     </QueryClientProvider>
   </React.StrictMode>

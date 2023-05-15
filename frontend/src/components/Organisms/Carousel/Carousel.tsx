@@ -9,7 +9,7 @@ import CarouselButton from "../../atoms/Carousel/CarouselButton";
 import CarouselDot from "../../atoms/Carousel/CarouselDot";
 
 interface Props {
-  contentList: string[];
+  contentList: React.ReactNode[];
   contentNumber: number;
   contentwidth: number;
   contentheight: number;
