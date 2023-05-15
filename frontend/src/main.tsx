@@ -5,11 +5,9 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Carousel from "./components/Organisms/Carousel/Carousel";
 import { Signup } from './pages/Signup/index.tsx';
-import styled from 'styled-components';
+import { Signin } from './pages/Signin/index.tsx';
+import { Oauth } from './pages/Oauth/index.tsx';
 
-const Stule = styled.div`
-
-`
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./__mocks__/browser');
@@ -20,6 +18,14 @@ let router = createBrowserRouter([
   {
     path: '/signup',
     Component: () => <Signup />,
+  },
+  {
+    path: '/signin',
+    Component: () => <Signin />,
+  },
+  {
+    path: '/oauth',
+    Component: () => <Oauth />,
   },
 ]);
 
