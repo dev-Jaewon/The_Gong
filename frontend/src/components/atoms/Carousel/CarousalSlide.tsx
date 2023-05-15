@@ -12,8 +12,6 @@ const CarousalSlideContainer = styled.div<{ length: number }>`
 
   width: calc(100% / ${({ length }) => length});
   height: 100%;
-
-  border: 1px solid gray;
 `;
 
 function CarousalSlide({ children, length }: CarousalSlideProps) {
