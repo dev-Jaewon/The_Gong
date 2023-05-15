@@ -5,3 +5,9 @@ export const SIGNUP_STEP = {
   SET_INFO: 1,
   DONE: 2,
 };
+
+export const SIGNIN_VALID_MESSAGE = {
+  email: '올바른 이메일을 입력해주세요.',
+  server: '서버가 연결되지 않았습니다.',
+  login: 'id, password를 확인해주세요.',
+};
