@@ -38,12 +38,8 @@ export const SigninForm = () => {
   });
 
   function handleSigninFetch() {
-    console.log(123);
-
     mutation.mutate(data);
   }
-
-  console.log(errors);
 
   return (
     <ContainerForm onSubmit={handleSubmit}>

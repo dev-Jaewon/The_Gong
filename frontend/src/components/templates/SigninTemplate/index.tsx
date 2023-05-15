@@ -1,21 +1,10 @@
 import styled from 'styled-components';
 import logo from '../../../assets/image/logo/logo.png';
 import { FcGoogle } from 'react-icons/fc';
+import { SiNaver } from 'react-icons/si';
 import { SigninForm } from '../../organisms/SigninForm';
 
 export const SigninTemplate = () => {
-  const oauthSnsHref = (str: string) => {
-    return (
-      'https://accounts.google.com/o/oauth2/v2/auth?' +
-      'scope=email%20profile&' +
-      'include_granted_scopes=true&' +
-      'response_type=token&' +
-      'state=http//localhost:3000/signup&' +
-      'redirect_uri=http://localhost:3000/signup&' +
-      'client_id=517980981924-bu6d675ldhdtoacof01e7rg4nifu8oaj.apps.googleusercontent.com'
-    );
-  };
-
   return (
     <Container>
       <InputContainer>
@@ -25,7 +14,11 @@ export const SigninTemplate = () => {
           학업, 자격증, 수능 공부까지
           <br /> 자기계발의 모든 것
         </p>
-        <AuthButton href={oauthSnsHref('')}>
+        <AuthButton href={import.meta.env.VITE_NAVE_AUTH_URL}>
+          <SiNaver size={20} color="#04c500" />
+          Continue With Naver
+        </AuthButton>
+        <AuthButton href={import.meta.env.VITE_GOOGLE_AUTH_URL}>
           <FcGoogle size={20} />
           Continue With Google
         </AuthButton>
