@@ -17,6 +17,7 @@ const Container = styled.div`
   font-size: 1.5rem;
   color: #4A5056;
   z-index: 10;
+  padding: 0 2rem;
 
   button{
     display: inline-block;
