@@ -3,9 +3,11 @@ import { RxMagnifyingGlass } from 'react-icons/rx';
 import { AiFillCloseCircle } from 'react-icons/ai';
 
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 
 export const SearchBar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [value, setValue] = useState<string>(searchParams.get('keyword') || '');
 
@@ -13,9 +15,16 @@ export const SearchBar = () => {
     setValue(e.target.value);
   };
 
+  console.log(location);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setSearchParams({ keyword: value });
+
+    if (location.pathname !== '/search') {
+      navigate(`/search?keyword=${value}`);
+    } else {
+      setSearchParams({ keyword: value });
+    }
   };
 
   return (
