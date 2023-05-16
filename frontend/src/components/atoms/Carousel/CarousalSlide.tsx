@@ -6,16 +6,21 @@ type CarousalSlideProps = {
 };
 
 const CarousalSlideContainer = styled.div<{ length: number }>`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
 
   width: calc(100% / ${({ length }) => length});
-  height: 100%;
+  height: fit-content;
+
+`;
+
+const Container = styled.div`
 `;
 
 function CarousalSlide({ children, length }: CarousalSlideProps) {
-  return <CarousalSlideContainer length={length}>{children}</CarousalSlideContainer>;
+  return <CarousalSlideContainer length={length}><Container/>{children}</CarousalSlideContainer>;
 }
 
 export default CarousalSlide;

@@ -7,8 +7,9 @@ func: (direction: string) => void;
 };
 
 const CarouselButtonContainer = styled.button`
-font-size: 2rem;
+font-size: 3rem;
 font-weight: bold;
+color: gray;
 
 border: none;
 background-color: transparent;
