@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,14 +39,20 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("refreshToken : {}", refreshToken);
 
         jwtTokenProvider.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        response.sendRedirect(createURI());
+        response.sendRedirect(createURI(accessToken, refreshToken));
     }
 
-    private String createURI() {
+    private String createURI(String accessToken, String refreshToken) {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("access_token", accessToken);
+        queryParams.add("refresh_token", refreshToken);
+
         return UriComponentsBuilder.newInstance()
                 .scheme("http")
                 .host("localhost")
-                .port("3000")
+//                .port(3000)
+                .path("/oauth")
+                .queryParams(queryParams)
                 .encode(StandardCharsets.UTF_8)
                 .build()
                 .toUriString();
