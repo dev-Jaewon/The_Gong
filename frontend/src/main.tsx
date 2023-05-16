@@ -9,7 +9,6 @@ import { Signup } from './pages/Signup/index.tsx';
 import { Signin } from './pages/Signin/index.tsx';
 import { Oauth } from './pages/Oauth/index.tsx';
 
-
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./__mocks__/browser');
   worker.start();
@@ -31,6 +30,10 @@ let router = createBrowserRouter([
   {
     path: '/oauth',
     Component: () => <Oauth />,
+  },
+  {
+    path: '/signin',
+    Component: () => <Signin />,
   },
 ]);
 
