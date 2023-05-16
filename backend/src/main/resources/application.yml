@@ -18,45 +18,16 @@ spring:
   sql:
     init:
       data-locations: classpath:data.sql
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id:
-            client-secret:
-            scope:
-              - email
-              - profile
-#          naver:
-#            client-id:
-#            client-secret:
-#            redirect-uri: http://localhost:8080/login/oauth2/code/naver
-#            authorization-grant-type: authorization_code
-#            scope:
-#              - name
-#              - email
-#              - profile_image
-#            client-name: Naver
-#        provider:
-#          naver:
-#            authorizationUri:
-#            tokenUri:
-#            userInfoUri:
-#            userNameAttribute:
-
-
+  output:
+    ansi:
+      enabled: DETECT
 logging:
   level:
-    org:
-      springframework:
-        orm:
-          jpa: DEBUG
-jwt:
-  key: "맑은눈의광인메인프로젝트"
-  access:
-    header: "Authorization"
-  refresh:
-    header: "Refresh"
-  access-token-expiration-minutes: 40
-  refresh-token-expiration-minutes: 420
+    root: INFO
+    org.apache: WARN
+    org.springframework:
+      orm:
+        jpa: DEBUG
+    org.springframework.boot.devtools: INFO
+    org.kurento: INFO
+    org.kurento.tutorial: INFO
