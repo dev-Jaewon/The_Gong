@@ -19,7 +19,7 @@ public class Room extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
 
-    @Column(nullable = false)
+    @Column(nullable = false) //member 고유식별자랑 달라도 상관없는지. 요청시 그냥 파라미터로 넣을지.
     private Long adminMemberId;
 
     @Column
@@ -53,9 +53,13 @@ public class Room extends BaseEntity {
     private List<MemberRoom> memberRoomList = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "room" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room" , cascade = CascadeType.ALL) //ALL
     private List<RoomTag> roomTagList = new ArrayList<>();
 
+    public List<RoomTag> setRoomTagList(List<RoomTag> roomTagList) {
+        this.roomTagList = roomTagList;
+        return roomTagList;
+    }
 }
 
 

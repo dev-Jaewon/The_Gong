@@ -8,10 +8,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+@NoArgsConstructor
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class RoomTag extends BaseEntity {
 
     @Id
