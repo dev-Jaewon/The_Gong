@@ -15,8 +15,6 @@ export const SearchBar = () => {
     setValue(e.target.value);
   };
 
-  console.log(location);
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 

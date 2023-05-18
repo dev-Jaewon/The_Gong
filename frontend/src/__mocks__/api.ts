@@ -1,4 +1,5 @@
 import { rest } from 'msw';
+import { searchData } from './data/search';
 
 export const handlers = [
   rest.get('/sample', (_, res, ctx) => {
@@ -13,5 +14,9 @@ export const handlers = [
   rest.post('/signup', async (req, res, ctx) => {
     const data = await req.json();
     return res(ctx.delay(1500), ctx.json({ result: data }));
+  }),
+
+  rest.get('/search?:query', async (req, res, ctx) => {
+    return res(ctx.json(searchData));
   }),
 ];

@@ -36,9 +36,11 @@ export const Header = () => {
 
 const Container = styled.div`
   display: flex;
+  padding-bottom: 15px;
   justify-content: center;
   width: 100%;
   user-select: none;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 3px 4px 0px;
   font-family: Noto Sans KR;
 
   > div {
