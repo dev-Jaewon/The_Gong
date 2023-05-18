@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: application-dev.yml #설정추가
   h2:
     console:
       enabled: true
