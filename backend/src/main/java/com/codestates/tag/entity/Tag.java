@@ -1,7 +1,8 @@
 package com.codestates.tag.entity;
 
 import com.codestates.member.entity.MemberTag;
-import com.codestates.common.entity.BaseEntity;
+import com.codestates.room.entity.RoomTag;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,10 @@ public class Tag {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "tag")
+    @OneToMany(mappedBy = "tag") //cascade = CascadeType.PERSIST
     private List<MemberTag> memberTagList = new ArrayList<>();
+
+    @JsonIgnore //추가
+    @OneToMany(mappedBy = "tag")
+    private List<RoomTag> roomTagList = new ArrayList<>();
 }

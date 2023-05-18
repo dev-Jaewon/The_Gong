@@ -2,16 +2,15 @@ package com.codestates.member.entity;
 
 import com.codestates.tag.entity.Tag;
 import com.codestates.common.entity.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class MemberTag extends BaseEntity {
 

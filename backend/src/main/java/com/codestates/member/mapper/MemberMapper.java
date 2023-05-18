@@ -8,7 +8,12 @@ import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.entity.MemberTag;
 import com.codestates.room.entity.Room;
 import com.codestates.room.entity.RoomTag;
+import com.codestates.tag.dto.TagDto;
+import com.codestates.tag.entity.Tag;
 import org.mapstruct.Mapper;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,11 +23,14 @@ public interface MemberMapper {
     Member postDtoToMember(MemberDto.Post requestBody);
     Member patchNicknameDtoToMember(MemberDto.PatchNickname requestBody);
     Member patchImageDtoToMember(MemberDto.PatchImage requestBody);
+
+
     default MemberDto.PatchImageResponseDto memberToPatchImageResponseDto(Member responseMember){
-        if(responseMember == null) {return null;}
+        if(responseMember == null) return null;
         MemberDto.PatchImageResponseDto responseDto = new MemberDto.PatchImageResponseDto();
         responseDto.setMemberId(responseMember.getMemberId());
         responseDto.setImageUrl(responseMember.getImageUrl());
+
         return  responseDto;
     }
 
@@ -31,31 +39,29 @@ public interface MemberMapper {
 
     //Todo : 회원수정 응답 : 응답물어보기
     default MemberDto.PatchResponseDto memberToPatchResponseDto(Member createMember) {
-        if (createMember == null) {
-            return null;
-        }
+        if (createMember == null) return null;
         MemberDto.PatchResponseDto patchResponseDto = new MemberDto.PatchResponseDto();
 
-        if (createMember.getMemberId() != null) {
-            patchResponseDto.setMemberId(createMember.getMemberId());
-        }
+        if (createMember.getMemberId() != null) patchResponseDto.setMemberId(createMember.getMemberId());
         patchResponseDto.setMemberId(createMember.getMemberId());
         patchResponseDto.setNickname(createMember.getNickname());
         patchResponseDto.setEmail(createMember.getEmail());
         patchResponseDto.setImageUrl(createMember.getImageUrl());
         patchResponseDto.setTags(getMemberTags(createMember.getMemberTagList()));
+
         return patchResponseDto;
     }
 
     default List<MemberTagDtos> getMemberTags(List<MemberTag> memberTagList) {
+
         return memberTagList.stream()
                 .map(memberTag -> {
                     MemberTagDtos memberTagDtos = new MemberTagDtos();
                     memberTagDtos.setTagId(memberTag.getTag().getTagId());
                     memberTagDtos.setName(memberTag.getTag().getName());
                     return memberTagDtos;
-                })
-                .collect(Collectors.toList());
+
+                }).collect(Collectors.toList());
     }
 
 
@@ -129,6 +135,7 @@ public interface MemberMapper {
         MemberRoom memberRoom = memberRoomList.stream().filter(r -> r.getRoom().getRoomId().equals(room.getRoomId())).findFirst().get();
         return memberRoom.getFavorite();
     }
+
 
 
 

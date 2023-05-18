@@ -3,6 +3,7 @@ package com.codestates.socket.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -36,8 +37,16 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
 
         // STOMP 메세지의 "destination" 헤더는 @Controller 객체의 @MessageMapping 메서드로 라우팅
+        // urld을 chat/room/3 -> chat.room.3. 으로 참조하기 위한 설정
+//        config.setPathMatcher(new AntPathMatcher("."));
         config.setApplicationDestinationPrefixes("/pub");
+
         config.enableSimpleBroker("/sub");
+        /*
+        * RabbitMQ 동작 아키텍쳐
+        * Consumer -> Exchange -> Binding rules -> Queue -> Producer
+        * */
+//        config.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue");
     }
 
 }

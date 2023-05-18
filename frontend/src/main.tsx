@@ -8,7 +8,7 @@ import CreateRoomPage from './pages/CreateRoom/CreateRoom.tsx';
 import { Signup } from './pages/Signup/index.tsx';
 import { Signin } from './pages/Signin/index.tsx';
 import { Oauth } from './pages/Oauth/index.tsx';
-
+import { Search } from './pages/search/index.tsx';
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./__mocks__/browser');
@@ -32,6 +32,11 @@ let router = createBrowserRouter([
     path: '/oauth',
     Component: () => <Oauth />,
   },
+  {
+    path: '/signin',
+    Component: () => <Signin />,
+  },
+  { path: '/search', Component: () => <Search /> },
 ]);
 
 const queryClient = new QueryClient();

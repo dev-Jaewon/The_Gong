@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { AiFillCaretLeft } from "react-icons/ai";
-import { AiFillCaretRight } from "react-icons/ai";
+import { FiChevronLeft } from "react-icons/fi";
+import { FiChevronRight } from "react-icons/fi";
+import { BiChevronLeft } from "react-icons/bi";
+import { BiChevronRight } from "react-icons/bi";
+
 import CarouselWindow from "../../atoms/Carousel/CarouselWindow";
 import CarousalSlide from "../../atoms/Carousel/CarousalSlide";
 import CarousalSlideBox from "../../atoms/Carousel/CarousalSlideBax";
@@ -17,13 +20,13 @@ interface Props {
   contentDot?: boolean;
 }
 
-
 const CarouselContainer = styled.div<Props>`
   position: relative;
   max-width: ${({contentwidth}) => contentwidth}rem;
   width: 100%;
-  height: ${({contentheight}) => contentheight}rem;
+  max-height: ${({contentheight}) => contentheight ? `${contentheight}rem` : 'none'};
   margin: 0 auto;
+  overflow: hidden;
 `;
 
 const CarouselController = styled.div<Props>`
@@ -38,7 +41,7 @@ const CarouselController = styled.div<Props>`
 
   padding: 1rem;
   width: 100%;
-  height: ${({contentheight}) => contentheight}rem;
+  height: 100%;
 `;
 
 const ButtonContainer = styled.div`
@@ -136,8 +139,8 @@ function Carousel({contentList, contentNumber, contentwidth, contentheight, cont
       <CarouselController contentNumber={contentList.length} contentList={contentList} contentheight={contentheight} contentwidth={contentwidth}>
         <Container></Container>
         <ButtonContainer>
-          <CarouselButton  dr='left' func={changeBanner}><AiFillCaretLeft /></CarouselButton>
-          <CarouselButton  dr='right' func={changeBanner}><AiFillCaretRight /></CarouselButton>
+          <CarouselButton  dr='left' func={changeBanner}><FiChevronLeft /></CarouselButton>
+          <CarouselButton  dr='right' func={changeBanner}><FiChevronRight /></CarouselButton>
         </ButtonContainer>
         <Container>
           {contentDot && original.map((el, idx) => <CarouselDot key={idx} idx={idx+slide} func={clickDot} ></CarouselDot>)}
