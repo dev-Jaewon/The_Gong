@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "member_room")
+//@Table(name = "member_room")
 public class MemberRoom extends BaseEntity {
 
     @Id
@@ -28,11 +28,11 @@ public class MemberRoom extends BaseEntity {
     private Authority authority;
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
 
