@@ -12,4 +12,5 @@ public class AuthDto {
     private long memberId;
     private String nickname;
     private String imageUrl;
+    private String accessToken; //추가
 }
