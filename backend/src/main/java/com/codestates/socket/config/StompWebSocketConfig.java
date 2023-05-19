@@ -38,6 +38,12 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // STOMP 메세지의 "destination" 헤더는 @Controller 객체의 @MessageMapping 메서드로 라우팅
         config.setApplicationDestinationPrefixes("/pub");
         config.enableSimpleBroker("/sub");
+
+//        config.enableStompBrokerRelay("/sub");
+//                .setRelayHost("localhost")
+//                .setRelayPort(5672)
+//                .setClientLogin("guest")
+//                .setClientPasscode("guest");
     }
 
 }
