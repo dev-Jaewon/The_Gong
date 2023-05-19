@@ -3,8 +3,12 @@ import logo from '../../../assets/image/logo/logo.png';
 import { FcGoogle } from 'react-icons/fc';
 import { SiNaver } from 'react-icons/si';
 import { SigninForm } from '../../organisms/SigninForm';
+import { Button } from '../../atoms/Button';
+import { useNavigate } from 'react-router-dom';
 
 export const SigninTemplate = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <InputContainer>
@@ -24,6 +28,9 @@ export const SigninTemplate = () => {
         </AuthButton>
         <Divider />
         <SigninForm />
+        <Button outline onClick={() => navigate('/signup')}>
+          회원가입
+        </Button>
       </InputContainer>
     </Container>
   );

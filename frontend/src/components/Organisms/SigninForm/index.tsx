@@ -6,13 +6,23 @@ import { InputLabel } from '../../moecules/InputLabel';
 import { useMutation } from '@tanstack/react-query';
 import { SIGNIN_VALID_MESSAGE } from '../../../constans';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type SigninData = {
   email: string;
   password: string;
 };
 
+type ResSignin = {
+  access_token: string;
+  image_url: string | null;
+  member_id: number;
+  nickname: string;
+  refresh_token: string;
+};
+
 export const SigninForm = () => {
+  const navigate = useNavigate();
   const [fetchErrorMessage, setFetchErrorMessage] = useState<string>('');
   const { data, errors, handleChange, handleSubmit } = useForm<SigninData>({
     validations: {
@@ -33,7 +43,15 @@ export const SigninForm = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: SigninData) => api.post('/signin', data),
+    mutationFn: async (data: SigninData) =>
+      api.post<ResSignin>('/members/login', data),
+    onSuccess: ({ data }) => {
+      (Object.keys(data) as Array<keyof ResSignin>).forEach((key) => {
+        localStorage.setItem(key, JSON.stringify(data[key]));
+      });
+
+      navigate('/');
+    },
     onError: () => setFetchErrorMessage(SIGNIN_VALID_MESSAGE.login),
   });
 
