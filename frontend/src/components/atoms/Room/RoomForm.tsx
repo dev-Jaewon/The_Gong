@@ -3,6 +3,10 @@ import { Input } from "../Input";
 import useForm from "../../../hooks/useForm";
 import { InputLabel } from "../../moecules/InputLabel";
 import { Button } from "../Button";
+import { useState } from "react";
+import axios from "axios";
+import TagBox from "../../Molecules/TagBox";
+import TagForm from "../../Organisms/TagForm";
 
 const RoomFormContainer = styled.div`
 
@@ -26,8 +30,8 @@ export type RoomData = {
   title: string;
   info: string;
   image_url: string;
-  member_max_count: string;
-  is_private: string;
+  member_max_count: number;
+  is_private: boolean;
   password: string;
   tags: string;
 };
@@ -38,7 +42,36 @@ export type RoomFormProps = {
 };
 
 const RoomForm = (props: RoomFormProps) => {
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('https://a5fa-211-193-143-25.ngrok-free.app/new', {
+        params: {
+          page: 1,
+          size: 5
+        }
+      });
   
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchData()
+
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [ maxCount, setMaxCount ] = useState(null);
+
+  const maxCountChange = (event:any) => {
+    setMaxCount(event.target.value);
+  } 
+
+  const handleChange2 = (event:any) => {
+    setIsPrivate(event.target.value === 'private');
+    console.log(isPrivate)
+  };
+
   const { data, errors, handleChange, handleSubmit } = useForm<RoomData>({
     validations: {
       title: {
@@ -65,15 +98,9 @@ const RoomForm = (props: RoomFormProps) => {
           message: '인원 수는 필수입력 항목입니다.',
         },
       },
-      is_private: {
-        required: {
-          value: true,
-          message: '공개 여부는 필수입력 항목입니다.',
-        },
-      },
       password: {
         required: {
-          value: true,
+          value: isPrivate,
           message: '패스워드는 필수입력 항목입니다.',
         },
       },
@@ -88,12 +115,14 @@ const RoomForm = (props: RoomFormProps) => {
   });
 
   function handleSubmitFormHook() {
-    console.log(data)
-    props.onSubmit(data);
+    const subData = {...data, 'is_private' : isPrivate, 'member_max_count' : Number(data.member_max_count), 'tags' : [data.tags]};
+    props.onSubmit(subData);
   }
+
 
   return (
     <RoomFormContainer>
+      <TagForm></TagForm>
       <ContainerForm onSubmit={handleSubmit}>
         <InputLabel
           label="방 제목"
@@ -117,27 +146,44 @@ const RoomForm = (props: RoomFormProps) => {
           isValid={errors.image_url ? false : true}
         />
         <InputLabel
+          type="number"
           label="인원 수"
           onChange={handleChange('member_max_count')}
-          placeholder="영문, 숫자 8자이상의 비밀번호를 입력해주세요."
+          placeholder="인원수를 입력해 주세요"
           errorMessage={errors.member_max_count}
           isValid={errors.member_max_count ? false : true}
         />
-        <InputLabel
-          label="공개 여부"
-          onChange={handleChange('is_private')}
-          placeholder="영문, 숫자 8자이상의 비밀번호를 입력해주세요."
-          errorMessage={errors.is_private}
-          isValid={errors.is_private ? false : true}
-        />
-        <InputLabel
+        <h1>공개여부</h1>
+        <div>
+          <label>
+            <input
+              type="radio"
+              name="privacy"
+              value="public"
+              checked={!isPrivate}
+              onChange={handleChange2}
+            />
+            공개
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="privacy"
+              value="private"
+              checked={isPrivate}
+              onChange={handleChange2}
+            />
+            비공개
+          </label>
+        </div>
+        {isPrivate && <InputLabel
           type="password"
           label="비밀번호"
           onChange={handleChange('password')}
           placeholder="영문, 숫자 8자이상의 비밀번호를 입력해주세요."
           errorMessage={errors.password}
           isValid={errors.password ? false : true}
-        />
+        />} 
         <InputLabel
           label="태그"
           onChange={handleChange('tags')}

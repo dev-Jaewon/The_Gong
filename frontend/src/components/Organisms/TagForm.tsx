@@ -2,6 +2,7 @@ import styled from "styled-components";
 import TagBox from "../Molecules/TagBox";
 import BorderBox from "../atoms/Tag/BorderBox";
 import XMark from "../atoms/Tag/XMark";
+import { useState } from "react";
 
 const TagFormContainer = styled.div`
   position: absolute;
@@ -11,6 +12,8 @@ const TagFormContainer = styled.div`
   width: 600px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   padding: 1rem 2rem;
+  z-index: 10;
+  background-color: white;
 
  h2{
   color: #4A5056;
@@ -27,10 +30,12 @@ const TagFormContainer = styled.div`
 `;
 
 
+
+
 function TagForm() {
 
   //임시 데이터
-  const tagData = [
+  const [tagData, setTagData ] = useState([
     {
       content:'급성장 중',
       color:'#F0FAF9'
@@ -51,28 +56,27 @@ function TagForm() {
       content:'병역특례',
       color:'#F0FAF9'
     },
-  ]
+  ]);
 
   // 임시 기능
-  const consolelog = () => {
-    console.log('되냐?')
+  const changeTagData = (tag:string) => {
   }
 
   return(
     <TagFormContainer>
 
       <div className="closeButtonContainer">
-        <XMark func={consolelog} />
+        <XMark func={changeTagData} />
       </div>
 
       <h2>전체 태그</h2>
       <BorderBox>
-        <TagBox tagData={tagData} fontSize={1} func={consolelog} isDeleteTag={false}></TagBox>
+        <TagBox tagData={tagData} fontSize={1} func={changeTagData} isDeleteTag={false}></TagBox>
       </BorderBox>
 
-      <h2>관심 태그</h2>
+      <h2>스터디 태그</h2>
       <BorderBox>
-        <TagBox tagData={tagData} fontSize={1} func={consolelog} isDeleteTag={true}></TagBox>
+        <TagBox tagData={tagData} fontSize={1} func={changeTagData} isDeleteTag={true}></TagBox>
       </BorderBox>
     </TagFormContainer>
   );

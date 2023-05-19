@@ -28,7 +28,7 @@ export const SigninTemplate = () => {
         </AuthButton>
         <Divider />
         <SigninForm />
-        <Button outline onClick={() => navigate('/signup')}>
+        <Button outline onClick={() => navigate('https://a5fa-211-193-143-25.ngrok-free.app/signup')}>
           회원가입
         </Button>
       </InputContainer>
