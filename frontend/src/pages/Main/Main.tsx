@@ -9,15 +9,19 @@ import banner5 from  "./img/banner (5).png"
 import banner6 from  "./img/banner (6).png"
 import banner7 from  "./img/banner (7).png"
 import banner8 from  "./img/banner (8).png"
+import item from "./img/item.png"
 import Footer from "./Footer";
+import { useEffect, useState } from "react";
 
 const MainPageContainer = styled.div`
   position: relative;
   height: fit-content;
 `
+
 const MainPageList = styled.div`
   max-width: 74rem;
-  margin: 5rem auto;
+  margin: 2rem auto;
+  padding: 2rem;
 `
 
 const MainPageImg = styled.img`
@@ -27,20 +31,41 @@ const MainPageImg = styled.img`
 `
 
 const MainPageItem = styled.img`
-  width: 18rem;
-  height: 18rem;
+  width: 100%;
   object-fit: cover;
 `
+
 const MainPageListTitle = styled.div`
   font-size: 1.5rem;
   font-weight: bold;
   color: #4A5056;
+  margin: 1rem 0;
 `
 
 const MainPage = () => {
   const banner = [banner1, banner2, banner3, banner4, banner5, banner6, banner7, banner8]
   const banners = banner.map(el => <MainPageImg src={el}></MainPageImg>)
-  const list = banner.map(el => <MainPageItem src={el}></MainPageItem>)
+  const list = banner.map(el => <MainPageItem src={item}></MainPageItem>)
+  const [columns, setColumns] = useState(2);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1000) {
+        setColumns(4);
+      } else {
+        setColumns(2);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  
 
   return (
     <MainPageContainer>
@@ -49,12 +74,12 @@ const MainPage = () => {
       
       <MainPageList>
         <MainPageListTitle>최신 스터디</MainPageListTitle>
-        <Carousel contentList={list} contentNumber={4} contentwidth={74} contentheight={20} contentDot={false}></Carousel>
+        <Carousel contentList={list} contentNumber={columns} contentwidth={74} contentheight={0} contentDot={false}></Carousel>
       </MainPageList>
 
       <MainPageList>
         <MainPageListTitle>추천 스터디</MainPageListTitle>
-        <Carousel contentList={list} contentNumber={4} contentwidth={74} contentheight={20} contentDot={false}></Carousel>
+        <Carousel contentList={list} contentNumber={columns} contentwidth={74} contentheight={0} contentDot={false}></Carousel>
       </MainPageList>
 
       <Footer></Footer>

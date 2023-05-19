@@ -6,7 +6,6 @@ interface CarouselWindowProps {
 
 const CarouselWindowContainer = styled.div`
   position: relative;
-  height: 100%;
   overflow: hidden;
 `;
 

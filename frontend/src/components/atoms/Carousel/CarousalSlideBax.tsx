@@ -16,7 +16,6 @@ const CarousalSlideBoxContainer = styled.div<{
   move: number;
   transitionTime: number;
 }>`
-  height: 100%;
   width: calc(${({ width }) => width}% * ${({ length }) => length});
   display: flex;
   position: relative;

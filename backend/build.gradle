@@ -19,6 +19,10 @@ repositories {
 }
 
 dependencies {
+	// Kurento 미디어 서버
+	implementation group: 'org.kurento', name: 'kurento-client', version: '6.18.0'
+	implementation group: 'org.kurento', name: 'kurento-utils-js', version: '6.18.0'
+
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -50,6 +54,8 @@ dependencies {
 	//amqp
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	// aws s3 image
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {
