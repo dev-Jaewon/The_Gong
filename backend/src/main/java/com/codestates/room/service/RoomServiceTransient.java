@@ -1,5 +1,7 @@
 package com.codestates.room.service;
 
+import com.codestates.exception.BusinessLogicException;
+import com.codestates.exception.ExceptionCode;
 import com.codestates.member.entity.Member;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.repository.MemberRoomRepository;
@@ -31,7 +33,7 @@ public class RoomServiceTransient {
          * 4. 현재 연관관계 메서드가 없으나, 룸리스트에 새로운 멤버룸 추가
          * */
         // 1
-        Room foundRoom = roomRepository.findById(roomId).get();
+        Room foundRoom = roomRepository.findById(roomId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.ROOM_NOT_FOUND));
         Member foundMember = memberService.findVerifiedMember(nickname);
         log.info("Room {} is founded", foundRoom.getRoomId());
         // 2
