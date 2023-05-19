@@ -7,13 +7,7 @@ export const Footer = () => {
         <h2 className="title">맑은 눈의 광인들 팀</h2>
         <Info>
           <h3>팀원</h3>
-          <div>
-            <p>장재원</p>
-            <p>장재원</p>
-            <p>장재원</p>
-            <p>장재원</p>
-            <p>장재원</p>
-          </div>
+          <div></div>
         </Info>
       </Content>
     </Container>
