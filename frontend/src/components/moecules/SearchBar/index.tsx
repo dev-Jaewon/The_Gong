@@ -59,7 +59,7 @@ const Container = styled.form`
     flex: 1 1 auto;
     width: 100%;
     height: 100%;
-    font-size: 18px;
+    font-size: 15px;
     font-family: Noto Sans KR;
     border: none;
   }

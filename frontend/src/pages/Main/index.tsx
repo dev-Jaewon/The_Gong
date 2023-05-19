@@ -1,5 +1,16 @@
-import { HomeTemplate } from '../../components/templates/HomeTemplate';
+import styled from 'styled-components';
+import { Header } from '../../components/organisms/Header';
+import { MainTemplate } from '../../components/templates/MainTemplate';
+import { Footer } from '../../components/moecules/Footer';
 
 export const Main = () => {
-  return <HomeTemplate />;
+  return (
+    <Container>
+      <Header />
+      <MainTemplate />
+      <Footer />
+    </Container>
+  );
 };
+
+const Container = styled.div``;
