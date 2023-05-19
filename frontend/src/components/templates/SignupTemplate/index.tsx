@@ -9,10 +9,20 @@ import styled from 'styled-components';
 
 export const SignupTemplate = () => {
   const [step, setStep] = useState<number>(SIGNUP_STEP.SET_INFO);
+  const [errors, setErrors] = useState<SignupData | null>(null);
 
   const mutation = useMutation({
-    mutationFn: async (data: SignupData) => api.post('/signup', data),
+    mutationFn: async (data: SignupData) => api.post(`/members/add`, data),
     onSuccess: () => setStep(SIGNUP_STEP.DONE),
+    onError: (err: any) => {
+      const message = err.response.data.message as string;
+      const obj = {} as SignupData;
+
+      if (message.match(/닉네임/)) obj['nickname'] = message;
+      if (message.match(/이메일/)) obj['email'] = message;
+
+      setErrors(obj);
+    },
   });
 
   const handleSubmit = (data: SignupData) => {
@@ -20,7 +30,11 @@ export const SignupTemplate = () => {
   };
 
   const stepComponent = [
-    <SignupForm onSubmit={handleSubmit} isLoading={mutation.isLoading} />,
+    <SignupForm
+      onSubmit={handleSubmit}
+      isLoading={mutation.isLoading}
+      errors={errors}
+    />,
     <SignupComplete />,
   ];
 

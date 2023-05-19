@@ -104,6 +104,7 @@ export const useForm = <T extends Record<keyof T, any> = {}>(options?: {
     handleChange,
     handleSubmit,
     errors,
+    setErrors,
   };
 };
 

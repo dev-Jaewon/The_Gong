@@ -2,62 +2,69 @@ import styled from 'styled-components';
 import { Button } from '../../atoms/Button';
 import { useForm } from '../../../hooks/useForm';
 import { InputLabel } from '../../moecules/InputLabel';
+import { useEffect } from 'react';
 
 export type SignupData = {
-  nicnName: string;
+  nickname: string;
   email: string;
   password: string;
   passwordRe: string;
 };
 
 export type SignupFormProps = {
+  errors: SignupData | null;
   isLoading: boolean;
   onSubmit: (value: SignupData) => void;
 };
 
 export const SignupForm = (props: SignupFormProps) => {
-  const { data, errors, handleChange, handleSubmit } = useForm<SignupData>({
-    validations: {
-      nicnName: {
-        required: {
-          value: true,
-          message: '닉네임은 필수로 입력하셔야합니다.',
+  const { data, errors, handleChange, handleSubmit, setErrors } =
+    useForm<SignupData>({
+      validations: {
+        nickname: {
+          required: {
+            value: true,
+            message: '닉네임은 필수로 입력하셔야합니다.',
+          },
+        },
+        email: {
+          required: {
+            value: true,
+            message: '이메일은 필수로 입력하셔야합니다.',
+          },
+        },
+        password: {
+          required: {
+            value: true,
+            message: '패스워드는 필수로 입력하셔야합니다.',
+          },
+        },
+        passwordRe: {
+          required: {
+            value: true,
+            message: '패스워드는 필수로 입력하셔야합니다.',
+          },
         },
       },
-      email: {
-        required: {
-          value: true,
-          message: '이메일은 필수로 입력하셔야합니다.',
-        },
-      },
-      password: {
-        required: {
-          value: true,
-          message: '패스워드는 필수로 입력하셔야합니다.',
-        },
-      },
-      passwordRe: {
-        required: {
-          value: true,
-          message: '패스워드는 필수로 입력하셔야합니다.',
-        },
-      },
-    },
-    onSubmit: handleSubmitFormHook,
-  });
+      onSubmit: handleSubmitFormHook,
+    });
 
   function handleSubmitFormHook() {
     props.onSubmit(data);
   }
 
+  useEffect(() => {
+    if (props.errors) setErrors(props.errors);
+  }, [props.errors]);
+
   return (
     <ContainerForm onSubmit={handleSubmit}>
       <InputLabel
         label="닉네임"
-        onChange={handleChange('nicnName')}
+        onChange={handleChange('nickname')}
         placeholder="닉네임을 입력해주세요."
-        errorMessage={errors.nicnName}
-        isValid={errors.nicnName ? false : true}
+        errorMessage={errors.nickname}
+        isValid={errors.nickname ? false : true}
       />
       <InputLabel
         label="이메일"

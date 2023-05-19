@@ -12,7 +12,7 @@ import { Main } from './pages/Main/index.tsx';
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./__mocks__/browser');
-  worker.start();
+  // worker.start();
 }
 
 let router = createBrowserRouter([
