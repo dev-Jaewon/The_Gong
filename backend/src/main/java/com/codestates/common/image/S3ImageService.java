@@ -13,6 +13,7 @@ public class S3ImageService {
     public String getImageKeyFromUrl(String imageUrl) {
         try {
 
+
             URL url = new URL(imageUrl);
             String path = url.getPath();
 
