@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,6 +87,7 @@ public class SearchService {
                 .isPrivate(room.isPrivate())
                 .favoriteStatus(memberRoom.getFavorite())
                 .favoriteCount(room.getFavoriteCount())
+                .createdAt(LocalDateTime.now())
                 .tags(tagResponseDtos).build();
     }
 
