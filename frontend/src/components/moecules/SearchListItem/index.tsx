@@ -3,31 +3,30 @@ import { useNavigate } from 'react-router-dom';
 import { AiOutlineLock } from 'react-icons/ai';
 import { formatDate } from '../../../util/formatDate';
 import { MouseEvent } from 'react';
+import searchThumbnail from '../../../assets/image/searchThumbnail.jpg';
 
 export type SearchItem = {
-  room_id: number;
-  title: string;
   info: string;
-  admin: {
-    member_id: number;
-    nickname: string;
-    about_me: string;
-    image_irl: string;
-  };
-  image_url: string;
-  member_max_count: number;
-  member_current_count: number;
-  is_private: true;
+  title: string;
   created_at: string;
-  last_modified_at: string;
   favorite_count: number;
-  tags: string[];
+  favorite_status: 'NONE';
+  image_url: string;
+  is_private: false;
+  member_current_count: number;
+  member_max_count: number;
+  room_id: number;
+  tags: Array<{
+    name: string;
+    tag_id: number;
+  }>;
 };
 
 export const SearchListItem = (props: SearchItem) => {
   const navigate = useNavigate();
 
   const handleItemClick = () => {
+    // 제윤님 여기 작업 private or public 일 경우 패스 작업
     props.is_private ? navigate('') : navigate('');
   };
 
@@ -38,7 +37,7 @@ export const SearchListItem = (props: SearchItem) => {
 
   return (
     <Container onClick={handleItemClick}>
-      <img src={props.image_url} alt={props.title + 'thumbnail'} />
+      <img src={searchThumbnail} alt={props.title + 'thumbnail'} />
       <div className="content">
         <div className="title">
           <h3>{props.title}</h3>
@@ -53,10 +52,6 @@ export const SearchListItem = (props: SearchItem) => {
             </p>
           </InfoItem>
           <InfoItem>
-            <p className="subject">그룹장</p>
-            <p className="value">{props.admin.nickname}</p>
-          </InfoItem>
-          <InfoItem>
             <p className="subject">추천수</p>
             <p className="value">{props.favorite_count}</p>
           </InfoItem>
@@ -67,8 +62,8 @@ export const SearchListItem = (props: SearchItem) => {
         </Info>
         <div className="tags">
           {props.tags.map((tag, index) => (
-            <Tag onClick={(e) => handleTagClick(e, tag)} key={index}>
-              {tag}
+            <Tag onClick={(e) => handleTagClick(e, tag.name)} key={index}>
+              {tag.name}
             </Tag>
           ))}
         </div>
@@ -79,7 +74,7 @@ export const SearchListItem = (props: SearchItem) => {
 
 const Container = styled.div`
   display: flex;
-  padding: 20px 0;
+  padding: 20px;
   cursor: pointer;
 
   img {
@@ -87,7 +82,9 @@ const Container = styled.div`
     height: 200px;
     object-fit: cover;
     border-radius: 8px;
-    margin-right: 20px;
+    margin-right: 40px;
+
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
   }
 
   .content {

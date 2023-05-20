@@ -3,7 +3,7 @@ import { SearchListItem, SearchItem } from '../../moecules/SearchListItem';
 import { Pagenation } from '../../moecules/Pagenation';
 
 export type SearchData = {
-  pageInfo: {
+  page_info: {
     page: number;
     size: number;
     total_elements: number;
@@ -29,7 +29,7 @@ export const SearchList = (props: SearchListProps) => {
 
       <PageNationContainer>
         <Pagenation
-          size={props.pageInfo.total_pages}
+          size={props.page_info.total_pages}
           onPageChange={handlePageClick}
           initialPage={1}
         />

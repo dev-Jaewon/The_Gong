@@ -6,13 +6,16 @@ import { Filter } from '../../components/moecules/Filter';
 import { Header } from '../../components/organisms/Header';
 import { formatQueryString } from '../../util/formatQueryString';
 import { SearchData, SearchList } from '../../components/organisms/SearchList';
+import { LodaingSpinner } from '../../components/atoms/LoadingSpinner';
 
 export const Search = () => {
   const location = useLocation();
   const [params, setPrams] = useSearchParams();
 
   const { data, isFetching } = useQuery(['search', location], () =>
-    api<SearchData>(`/search${location.search}`).then((res) => res.data)
+    api<SearchData>(`/search${location.search}&page=1&sort=newRoom`).then(
+      (res) => res.data
+    )
   );
 
   const handleFilterChange = (filter: string) => {
@@ -28,7 +31,7 @@ export const Search = () => {
       <Header />
       <Content>
         {isFetching ? (
-          <div>로딩</div>
+          <LodaingSpinner />
         ) : data?.data.length ? (
           <>
             <SearchResult>
@@ -36,7 +39,7 @@ export const Search = () => {
               '에 대한 검색결과
             </SearchResult>
             <FilterContainer>
-              <p className="counts">총 {data.pageInfo.total_elements}건</p>
+              <p className="counts">총 {data.page_info.total_elements}건</p>
               <Filter
                 currentSort={params.get('sort')}
                 onChange={handleFilterChange}
@@ -44,7 +47,7 @@ export const Search = () => {
             </FilterContainer>
             <SearchList
               data={data.data}
-              pageInfo={data.pageInfo}
+              page_info={data.page_info}
               onChnagePage={handlePageChange}
             />
           </>
@@ -93,11 +96,8 @@ const FilterContainer = styled.div`
   margin-top: 30px;
 
   .counts {
+    padding: 0 20px;
     font-size: 14px;
     font-weight: 400;
-  }
-
-  @media (max-width: 1050px) {
-    padding: 0 20px;
   }
 `;
