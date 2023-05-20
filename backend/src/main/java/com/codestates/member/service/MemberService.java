@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -118,9 +120,14 @@ public class MemberService {
     }
 
 
+
     public void removeUser(long memberId) {
         Member member = findVerifiedMember(memberId);
+
+        LocalDateTime deletionDate = LocalDateTime.now().plusDays(30);
+        member.setDeletionDate(deletionDate);
         member.setStatus(Member.MemberStatus.DELETE);
+
         memberRepository.save(member);
     }
 
