@@ -10,7 +10,7 @@ interface TagData {
 interface TagBoxProps {
   tagData: TagData[];
   fontSize: number;
-  func: () => void;
+  func: (el:TagData) => void;
   isDeleteTag: boolean;
 }
 
@@ -33,14 +33,14 @@ function TagBox({
       fontSize={fontSize}
       bg={el.color}
       content={el.content}
-      func={func}
-    />
+      func={() => { func(el)}}
+      />
   ));
 
   // 모달에서의 태그 수정 역할을 하는 변수
   const deleteTagBox = tagData.map((el, idx) => (
     <TagButton key={idx} fontSize={fontSize} bg={el.color} content={el.content}>
-      <XMark func={func} />
+      <XMark func={() => { func(el)}} />
     </TagButton>
   ));
 

@@ -56,7 +56,7 @@ const CreateRoomPage = () => {
     
     console.log('@@@이거 보냅니다@@@');
     console.log(requestData);
-    
+
     axios.post('https://a5fa-211-193-143-25.ngrok-free.app/rooms/add', requestData,{
       headers: {
         Authorization: `Bearer ${token}`

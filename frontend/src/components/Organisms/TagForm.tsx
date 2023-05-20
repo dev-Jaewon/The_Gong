@@ -2,9 +2,23 @@ import styled from "styled-components";
 import TagBox from "../Molecules/TagBox";
 import BorderBox from "../atoms/Tag/BorderBox";
 import XMark from "../atoms/Tag/XMark";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api } from "../../util/api";
 
-const TagFormContainer = styled.div`
+
+// TagFormContainer 컴포넌트의 props 타입 정의
+interface TagFormProps {
+  isPopupOpen: boolean;
+  ChangeisPopupOpen?: (event: any) => void; 
+  ChangeTag?: (event: any) => void; 
+}
+
+interface TagData {
+  content: string;
+  color: string;
+}
+
+const TagFormContainer = styled.div<TagFormProps>`
   position: absolute;
   left: 50%;
   top: 50%;
@@ -14,6 +28,11 @@ const TagFormContainer = styled.div`
   padding: 1rem 2rem;
   z-index: 10;
   background-color: white;
+  display: ${({isPopupOpen}) => isPopupOpen ? 'block' : 'none'};
+
+  .none{
+    display: none;
+  }
 
  h2{
   color: #4A5056;
@@ -30,54 +49,69 @@ const TagFormContainer = styled.div`
 `;
 
 
+function TagForm({ isPopupOpen, ChangeisPopupOpen, ChangeTag }: TagFormProps) {
 
 
-function TagForm() {
+  const fetchData = async () => {
+    try {
+      const response = await api.get('https://4b38-211-193-143-25.ngrok-free.app/tags?page=1&size=10');
+      const colorData = response.data.data.map((el:any) => {
+        console.log(el)
+        return {
+          'content':el.name,
+          'color': '#4FAFB1'
+        }
+      })
+      setTagData(colorData)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   //임시 데이터
-  const [tagData, setTagData ] = useState([
-    {
-      content:'급성장 중',
-      color:'#F0FAF9'
-    },
-    {
-      content:'50인 이하',
-      color:'#F0FAF9'
-    },
-    {
-      content:'50인 이상',
-      color:'#F0FAF9'
-    },
-    {
-      content:'자고싶다',
-      color:'#F0FAF9'
-    },
-    {
-      content:'병역특례',
-      color:'#F0FAF9'
-    },
-  ]);
+  const [tagData, setTagData ] = useState<TagData[]>([]);;
 
-  // 임시 기능
-  const changeTagData = (tag:string) => {
+  const [deleteTagData, setDeleteTagData] = useState<TagData[]>([]);
+
+  // 태그 추가 기능
+  const changeTagData = (tagContent: TagData) => {
+    const updatedTagData = tagData.filter((el:any) => el.content !== tagContent.content);
+    setTagData(updatedTagData);
+    setDeleteTagData([...deleteTagData, tagContent]);
+    ChangeTag(tagContent.content)
   }
 
-  return(
-    <TagFormContainer>
+  // 삭제 태그 기능
+  const changeDeleteTagData= (tagContent: TagData) => {
+    const updatedDeleteTagData = deleteTagData.filter((el:any) => el.content !== tagContent.content);
+    setDeleteTagData(updatedDeleteTagData);
+    setTagData([...tagData, tagContent]);
+  }
+  
 
-      <div className="closeButtonContainer">
-        <XMark func={changeTagData} />
+  return(
+    <TagFormContainer isPopupOpen={isPopupOpen}>
+
+      <div >
+        <div className="closeButtonContainer ">
+          <XMark func={ChangeisPopupOpen} />
+        </div>
+
+        <h2>전체 태그</h2>
+        <BorderBox>
+          <TagBox tagData={tagData} fontSize={1} func={changeTagData} isDeleteTag={false}></TagBox>
+        </BorderBox>
+
+        <h2>스터디 태그</h2>
+        <BorderBox>
+          <TagBox tagData={deleteTagData} fontSize={1} func={changeDeleteTagData} isDeleteTag={true}></TagBox>
+        </BorderBox>
       </div>
 
-      <h2>전체 태그</h2>
-      <BorderBox>
-        <TagBox tagData={tagData} fontSize={1} func={changeTagData} isDeleteTag={false}></TagBox>
-      </BorderBox>
-
-      <h2>스터디 태그</h2>
-      <BorderBox>
-        <TagBox tagData={tagData} fontSize={1} func={changeTagData} isDeleteTag={true}></TagBox>
-      </BorderBox>
     </TagFormContainer>
   );
 }

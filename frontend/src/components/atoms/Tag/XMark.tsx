@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { GrFormClose } from "react-icons/gr";
 
 interface XMarkProps {
-  func?: () => void;
+  func: ((event: any) => void) | undefined;
 }
 
 const XMarkContainer = styled.span`
