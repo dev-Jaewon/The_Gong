@@ -8,6 +8,7 @@ import com.codestates.member.entity.Member;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.mapper.MemberMapper;
 import com.codestates.member.service.MemberService;
+import com.codestates.room.dto.RoomDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -189,6 +190,18 @@ public class MemberController {
                 new MultiResponseDto<>(responseDtosList, memberRoomPage) , HttpStatus.OK);
     }
 
+
+
+    @GetMapping("/{memberId}/recommend")
+    public ResponseEntity getRecommendRooms(@PathVariable("member-id") long memberId,
+                                            @RequestParam(value = "page", defaultValue = "1") @Positive int page,
+                                            @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
+
+        Page<RoomDto.SearchResponseDto> roomPage = memberService.findRecommendRooms(page -1, size, memberId);
+        List<RoomDto.SearchResponseDto> roomList = roomPage.getContent();
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(roomList, roomPage), HttpStatus.OK);
+    }
 
   
   
