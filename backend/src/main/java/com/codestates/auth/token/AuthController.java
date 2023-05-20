@@ -1,6 +1,7 @@
 package com.codestates.auth.token;
 
 import com.codestates.auth.jwt.JwtTokenizer;
+import com.codestates.auth.utils.ErrorResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -43,7 +44,7 @@ public class AuthController {
 
 
     @GetMapping
-    public ResponseEntity<AuthDto> getAuthMember(HttpServletRequest request) {
+    public ResponseEntity getAuthMember(HttpServletRequest request) {
 
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String key = authService.getIngredients();
@@ -53,8 +54,8 @@ public class AuthController {
             claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             // 액세스토큰이 만료된 경우
-            AuthDto authDto = authService.regenerationToken(request, claims, token, key);
-            return ResponseEntity.ok().body(authDto);
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN,"액세스 토큰 만료");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
 
         AuthDto authDto = authService.getAuthMemberInfo(claims);
