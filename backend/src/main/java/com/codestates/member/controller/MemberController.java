@@ -9,6 +9,7 @@ import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.mapper.MemberMapper;
 import com.codestates.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -30,9 +31,8 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberMapper mapper;
 
-    //경로지정해보기
-    private String profile = "https://gangtaegyeong12-bucket.s3.ap-northeast-2.amazonaws.com/profile.png";
-
+    @Value("${default.profile.image}")
+    private String profile;
 
 
 
