@@ -9,6 +9,8 @@ import com.codestates.member.entity.Member;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.entity.MemberTag;
 import com.codestates.member.repository.MemberRepository;
+import com.codestates.room.dto.RoomDto;
+import com.codestates.room.entity.Room;
 import com.codestates.tag.entity.Tag;
 import com.codestates.member.repository.MemberTagRepository;
 import com.codestates.tag.repository.TagRepository;
@@ -78,7 +80,7 @@ public class MemberService {
 
 
     public Page<MemberRoom> findLikeRooms(int page, int size, long memberId) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("memberId").descending());
         Member member = findVerifiedMember(memberId);
 
         List<MemberRoom> memberLikeRooms = member.getMemberRoomList()
@@ -104,8 +106,9 @@ public class MemberService {
     }
 
 
+    //Todo : 삭제예정
     public Page<MemberRoom> findRecordRooms(int page, int size, long memberId) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt.").descending());
         Member member = findVerifiedMember(memberId);
 
         List<MemberRoom> memberRecordRooms = member.getMemberRoomList()
@@ -118,6 +121,33 @@ public class MemberService {
         }
         return new PageImpl<>(memberRecordRooms, pageable, memberRecordRooms.size());
     }
+
+
+    //Todo : 추천목록
+    public Page<RoomDto.SearchResponseDto> findRecommendRooms(int page, int size, long memberId) {
+        Member findMember = findVerifiedMember(memberId);
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
+
+        List<MemberRoom> recommendList = findMember.getMemberRoomList();
+        List<RoomDto.SearchResponseDto> recommendationList = new ArrayList<>();
+
+        if(!recommendList.isEmpty()){
+            for(MemberRoom memberRoom : recommendList) {
+                Room room = memberRoom.getRoom();
+
+                boolean hasMyTag = room.getRoomTagList().stream()
+                        .anyMatch(roomTag -> findMember.getMemberTagList().contains(roomTag.getTag()));
+
+                if(hasMyTag) {
+                    RoomDto.SearchResponseDto roomDto = new RoomDto.SearchResponseDto();
+                    recommendationList.add(roomDto);
+                }
+            }
+        }
+
+        return new PageImpl<>(recommendationList, pageable, recommendationList.size());
+    }
+
 
 
 
