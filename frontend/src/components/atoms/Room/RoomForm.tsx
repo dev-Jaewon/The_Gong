@@ -4,9 +4,9 @@ import useForm from "../../../hooks/useForm";
 import { InputLabel } from "../../moecules/InputLabel";
 import { Button } from "../Button";
 import { useState } from "react";
-import axios from "axios";
-import TagBox from "../../Molecules/TagBox";
 import TagForm from "../../Organisms/TagForm";
+import { api } from "../../../util/api";
+import TagButton from "../Tag/TagButton";
 
 const RoomFormContainer = styled.div`
 
@@ -27,13 +27,13 @@ const ContainerForm = styled.form`
 `
 
 export type RoomData = {
+  is_private: boolean;
+  member_max_count: number;
+  tags: string[];
   title: string;
   info: string;
   image_url: string;
-  member_max_count: number;
-  is_private: boolean;
   password: string;
-  tags: string;
 };
 
 export type RoomFormProps = {
@@ -42,23 +42,6 @@ export type RoomFormProps = {
 };
 
 const RoomForm = (props: RoomFormProps) => {
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('https://a5fa-211-193-143-25.ngrok-free.app/new', {
-        params: {
-          page: 1,
-          size: 5
-        }
-      });
-  
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  fetchData()
 
   const [isPrivate, setIsPrivate] = useState(false);
   const [ maxCount, setMaxCount ] = useState(null);
@@ -69,8 +52,31 @@ const RoomForm = (props: RoomFormProps) => {
 
   const handleChange2 = (event:any) => {
     setIsPrivate(event.target.value === 'private');
-    console.log(isPrivate)
   };
+
+  // 방 만들기 전송
+  function handleSubmitFormHook() {
+    const subData = {
+      ...data,
+      is_private: isPrivate,
+      member_max_count: Number(data.member_max_count),
+      tags: tags,
+    };    props.onSubmit(subData);
+  }
+
+  // 태그 폼 열고 닫기 버튼
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  
+  // 태그 폼 열기
+  const ChangeIsPopupOpen = (event:any) => {
+    event.preventDefault()
+    setIsPopupOpen(!isPopupOpen)
+  }
+
+  const [tags, setTags] = useState<string[]>([]);
+  const ChangeTag = (tag:any) => {
+    setTags([...tags, tag])
+  }
 
   const { data, errors, handleChange, handleSubmit } = useForm<RoomData>({
     validations: {
@@ -114,20 +120,15 @@ const RoomForm = (props: RoomFormProps) => {
     onSubmit: handleSubmitFormHook,
   });
 
-  function handleSubmitFormHook() {
-    const subData = {...data, 'is_private' : isPrivate, 'member_max_count' : Number(data.member_max_count), 'tags' : [data.tags]};
-    props.onSubmit(subData);
-  }
-
 
   return (
     <RoomFormContainer>
-      <TagForm></TagForm>
+      <TagForm isPopupOpen={isPopupOpen} ChangeisPopupOpen={ChangeIsPopupOpen} ChangeTag={ChangeTag}/>
       <ContainerForm onSubmit={handleSubmit}>
         <InputLabel
           label="방 제목"
           onChange={handleChange('title')}
-          placeholder="닉네임을 입력해주세요."
+          placeholder="방의 이름을 입력해주세요."
           errorMessage={errors.title}
           isValid={errors.title ? false : true}
         />
@@ -141,7 +142,7 @@ const RoomForm = (props: RoomFormProps) => {
         <InputLabel
           label="대표 이미지"
           onChange={handleChange('image_url')}
-          placeholder="영문, 숫자 8자이상의 비밀번호를 입력해주세요."
+          placeholder="대표 이미지를 설정해 주세요."
           errorMessage={errors.image_url}
           isValid={errors.image_url ? false : true}
         />
@@ -184,13 +185,14 @@ const RoomForm = (props: RoomFormProps) => {
           errorMessage={errors.password}
           isValid={errors.password ? false : true}
         />} 
+        <button onClick={ChangeIsPopupOpen}>태그 찾아보기</button>
         <InputLabel
           label="태그"
           onChange={handleChange('tags')}
-          placeholder="영문, 숫자 8자이상의 비밀번호를 입력해주세요."
+          placeholder="태그를 추가해 주세요."
           errorMessage={errors.tags}
           isValid={errors.tags ? false : true}
-        />
+        ></InputLabel>
         <Button fillColor isLoading={props.isLoading}>
           회원가입
         </Button>
