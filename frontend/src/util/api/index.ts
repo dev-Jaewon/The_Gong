@@ -4,24 +4,37 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${JSON.parse(
-      localStorage.getItem('access_token') as string
-    )}`,
   },
   timeout: 3000,
 });
 
 api.defaults.withCredentials = true;
 
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem('access_token');
+
+    if (!accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 api.interceptors.response.use(
   (res) => res,
   async (err) => {
     const {
+      code,
       config,
       response: { status },
     } = err;
 
-    if (status !== 401) {
+    if (status !== 401 || code === 'ERR_NETWORK') {
       return Promise.reject(err);
     }
 

@@ -7,8 +7,10 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../util/api';
 
 export const Header = () => {
-  const { data } = useQuery(['auth'], () =>
-    api.get('/auth').then((res) => res.data)
+  const { data } = useQuery(
+    ['auth'],
+    () => api.get('/auth').then((res) => res.data),
+    { enabled: Boolean(localStorage.getItem('access_token')) }
   );
 
   return (
