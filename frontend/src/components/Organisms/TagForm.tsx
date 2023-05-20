@@ -10,7 +10,7 @@ import { api } from "../../util/api";
 interface TagFormProps {
   isPopupOpen: boolean;
   ChangeisPopupOpen?: (event: any) => void; 
-  ChangeTag?: (event: any) => void; 
+  setTags?: (event: any) => void;
 }
 
 interface TagData {
@@ -49,17 +49,20 @@ const TagFormContainer = styled.div<TagFormProps>`
 `;
 
 
-function TagForm({ isPopupOpen, ChangeisPopupOpen, ChangeTag }: TagFormProps) {
+function TagForm({ isPopupOpen, ChangeisPopupOpen, setTags }: TagFormProps) {
+  //임시 데이터
+  const [tagData, setTagData ] = useState<TagData[]>([]);;
+
+  const [deleteTagData, setDeleteTagData] = useState<TagData[]>([]);
 
 
   const fetchData = async () => {
     try {
       const response = await api.get('https://4b38-211-193-143-25.ngrok-free.app/tags?page=1&size=10');
       const colorData = response.data.data.map((el:any) => {
-        console.log(el)
         return {
           'content':el.name,
-          'color': '#4FAFB1'
+          'color': '#e3f7f7'
         }
       })
       setTagData(colorData)
@@ -70,19 +73,20 @@ function TagForm({ isPopupOpen, ChangeisPopupOpen, ChangeTag }: TagFormProps) {
 
   useEffect(() => {
     fetchData();
+    // changeTagData(tagData[1])
   }, []);
 
-  //임시 데이터
-  const [tagData, setTagData ] = useState<TagData[]>([]);;
+  
 
-  const [deleteTagData, setDeleteTagData] = useState<TagData[]>([]);
 
   // 태그 추가 기능
   const changeTagData = (tagContent: TagData) => {
     const updatedTagData = tagData.filter((el:any) => el.content !== tagContent.content);
     setTagData(updatedTagData);
     setDeleteTagData([...deleteTagData, tagContent]);
-    ChangeTag(tagContent.content)
+    if (setTags) {
+      setTags((prev: string[]) => [...prev, tagContent.content]);
+    }  
   }
 
   // 삭제 태그 기능
@@ -90,6 +94,13 @@ function TagForm({ isPopupOpen, ChangeisPopupOpen, ChangeTag }: TagFormProps) {
     const updatedDeleteTagData = deleteTagData.filter((el:any) => el.content !== tagContent.content);
     setDeleteTagData(updatedDeleteTagData);
     setTagData([...tagData, tagContent]);
+    if (setTags) {
+      console.log('일단 옴')
+      setTags((prev: string[]) => {
+        const newData = prev.filter((el:any) => el !== tagContent.content)
+        return newData;
+      })
+    }
   }
   
 

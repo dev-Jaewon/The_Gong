@@ -22,6 +22,7 @@ const TagButtonContainer = styled.span<TagButtonProps>`
   font-size: ${({ fontSize }) => fontSize}rem;
   border-radius: ${({ fontSize }) => fontSize * 2}rem;
   background-color: ${({ bg }) => bg};
+  color: rgb(80, 80, 80);
 
   cursor: pointer;
 `;
