@@ -54,8 +54,8 @@ public class AuthController {
             claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             // 액세스토큰이 만료된 경우
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN,"액세스 토큰 만료");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED,"액세스 토큰 만료");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
         AuthDto authDto = authService.getAuthMemberInfo(claims);
