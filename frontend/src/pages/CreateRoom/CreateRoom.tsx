@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Header } from '../../components/organisms/Header';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../util/api';
 
 
 
@@ -51,13 +52,13 @@ const CreateRoomPage = () => {
 
     const requestData = {
       ...data,
-      'admin_member_id': memberId
+      'admin_member_id': memberId + ''
     };
     
     console.log('@@@이거 보냅니다@@@');
     console.log(requestData);
 
-    axios.post('https://a5fa-211-193-143-25.ngrok-free.app/rooms/add', requestData,{
+    api.post('https://4b38-211-193-143-25.ngrok-free.app/rooms/add', requestData,{
       headers: {
         Authorization: `Bearer ${token}`
       }

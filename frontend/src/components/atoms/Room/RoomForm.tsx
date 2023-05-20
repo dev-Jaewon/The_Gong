@@ -10,6 +10,29 @@ import TagButton from "../Tag/TagButton";
 
 const RoomFormContainer = styled.div`
 
+`;
+
+const RadioContainer = styled.div`
+  font-size: 0.8rem;
+
+  [type="radio"]{
+    vertical-align: middle;
+    appearance: none;
+    border: 0.08rem solid gray;
+    border-radius: 50%;
+    width: 1.25em;
+    height: 1.25em;
+
+  }
+
+  [type="radio"]:checked {
+  border: 0.4em solid #4FAFB1;
+  }
+  
+  [type="radio"]:focus-visible {
+    outline-offset: max(2px, 0.1em);
+    outline: max(2px, 0.1em) dotted tomato;
+  }
 
 `;
 
@@ -17,13 +40,45 @@ const ContainerForm = styled.form`
   display: flex;
   flex-direction: column;
   min-width: 400px;
-  gap: 20px;
+  gap: 1.5rem;
 
   font-family: Noto Sans KR;
 
   button {
     margin-top: 20px;
   }
+`
+const TagsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid #D3D3D3;
+  border-radius: 0.2rem;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  min-height: 2.3rem;
+  
+`
+const InputTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  span{
+    color:#4D5358;
+    font-size:0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.7rem;
+  }
+
+  div{
+    color:#4D5358;
+    font-size: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #D3D3D3;
+    border-radius: 0.2rem;
+    cursor: pointer;
+  }
+
+  
 `
 
 export type RoomData = {
@@ -44,39 +99,23 @@ export type RoomFormProps = {
 const RoomForm = (props: RoomFormProps) => {
 
   const [isPrivate, setIsPrivate] = useState(false);
-  const [ maxCount, setMaxCount ] = useState(null);
-
-  const maxCountChange = (event:any) => {
-    setMaxCount(event.target.value);
-  } 
 
   const handleChange2 = (event:any) => {
     setIsPrivate(event.target.value === 'private');
   };
 
-  // 방 만들기 전송
-  function handleSubmitFormHook() {
-    const subData = {
-      ...data,
-      is_private: isPrivate,
-      member_max_count: Number(data.member_max_count),
-      tags: tags,
-    };    props.onSubmit(subData);
-  }
 
   // 태그 폼 열고 닫기 버튼
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   
-  // 태그 폼 열기
+  // 태그 폼 열기 
   const ChangeIsPopupOpen = (event:any) => {
     event.preventDefault()
     setIsPopupOpen(!isPopupOpen)
   }
 
+  // 생성 폼의 태그 관리 state
   const [tags, setTags] = useState<string[]>([]);
-  const ChangeTag = (tag:any) => {
-    setTags([...tags, tag])
-  }
 
   const { data, errors, handleChange, handleSubmit } = useForm<RoomData>({
     validations: {
@@ -110,20 +149,27 @@ const RoomForm = (props: RoomFormProps) => {
           message: '패스워드는 필수입력 항목입니다.',
         },
       },
-      tags: {
-        required: {
-          value: true,
-          message: '태그는 필수입력 항목입니다.',
-        },
-      },
+
     },
     onSubmit: handleSubmitFormHook,
   });
 
+  // 방 만들기 전송
+  function handleSubmitFormHook() {
+    console.log('안돼나?')    
+    const subData = {
+      ...data,
+      is_private: isPrivate,
+      member_max_count: Number(data.member_max_count),
+      tags: tags,
+    };
+    console.log(subData)    
+    props.onSubmit(subData);
+  }
 
   return (
     <RoomFormContainer>
-      <TagForm isPopupOpen={isPopupOpen} ChangeisPopupOpen={ChangeIsPopupOpen} ChangeTag={ChangeTag}/>
+      <TagForm isPopupOpen={isPopupOpen} ChangeisPopupOpen={ChangeIsPopupOpen} setTags={setTags}/>
       <ContainerForm onSubmit={handleSubmit}>
         <InputLabel
           label="방 제목"
@@ -154,29 +200,37 @@ const RoomForm = (props: RoomFormProps) => {
           errorMessage={errors.member_max_count}
           isValid={errors.member_max_count ? false : true}
         />
-        <h1>공개여부</h1>
-        <div>
-          <label>
-            <input
-              type="radio"
-              name="privacy"
-              value="public"
-              checked={!isPrivate}
-              onChange={handleChange2}
-            />
-            공개
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="privacy"
-              value="private"
-              checked={isPrivate}
-              onChange={handleChange2}
-            />
-            비공개
-          </label>
-        </div>
+
+        <RadioContainer>
+
+          <InputTitle>
+            <span>공개여부</span>
+          </InputTitle>
+
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="privacy"
+                value="public"
+                checked={!isPrivate}
+                onChange={handleChange2}
+              />
+              공개
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="privacy"
+                value="private"
+                checked={isPrivate}
+                onChange={handleChange2}
+              />
+              비공개
+            </label>
+          </div>
+        </RadioContainer>
+
         {isPrivate && <InputLabel
           type="password"
           label="비밀번호"
@@ -185,17 +239,21 @@ const RoomForm = (props: RoomFormProps) => {
           errorMessage={errors.password}
           isValid={errors.password ? false : true}
         />} 
-        <button onClick={ChangeIsPopupOpen}>태그 찾아보기</button>
-        <InputLabel
-          label="태그"
-          onChange={handleChange('tags')}
-          placeholder="태그를 추가해 주세요."
-          errorMessage={errors.tags}
-          isValid={errors.tags ? false : true}
-        ></InputLabel>
+      
+
+        <InputTitle>
+          <span>태그</span>
+          <div onClick={ChangeIsPopupOpen}>태그 수정하기</div>
+        </InputTitle>
+
+        <TagsContainer>
+          {tags.map((el,idx) => <TagButton key={idx} fontSize={0.8} bg="#e3f7f7" content={el}></TagButton>)}
+        </TagsContainer>
+
         <Button fillColor isLoading={props.isLoading}>
-          회원가입
+          방 만들기
         </Button>
+
       </ContainerForm>
     </RoomFormContainer>
   );
