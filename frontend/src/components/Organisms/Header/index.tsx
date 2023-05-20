@@ -3,15 +3,27 @@ import styled from 'styled-components';
 import { SearchBar } from '../../moecules/SearchBar';
 import { BsPencilSquare } from 'react-icons/bs';
 import { BiUser } from 'react-icons/bi';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '../../../util/api';
 
 export const Header = () => {
+  const { data } = useQuery(['auth'], () =>
+    api.get('/auth').then((res) => res.data)
+  );
+
   return (
     <Container>
       <div className="content">
         <div className="auth_container">
-          <Link to="/signin">로그인</Link>
-          <div className="divider"></div>
-          <Link to="/signup">회원가입</Link>
+          {!data ? (
+            <>
+              <Link to="/signin">로그인</Link>
+              <div className="divider"></div>
+              <Link to="/signup">회원가입</Link>
+            </>
+          ) : (
+            <>{data.nickname}님 환영합니다.</>
+          )}
         </div>
         <div className="service_container">
           <Link className="logo" to="/">
