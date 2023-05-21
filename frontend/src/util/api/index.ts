@@ -39,7 +39,7 @@ api.interceptors.response.use(
     }
 
     try {
-      const resToken = await axios.post<{ access_token: string }>(
+      const resToken = await axios.post<{ accessToken: string }>(
         `${import.meta.env.VITE_BASE_URL}/auth/refresh`,
         {
           refreshToken: JSON.parse(
@@ -48,8 +48,12 @@ api.interceptors.response.use(
         }
       );
 
-      if (resToken.data.access_token) {
-        config.headers.Authorization = `Bearer ${resToken.data.access_token}`;
+      if (resToken.data.accessToken) {
+        localStorage.setItem(
+          'access_token',
+          JSON.stringify(resToken.data.accessToken)
+        );
+        config.headers.Authorization = `Bearer ${resToken.data.accessToken}`;
       }
 
       return axios(config);

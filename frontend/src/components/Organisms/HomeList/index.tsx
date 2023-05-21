@@ -3,12 +3,14 @@ import styled from 'styled-components';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { HomeListItem } from '../../moecules/HomeListItem';
 import { useState } from 'react';
+import { RoomType } from '../../templates/MainTemplate';
 
 export type HomeListItemProps = {
   title: string;
   description: string;
   slidesToShow: number;
   imgMaxWidth?: string;
+  list: Array<RoomType>;
 };
 
 export const HomeList = (props: HomeListItemProps) => {
@@ -37,24 +39,19 @@ export const HomeList = (props: HomeListItemProps) => {
     },
   };
 
+  console.log(props.list);
+
   return (
     <Container current={current}>
       <h2>{props.title}</h2>
       <p className="subject_describe">{props.description}</p>
 
       <Slider {...settings}>
-        <ItemContainer imgMaxWidth={props.imgMaxWidth}>
-          <HomeListItem />
-        </ItemContainer>
-        <ItemContainer imgMaxWidth={props.imgMaxWidth}>
-          <HomeListItem />
-        </ItemContainer>
-        <ItemContainer imgMaxWidth={props.imgMaxWidth}>
-          <HomeListItem />
-        </ItemContainer>
-        <ItemContainer imgMaxWidth={props.imgMaxWidth}>
-          <HomeListItem />
-        </ItemContainer>
+        {props.list.data.map((room) => (
+          <ItemContainer imgMaxWidth={props.imgMaxWidth}>
+            <HomeListItem {...room} />
+          </ItemContainer>
+        ))}
       </Slider>
     </Container>
   );

@@ -35,9 +35,9 @@ export const Header = () => {
             <SearchBar />
           </div>
           <div className="icons">
-            <Link to="/my" className="my">
+            {/* <Link to="/my" className="my">
               <BiUser size={30} color="#4a4a4a" />
-            </Link>
+            </Link> */}
             <Link to="/createRoom">
               <BsPencilSquare size={30} color="#4a4a4a" />
             </Link>
