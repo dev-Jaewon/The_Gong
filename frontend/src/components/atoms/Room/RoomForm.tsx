@@ -94,9 +94,13 @@ export type RoomData = {
 export type RoomFormProps = {
   isLoading: boolean;
   onSubmit: (value: RoomData) => void;
+  setSelectedFile: (value: any) => void;
+  handleFileUpload: (value: any) => void;
 };
 
 const RoomForm = (props: RoomFormProps) => {
+  const { setSelectedFile, handleFileUpload } = props;
+
 
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -131,12 +135,6 @@ const RoomForm = (props: RoomFormProps) => {
           message: '방 소개는 필수입력 항목입니다.',
         },
       },
-      image_url: {
-        required: {
-          value: true,
-          message: '대표 이미지는 필수입력 항목입니다.',
-        },
-      },
       member_max_count: {
         required: {
           value: true,
@@ -167,6 +165,11 @@ const RoomForm = (props: RoomFormProps) => {
     props.onSubmit(subData);
   }
 
+
+  const handleFileChange = (event:any) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
   return (
     <RoomFormContainer>
       <TagForm isPopupOpen={isPopupOpen} ChangeisPopupOpen={ChangeIsPopupOpen} setTags={setTags}/>
@@ -186,13 +189,6 @@ const RoomForm = (props: RoomFormProps) => {
           isValid={errors.info ? false : true}
         />
         <InputLabel
-          label="대표 이미지"
-          onChange={handleChange('image_url')}
-          placeholder="대표 이미지를 설정해 주세요."
-          errorMessage={errors.image_url}
-          isValid={errors.image_url ? false : true}
-        />
-        <InputLabel
           type="number"
           label="인원 수"
           onChange={handleChange('member_max_count')}
@@ -200,6 +196,11 @@ const RoomForm = (props: RoomFormProps) => {
           errorMessage={errors.member_max_count}
           isValid={errors.member_max_count ? false : true}
         />
+
+        <div>
+          <input type="file" onChange={handleFileChange} />
+          <button onClick={handleFileUpload}>Upload</button>
+        </div>
 
         <RadioContainer>
 
