@@ -58,7 +58,7 @@ function TagForm({ isPopupOpen, ChangeisPopupOpen, setTags }: TagFormProps) {
 
   const fetchData = async () => {
     try {
-      const response = await api.get('https://4b38-211-193-143-25.ngrok-free.app/tags?page=1&size=10');
+      const response = await api.get('https://9af7-211-193-143-25.ngrok-free.app/tags?page=1&size=10');
       const colorData = response.data.data.map((el:any) => {
         return {
           'content':el.name,

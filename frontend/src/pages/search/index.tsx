@@ -13,7 +13,7 @@ export const Search = () => {
   const [params, setPrams] = useSearchParams();
 
   const { data, isFetching } = useQuery(['search', location], () =>
-    api<SearchData>(`/search${location.search}&page=1&sort=newRoom`).then(
+    api<SearchData>(`https://9af7-211-193-143-25.ngrok-free.app/search${location.search}&page=1&sort=newRoom`).then(
       (res) => res.data
     )
   );
