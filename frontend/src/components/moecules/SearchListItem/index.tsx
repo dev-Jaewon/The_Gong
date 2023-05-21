@@ -37,7 +37,7 @@ export const SearchListItem = (props: SearchItem) => {
 
   return (
     <Container onClick={handleItemClick}>
-      <img src={searchThumbnail} alt={props.title + 'thumbnail'} />
+      <img src={props.image_url} alt={props.title + 'thumbnail'} />
       <div className="content">
         <div className="title">
           <h3>{props.title}</h3>

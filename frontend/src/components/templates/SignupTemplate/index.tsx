@@ -12,7 +12,7 @@ export const SignupTemplate = () => {
   const [errors, setErrors] = useState<SignupData | null>(null);
 
   const mutation = useMutation({
-    mutationFn: async (data: SignupData) => api.post(`https://4b38-211-193-143-25.ngrok-free.app/members/add`, data),
+    mutationFn: async (data: SignupData) => api.post(`/members/add`, data),
     onSuccess: () => setStep(SIGNUP_STEP.DONE),
     onError: (err: any) => {
       const message = err.response.data.message as string;

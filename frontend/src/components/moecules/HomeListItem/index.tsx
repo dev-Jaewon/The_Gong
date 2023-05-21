@@ -2,8 +2,18 @@ import styled from 'styled-components';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { RoomType } from '../../templates/MainTemplate';
+import { api } from '../../../util/api';
+import { useMutation } from '@tanstack/react-query';
+import { formatDate } from '../../../util/formatDate';
 
-export const HomeListItem = () => {
+type ToogleFavorite = {
+  room_id: number;
+  member_id: number;
+  is_favorite: boolean;
+};
+
+export const HomeListItem = (props: RoomType) => {
   const navigate = useNavigate();
 
   const handleTagClick = (e: MouseEvent<HTMLButtonElement>, tag: string) => {
@@ -11,26 +21,49 @@ export const HomeListItem = () => {
     navigate(`/search?keyword=${tag}`);
   };
 
+  const mutation = useMutation({
+    mutationFn: async (data: ToogleFavorite) =>
+      api.post(`/rooms/${data.room_id}/favorite`, data),
+    onSuccess: ({ data }) => {},
+  });
+
+  const handleToogleFavorite = (is_favorite: boolean) => {
+    mutation.mutate({
+      room_id: 2,
+      member_id: 1,
+      is_favorite,
+    });
+  };
+
+  console.log(props);
+
   return (
     <Container>
       <ImageContaienr>
-        <img
-          src={
-            'https://cdn.eyesmag.com/content/uploads/posts/2020/08/11/the-patrick-star-show-spongebob-squarepants-spin-off-1-516d0d4f-fcf0-4106-ab95-a407167fee2c.jpg'
-          }
-          alt={''}
-        />
+        <img src={props.image_url} alt={`${props.title} 이미지`} />
         <i>
-          <AiOutlineHeart size={'2rem'} color={'white'} />
+          {props.favorite_status === 'NONE' ? (
+            <AiOutlineHeart
+              size={'2rem'}
+              color={'white'}
+              onClick={() => handleToogleFavorite(true)}
+            />
+          ) : (
+            <AiFillHeart
+              size={'2rem'}
+              color={'red'}
+              onClick={() => handleToogleFavorite(false)}
+            />
+          )}
         </i>
       </ImageContaienr>
-      <h3>제목</h3>
-      <p className="describe">동해물과 백두산이</p>
+      <h3>{props.title}</h3>
+      <p className="describe">{props.info}</p>
       <Info>
         <InfoItem>
           <p className="subject">인원</p>
           <p className="value">
-            {1}/{2}명
+            {props.member_current_count + 1}/{props.member_max_count}명
           </p>
         </InfoItem>
         <InfoItem>
@@ -39,20 +72,22 @@ export const HomeListItem = () => {
         </InfoItem>
         <InfoItem>
           <p className="subject">추천수</p>
-          <p className="value">{1}</p>
+          <p className="value">{props.favorite_count}</p>
         </InfoItem>
         <InfoItem>
           <p className="subject">생성일</p>
-          <p className="value">{'2023. 3. 4'}</p>
+          <p className="value">
+            {props.created_at ? formatDate(props.created_at) : '비공개'}
+          </p>
         </InfoItem>
       </Info>
       <div className="tags">
         <Tag onClick={(e) => handleTagClick(e, 'java')}>{'javascript'}</Tag>
-        {/* {props.tags.map((tag, index) => (
-    <Tag onClick={(e) => handleTagClick(e, tag)} key={index}>
-      {tag}
-    </Tag>
-  ))} */}
+        {props.tags.map((tag, index) => (
+          <Tag onClick={(e) => handleTagClick(e, tag.name)} key={index}>
+            {tag.name}
+          </Tag>
+        ))}
       </div>
     </Container>
   );
