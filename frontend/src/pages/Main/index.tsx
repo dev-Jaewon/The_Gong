@@ -5,6 +5,7 @@ import { Footer } from '../../components/moecules/Footer';
 import { useQueries } from '@tanstack/react-query';
 import { api } from '../../util/api';
 import { Skeleton } from '../../components/atoms/Skeleton/Skeleton';
+import { Banner } from '../../components/organisms/Banner';
 
 export const Main = () => {
   const [myRoom, newRoom, popularRoom] = useQueries({
@@ -41,6 +42,7 @@ export const Main = () => {
   return (
     <Container>
       <Header />
+      <Banner />
       {myRoom.isFetching || newRoom.isFetching || popularRoom.isFetching ? (
         <LodingContainer>
           <LodingContent>
