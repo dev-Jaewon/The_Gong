@@ -33,7 +33,6 @@ export const MainTemplate = ({
 
   return (
     <Container>
-      <Banner />
       <Content>
         {myRoom?.data?.length ? (
           <HomeList
