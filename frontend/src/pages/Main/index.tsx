@@ -2,8 +2,9 @@ import styled from 'styled-components';
 import { Header } from '../../components/organisms/Header';
 import { MainTemplate } from '../../components/templates/MainTemplate';
 import { Footer } from '../../components/moecules/Footer';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import { api } from '../../util/api';
+import { Skeleton } from '../../components/atoms/Skeleton/Skeleton';
 
 export const Main = () => {
   const [myRoom, newRoom, popularRoom] = useQueries({
@@ -36,13 +37,40 @@ export const Main = () => {
       },
     ],
   });
-  // console.log(myRoom);
 
   return (
     <Container>
       <Header />
       {myRoom.isFetching || newRoom.isFetching || popularRoom.isFetching ? (
-        <div>로딩중</div>
+        <LodingContainer>
+          <LodingContent>
+            <div>
+              <Skeleton width="40%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+            </div>
+            <div>
+              <Skeleton width="40%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+            </div>
+            <div>
+              <Skeleton width="40%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+            </div>
+            <div>
+              <Skeleton width="40%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+            </div>
+            <div>
+              <Skeleton width="40%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+              <Skeleton width="100%" height="30px" />
+            </div>
+          </LodingContent>
+        </LodingContainer>
       ) : (
         <MainTemplate
           myRoom={myRoom.data}
@@ -50,10 +78,31 @@ export const Main = () => {
           popularRoom={popularRoom.data}
         />
       )}
-
       <Footer />
     </Container>
   );
 };
 
 const Container = styled.div``;
+
+const LodingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const LodingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  width: 100%;
+  padding-top: 50px;
+  max-width: 1050px;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+`;

@@ -1,11 +1,15 @@
-import Slider, { Settings } from 'react-slick';
 import styled from 'styled-components';
-import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { HomeListItem } from '../../moecules/HomeListItem';
-import { useState } from 'react';
 import { RoomType } from '../../templates/MainTemplate';
+import { Swiper, SwiperSlide, SwiperProps } from 'swiper/react';
+import { FreeMode, Navigation } from 'swiper';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+
+import 'swiper/swiper.min.css';
+import 'swiper/swiper-bundle.min.css';
 
 export type HomeListItemProps = {
+  id: string;
   title: string;
   description: string;
   slidesToShow: number;
@@ -14,50 +18,50 @@ export type HomeListItemProps = {
 };
 
 export const HomeList = (props: HomeListItemProps) => {
-  const [current, setCurrent] = useState(0);
-
-  const settings: Settings = {
-    infinite: false,
-    autoplay: false,
-    dots: false,
-    speed: 100,
-    arrows: true,
-    slidesToShow: props.slidesToShow,
-    slidesToScroll: 1,
-    prevArrow: (
-      <DivPre>
-        <IoIosArrowBack size={40} color="black" />
-      </DivPre>
-    ),
-    nextArrow: (
-      <Div>
-        <IoIosArrowForward size={40} color="black" />
-      </Div>
-    ),
-    afterChange: (num: number) => {
-      setCurrent(num);
+  const swiperSetProperty: SwiperProps = {
+    modules: [FreeMode, Navigation],
+    spaceBetween: 20,
+    slidesPerView: 3,
+    slidesPerGroup: 4,
+    wrapperTag: 'ul',
+    navigation: {
+      nextEl: `.next-button-${props.id}`,
+      prevEl: `.prev-button-${props.id}`,
     },
   };
 
-  console.log(props.list);
-
   return (
-    <Container current={current}>
+    <Container>
       <h2>{props.title}</h2>
       <p className="subject_describe">{props.description}</p>
-
-      <Slider {...settings}>
-        {props.list.data.map((room) => (
-          <ItemContainer imgMaxWidth={props.imgMaxWidth}>
-            <HomeListItem {...room} />
-          </ItemContainer>
-        ))}
-      </Slider>
+      <SwiperContainer>
+        <i
+          className={`swiper-button prev prev-button-${props.id}`}
+          aria-label="이전 상품리스트 버튼"
+        >
+          <IoIosArrowBack size={30} />
+        </i>
+        <i
+          className={`swiper-button next next-button-${props.id}`}
+          aria-label="다음 상품리스트 버튼"
+        >
+          <IoIosArrowForward size={30} />
+        </i>
+        <Swiper {...swiperSetProperty}>
+          {props.list.map((room) => (
+            <SwiperSlide>
+              <ItemContainer imgMaxWidth={props.imgMaxWidth}>
+                <HomeListItem {...room} />
+              </ItemContainer>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </SwiperContainer>
     </Container>
   );
 };
 
-const Container = styled.div<{ current: number }>`
+const Container = styled.div`
   display: flex;
   position: relative;
   flex-direction: column;
@@ -104,14 +108,6 @@ const Container = styled.div<{ current: number }>`
   .slick-slide div {
     cursor: pointer;
   }
-
-  .slick-prev {
-    display: ${({ current }) => (!current ? 'none !important' : 'block')};
-  }
-
-  .slick-next {
-    display: ${({ current }) => (current ? 'none !important' : 'block')};
-  }
 `;
 
 const ItemContainer = styled.div<{ imgMaxWidth?: string }>`
@@ -119,34 +115,53 @@ const ItemContainer = styled.div<{ imgMaxWidth?: string }>`
   max-width: ${({ imgMaxWidth }) => imgMaxWidth || '500px'};
 `;
 
-const Div = styled.div`
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  right: 16px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  transform: translateY(-50px);
-  z-index: 99;
+const SwiperContainer = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 1050px;
+  margin-top: 10px;
 
-  &:hover {
-    background: #ffffff;
+  .swiper-button {
+    top: calc(50% - 50px);
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    z-index: 10;
+    transform: translateY(-50px);
+    cursor: pointer;
   }
-`;
-const DivPre = styled.div`
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  left: 16px;
-  text-align: left;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  transform: translateY(-50px);
-  z-index: 99;
 
-  &:hover {
-    background: #ffffff;
+  .next {
+    right: 0;
+    transform: translate(30px, -50%);
+  }
+
+  .prev {
+    transform: translate(-30px, -50%);
+  }
+
+  .swiper-wrapper {
+    li {
+      &:not(:last-child) {
+        margin-right: 17px;
+      }
+    }
+  }
+
+  .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+  }
+
+  .swiper-button-disabled {
+    display: none;
   }
 `;
