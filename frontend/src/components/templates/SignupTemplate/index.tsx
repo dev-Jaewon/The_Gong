@@ -13,6 +13,7 @@ export const SignupTemplate = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: SignupData) => api.post(`https://9af7-211-193-143-25.ngrok-free.app/members/add`, data),
+
     onSuccess: () => setStep(SIGNUP_STEP.DONE),
     onError: (err: any) => {
       const message = err.response.data.message as string;

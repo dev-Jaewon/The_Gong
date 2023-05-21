@@ -45,10 +45,9 @@ export const SigninForm = () => {
   const mutation = useMutation({
     mutationFn: async (data: SigninData) =>
       api.post<ResSignin>('https://9af7-211-193-143-25.ngrok-free.app/members/login', data),
+
     onSuccess: ({ data }) => {
-      console.log(data);
       (Object.keys(data) as Array<keyof ResSignin>).forEach((key) => {
-        console.log(key);
         localStorage.setItem(key, JSON.stringify(data[key]));
       });
 

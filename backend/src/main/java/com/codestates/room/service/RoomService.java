@@ -1,7 +1,6 @@
 package com.codestates.room.service;
 
 import com.codestates.member.entity.MemberRoom;
-import com.codestates.member.entity.MemberTag;
 import com.codestates.room.entity.Room;
 import com.codestates.room.repository.RoomRepository;
 import com.codestates.tag.entity.Tag;
@@ -17,6 +16,7 @@ import com.codestates.member.service.MemberService;
 import com.codestates.room.entity.RoomTag;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -114,20 +114,6 @@ public class RoomService {
             findRoom.setRoomTagList(room.getRoomTagList());
         }
 
-//        if (room.isPrivate()) {
-//            Optional.ofNullable(room.getPassword())
-//                    .ifPresent(password -> {
-//                        if (password != null && !password.isEmpty()) {
-//                            findRoom.setPassword(password);
-//
-//                        } else if(password.isEmpty()){
-//                            throw new BusinessLogicException(ExceptionCode.NEED_PASSWORD);
-//
-//                        } else {
-//                                findRoom.setPassword(null);
-//                        }});
-//        }
-
         roomRepository.save(findRoom);
         return findRoom;
     }
@@ -220,6 +206,12 @@ public class RoomService {
     }
 
 
+    public Room findRoom(String roomTitle){
+        Room room = roomRepository.findByTitle(roomTitle).orElseThrow(()->new BusinessLogicException(ExceptionCode.ROOM_NOT_FOUND));
+        return room;
+    }
+
+
     public Page<Room> findNewRooms(int page, int size) {
         Page<Room> roomPage = roomRepository.findAll(PageRequest.of(page, size, Sort.by("roomId").descending()));
         List<Room> roomList = roomPage.getContent();
@@ -258,29 +250,14 @@ public class RoomService {
 
 
 
+    //Todo :
+    // - 최신순 정렬 조회
+    // - 인기순 정렬 조회
+    // - 추천목록 정렬조회
+    // - 생성한방 정렬조회
+    // - 찜한방 정렬조회
+    // - 방문했던 방 정렬조회
 
-
-    //Todo : (미회원) 태그포함 + 찜많은순/생성순 정렬
-    public Page<Room> findUnauthorizedRooms(int page, int size, String sort) {
-        Page<Room> roomPage;
-        List<Room> roomList;
-        return null;
-        //return new PageImpl<>(roomList, roomPage.getPageable(), roomPage.getTotalElements());
-    }
-
-
-
-    //Todo : (회원) 태그포함 + 찜많은순/생성순 정렬
-    public Page<Room> findRecommendRooms(int page, int size, String sort, long memberId) {
-        Member findMember = memberService.findVerifiedMember(memberId);
-        List<MemberTag> memberTags = findMember.getMemberTagList();
-        Page<Room> roomPage;
-        List<Room> roomList;
-        return null;
-        // List<Room> recommendList = roomList.stream().filter(room -> room.getRoomTagList().stream()
-        //        .anyMatch(memberTags::contains)).collect(Collectors.toList());
-        // return new PageImpl<>(recommendList, roomPage.getPageable(), recommendList.size());
-    }
 
 
 

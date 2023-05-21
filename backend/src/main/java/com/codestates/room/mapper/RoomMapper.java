@@ -1,5 +1,7 @@
 package com.codestates.room.mapper;
 
+import com.codestates.common.history.RoomHistory;
+import com.codestates.common.history.RoomHistoryDto;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.room.dto.RoomDto;
 import com.codestates.room.dto.RoomTagDto;

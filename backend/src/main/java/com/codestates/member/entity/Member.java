@@ -1,6 +1,7 @@
 package com.codestates.member.entity;
 
 import com.codestates.common.entity.BaseEntity;
+import com.codestates.common.history.RoomHistory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,6 +59,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     private List<MemberTag> memberTagList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<RoomHistory> roomHistoryList = new ArrayList<>(); //history
 
     private String provider;
     private String providerId;

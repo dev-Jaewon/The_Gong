@@ -7,8 +7,10 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../util/api';
 
 export const Header = () => {
-  const { data } = useQuery(['auth'], () =>
-    api.get('/auth').then((res) => res.data)
+  const { data } = useQuery(
+    ['auth'],
+    () => api.get('/auth').then((res) => res.data),
+    { enabled: Boolean(localStorage.getItem('access_token')) }
   );
 
   return (
@@ -33,9 +35,9 @@ export const Header = () => {
             <SearchBar />
           </div>
           <div className="icons">
-            <Link to="/my" className="my">
+            {/* <Link to="/my" className="my">
               <BiUser size={30} color="#4a4a4a" />
-            </Link>
+            </Link> */}
             <Link to="/createRoom">
               <BsPencilSquare size={30} color="#4a4a4a" />
             </Link>
