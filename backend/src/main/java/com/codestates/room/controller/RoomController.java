@@ -5,6 +5,7 @@ import com.codestates.common.response.MultiResponseDto;
 import com.codestates.room.dto.RoomDto;
 import com.codestates.room.entity.Room;
 import com.codestates.room.mapper.RoomMapper;
+import com.codestates.common.history.RoomHistoryService;
 import com.codestates.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +30,16 @@ public class RoomController {
 
     private final RoomService roomService;
     private final RoomMapper mapper;
+    private final RoomHistoryService roomHistoryService;
 
     @Value("${default.thumbnail.image}")
     private String thumbnail;
 
 
 
-    @PostMapping("/add")
-    public ResponseEntity postRoom(@Valid @RequestBody RoomDto.Post requestBody,
+    @PostMapping("/{member-id}/add")
+    public ResponseEntity postRoom(@PathVariable("member-id") long memberId,
+                                   @Valid @RequestBody RoomDto.Post requestBody,
                                    Authentication authentication) {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
@@ -50,6 +53,7 @@ public class RoomController {
         //기본썸네일 추가
         if(requestBody.getImageUrl()==null) requestBody.setImageUrl(thumbnail);
 
+        requestBody.setAdminMemberId(memberId);
         Room room = mapper.postDtoToRoom(requestBody);
         room = roomService.createRoom(room, requestBody.getAdminMemberId());
         return new ResponseEntity<>(mapper.roomToPostResponseDto(room), HttpStatus.CREATED);
@@ -156,16 +160,5 @@ public class RoomController {
         roomService.deleteRoom(roomId); //완전삭제
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-
-    //Todo : Test 로직
-    @GetMapping("/{room-id}")
-    public ResponseEntity getRoomForTest(@PathVariable("room-id") @Positive long roomId){
-        Room room = roomService.findVerifiedRoom(roomId);
-        //roomHistoryService.visitRoom(room.getTitle()); // 방문이력추가
-        return ResponseEntity.status(HttpStatus.OK).body(room);
-    }
-
 
 }
