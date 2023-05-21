@@ -206,6 +206,12 @@ public class RoomService {
     }
 
 
+    public Room findRoom(String roomTitle){
+        Room room = roomRepository.findByTitle(roomTitle).orElseThrow(()->new BusinessLogicException(ExceptionCode.ROOM_NOT_FOUND));
+        return room;
+    }
+
+
     public Page<Room> findNewRooms(int page, int size) {
         Page<Room> roomPage = roomRepository.findAll(PageRequest.of(page, size, Sort.by("roomId").descending()));
         List<Room> roomList = roomPage.getContent();

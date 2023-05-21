@@ -1,5 +1,6 @@
 package com.codestates.room.entity;
 
+import com.codestates.common.history.RoomHistory;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.common.entity.BaseEntity;
 import lombok.Getter;
@@ -55,6 +56,9 @@ public class Room extends BaseEntity {
 
     @OneToMany(mappedBy = "room" , cascade = CascadeType.ALL) //ALL
     private List<RoomTag> roomTagList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "room")
+    private List<RoomHistory> roomHistoryList = new ArrayList<>(); //history
 
     public List<RoomTag> setRoomTagList(List<RoomTag> roomTagList) {
         this.roomTagList = roomTagList;

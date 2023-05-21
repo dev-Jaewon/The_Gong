@@ -93,7 +93,7 @@ public class SearchService {
 
 
 
-    private List<Room> settingSort(List<Room> searchRooms, String sort) {
+    public List<Room> settingSort(List<Room> searchRooms, String sort) {
 
         if (sort != null && sort.equals("favoriteCount")) {
             return searchRooms.stream().sorted(SortMethod.sortByFavoriteCount())
