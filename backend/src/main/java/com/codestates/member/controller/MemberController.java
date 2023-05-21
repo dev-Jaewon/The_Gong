@@ -261,4 +261,30 @@ public class MemberController {
     }
 
 
+//    //Todo : Test 로직
+//    @GetMapping("/{member-id}/record")
+//    public ResponseEntity getRecordRoom(@PathVariable("member-id") @Positive long memberId,
+//                                        @RequestParam(value = "page", defaultValue = "1") @Positive int page,
+//                                        @RequestParam(value = "size", defaultValue = "10") @Positive int size,
+//                                        Authentication authentication) {
+//
+//        Map<String, Object> principal = (Map) authentication.getPrincipal();
+//        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
+//
+//        if(jwtMemberId != (memberId)) {
+//            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+//        }
+//
+//        Page<MemberRoom> memberRoomPage = memberService.findRecordRooms(page-1, size, memberId);
+//        List<MemberRoom> memberRoomList = memberRoomPage.getContent();
+//        List<MemberDto.RecordRoomResponseDtos> responseDtosList = mapper.memberToRecordResponseDtos(memberRoomList);
+//
+//        return new ResponseEntity<>(
+//                new MultiResponseDto<>(responseDtosList, memberRoomPage) , HttpStatus.OK);
+//    }
+
+
+
+
 }

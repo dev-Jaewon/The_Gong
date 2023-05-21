@@ -108,7 +108,7 @@ public class MemberService {
 
     //Todo : 삭제예정
     public Page<MemberRoom> findRecordRooms(int page, int size, long memberId) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt.").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Member member = findVerifiedMember(memberId);
 
         List<MemberRoom> memberRecordRooms = member.getMemberRoomList()
