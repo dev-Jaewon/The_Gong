@@ -1,7 +1,6 @@
 package com.codestates.room.controller;
 
 import com.codestates.auth.utils.ErrorResponse;
-import com.codestates.room.service.RoomHistoryService;
 import com.codestates.common.response.MultiResponseDto;
 import com.codestates.room.dto.RoomDto;
 import com.codestates.room.entity.Room;
@@ -30,7 +29,6 @@ public class RoomController {
 
     private final RoomService roomService;
     private final RoomMapper mapper;
-    private final RoomHistoryService roomHistoryService;
 
     @Value("${default.thumbnail.image}")
     private String thumbnail;
@@ -165,7 +163,7 @@ public class RoomController {
     @GetMapping("/{room-id}")
     public ResponseEntity getRoomForTest(@PathVariable("room-id") @Positive long roomId){
         Room room = roomService.findVerifiedRoom(roomId);
-        roomHistoryService.visitRoom(room.getTitle()); // 방문이력추가
+        //roomHistoryService.visitRoom(room.getTitle()); // 방문이력추가
         return ResponseEntity.status(HttpStatus.OK).body(room);
     }
 

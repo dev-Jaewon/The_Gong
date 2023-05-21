@@ -1,8 +1,6 @@
 package com.codestates.room.service;
 
 import com.codestates.member.entity.MemberRoom;
-import com.codestates.member.entity.MemberTag;
-import com.codestates.room.dto.RoomDto;
 import com.codestates.room.entity.Room;
 import com.codestates.room.repository.RoomRepository;
 import com.codestates.tag.entity.Tag;
@@ -19,7 +17,7 @@ import com.codestates.room.entity.RoomTag;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
