@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source:  /
-    destination: /home/ubuntu/seb43_main_025
+    destination: /home/ubuntu/seb43_main_025/backend
     overwrite: yes
 
 permissions:
