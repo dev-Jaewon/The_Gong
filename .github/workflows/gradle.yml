@@ -68,3 +68,4 @@ jobs:
         --deployment-config-name CodeDeployDefault.AllAtOnce
         --deployment-group-name thegong-group
         --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=thegong-deploy.zip
+      working-directory: ${{ env.working-directory }}
