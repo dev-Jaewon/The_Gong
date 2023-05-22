@@ -1,0 +1,4 @@
+[submodule "backend/src/main/resources/security"]
+	path = backend/src/main/resources/security
+	url = https://github.com/ChaeEunLee00/main_config.git
+	branch = main
