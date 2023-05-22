@@ -20,8 +20,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./backend
 
     steps:
     - uses: actions/checkout@v3
@@ -31,9 +29,11 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
     - name: Add permission
-      run: chmod +x gradlew
+      run: chmod +x ./backend/gradlew
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         gradle-version: 7.6.1
         arguments: build
+      env:
+        working-directory: ./backend
