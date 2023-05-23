@@ -1,44 +1,69 @@
 package com.codestates.auth.token;
 
+import com.codestates.auth.jwt.JwtAuthenticationFilter;
 import com.codestates.auth.jwt.JwtTokenizer;
 import com.codestates.auth.utils.ErrorResponse;
+import com.codestates.member.entity.Member;
+import com.codestates.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
-    private final JwtTokenizer jwtTokenizer;
+    private AuthService authService;
+    private JwtTokenizer jwtTokenizer;
+    private MemberService memberService;
+    private JwtAuthenticationFilter authenticationFilter;
 
+    public AuthController(AuthService authService, JwtTokenizer jwtTokenizer, MemberService memberService, JwtAuthenticationFilter authenticationFilter) {
+        this.authService = authService;
+        this.jwtTokenizer = jwtTokenizer;
+        this.memberService = memberService;
+        this.authenticationFilter = authenticationFilter;
+    }
 
     @PostMapping("/refresh")
-    public ResponseEntity PostNewAccessToken(@RequestBody Map<String, String> refreshTokenMap) {
+    public ResponseEntity PostNewAccessToken(@RequestBody AuthDto.Refresh requestBody) {
 
-        String refreshToken = refreshTokenMap.get("refreshToken");
-        String key = authService.getIngredients();
-
-        if(refreshToken == null) {
+        String refreshToken = requestBody.getRefreshToken();
+        if(!jwtTokenizer.validateRefresh(refreshToken)){
             return ResponseEntity.badRequest().build();
         }
 
-        if(!jwtTokenizer.validateRefresh(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Member member = memberService.findMember(requestBody.getMemberId());
+        String accessToken = authenticationFilter.delegateAccessToken(member);
 
-        Map<String, String> tokens = authService.getGeneratedTokens(refreshToken, key);
-        return ResponseEntity.ok().body(tokens);
+        // new access token
+        return ResponseEntity.ok(accessToken);
     }
+
+
+//    @PostMapping("/refresh2")
+//    public ResponseEntity PostNewAccessTokens2(@RequestBody AuthDto.Refresh requestBody) {
+//
+//        String refreshToken = requestBody.getRefreshToken();
+//
+//        if(!jwtTokenizer.validateRefresh(refreshToken)){
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        long memberId = jwtTokenizer.getMemberIdRefresh(refreshToken);
+//        Member member = memberService.findMember(memberId);
+//        String accessToken = authenticationFilter.delegateAccessToken(member);
+//
+//        // new access token
+//        return ResponseEntity.ok(accessToken);
+//    }
+//
 
 
 
@@ -52,6 +77,7 @@ public class AuthController {
 
         try {
             claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+
         } catch (ExpiredJwtException e) {
             // 액세스토큰이 만료된 경우
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED,"액세스 토큰 만료");
