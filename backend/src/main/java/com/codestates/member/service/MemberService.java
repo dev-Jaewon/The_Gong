@@ -1,6 +1,7 @@
 package com.codestates.member.service;
 
 import com.codestates.auth.utils.ErrorResponse;
+import com.codestates.common.search.SearchService;
 import com.codestates.exception.BusinessLogicException;
 import com.codestates.exception.ExceptionCode;
 import com.codestates.member.dto.MemberDto;
@@ -9,8 +10,7 @@ import com.codestates.member.entity.Member;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.entity.MemberTag;
 import com.codestates.member.repository.MemberRepository;
-import com.codestates.room.dto.RoomDto;
-import com.codestates.room.entity.Room;
+import com.codestates.room.repository.RoomRepository;
 import com.codestates.tag.entity.Tag;
 import com.codestates.member.repository.MemberTagRepository;
 import com.codestates.tag.repository.TagRepository;
@@ -22,10 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +31,10 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberTagRepository memberTagRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final RoomRepository roomRepository;
     private final TagRepository tagRepository;
+    private final SearchService searchService;
+    private final PasswordEncoder passwordEncoder;
 
 
     public Member createMember(Member member, String profile) {
@@ -106,50 +105,6 @@ public class MemberService {
     }
 
 
-    //Todo : 삭제예정
-    public Page<MemberRoom> findRecordRooms(int page, int size, long memberId) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Member member = findVerifiedMember(memberId);
-
-        List<MemberRoom> memberRecordRooms = member.getMemberRoomList()
-                .stream()
-                .filter(memberRoom -> memberRoom.getHistory().equals(MemberRoom.History.VISITED))
-                .collect(Collectors.toList());
-
-        if (memberRecordRooms == null || memberRecordRooms.isEmpty()) {
-            return new PageImpl<>(new ArrayList<>(), pageable, 0);
-        }
-        return new PageImpl<>(memberRecordRooms, pageable, memberRecordRooms.size());
-    }
-
-
-    //Todo : 추천목록
-    public Page<RoomDto.SearchResponseDto> findRecommendRooms(int page, int size, long memberId) {
-        Member findMember = findVerifiedMember(memberId);
-        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
-
-        List<MemberRoom> recommendList = findMember.getMemberRoomList();
-        List<RoomDto.SearchResponseDto> recommendationList = new ArrayList<>();
-
-        if(!recommendList.isEmpty()){
-            for(MemberRoom memberRoom : recommendList) {
-                Room room = memberRoom.getRoom();
-
-                boolean hasMyTag = room.getRoomTagList().stream()
-                        .anyMatch(roomTag -> findMember.getMemberTagList().contains(roomTag.getTag()));
-
-                if(hasMyTag) {
-                    RoomDto.SearchResponseDto roomDto = new RoomDto.SearchResponseDto();
-                    recommendationList.add(roomDto);
-                }
-            }
-        }
-
-        return new PageImpl<>(recommendationList, pageable, recommendationList.size());
-    }
-
-
-
 
     public void removeUser(long memberId) {
         Member member = findVerifiedMember(memberId);
@@ -160,7 +115,6 @@ public class MemberService {
 
         memberRepository.save(member);
     }
-
 
 
 
