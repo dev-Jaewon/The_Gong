@@ -55,11 +55,11 @@ public class StompChatController {
         log.info("{} info is saved in session", writer);
 
         //서버에 싱글톤 형태로 채팅룸에 저장
-        chatRoomService.addParticipant(writer, roomId);
+        chatRoomService.addParticipant(roomId, writer);
         log.info("{} info is saved in server", writer);
 
         //새로운 멤버 입장을 Sub 에게 전달
-        message.setMessage(message.getMessage() + "님이 채팅방에 입장하였습니다");
+        message.setMessage(message.getWriter() + "님이 채팅방에 입장하였습니다");
         message.setType(ChatMessageDto.MessageType.ENTER);
 
         //유저 목록을 어떻게 넘길 것인가 2가지 방법이 존재함
@@ -67,6 +67,7 @@ public class StompChatController {
         // 2. 메시지를 2번 보낸다. -> 클라이언트에서 2개를 다 처리해야하지만. 데어터 전송량을 최소화 할 수 있음(최종선택)
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatRoomService.getParticipants(message.getRoomId()));
+        log.info(chatRoomService.getParticipants(message.getRoomId()).toString());
     }
 
     @MessageMapping("/chat/message")
