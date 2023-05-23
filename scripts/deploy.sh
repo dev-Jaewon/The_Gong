@@ -26,4 +26,4 @@ fi
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo "> DEPLOY_JAR 배포"    >> /home/ubuntu/action/backend/deploy.log
-sudo nohup java -jar $DEPLOY_JAR >> /home/ubuntu/action/backend/deploy.log 2>/home/ubuntu/action/backend/deploy_err.log &
+nohup java -jar $DEPLOY_JAR >> /home/ubuntu/action/backend/deploy.log 2>/home/ubuntu/action/backend/deploy_err.log &
