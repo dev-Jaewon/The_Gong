@@ -6,6 +6,7 @@ import com.codestates.member.dto.MemberTagDtos;
 import com.codestates.member.entity.Member;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.entity.MemberTag;
+import com.codestates.room.dto.RoomDto;
 import com.codestates.room.entity.Room;
 import com.codestates.room.entity.RoomTag;
 import com.codestates.tag.dto.TagDto;
@@ -21,20 +22,20 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface MemberMapper {
     Member postDtoToMember(MemberDto.Post requestBody);
+
     Member patchNicknameDtoToMember(MemberDto.PatchNickname requestBody);
+
     Member patchImageDtoToMember(MemberDto.PatchImage requestBody);
 
 
-    default MemberDto.PatchImageResponseDto memberToPatchImageResponseDto(Member responseMember){
-        if(responseMember == null) return null;
+    default MemberDto.PatchImageResponseDto memberToPatchImageResponseDto(Member responseMember) {
+        if (responseMember == null) return null;
         MemberDto.PatchImageResponseDto responseDto = new MemberDto.PatchImageResponseDto();
         responseDto.setMemberId(responseMember.getMemberId());
         responseDto.setImageUrl(responseMember.getImageUrl());
 
-        return  responseDto;
+        return responseDto;
     }
-
-
 
 
     //Todo : 회원수정 응답 : 응답물어보기
@@ -65,11 +66,8 @@ public interface MemberMapper {
     }
 
 
-
-
-
     //Todo : 찜한채팅방 목록
-    default List<MemberDto.LikeRoomResponseDtos> memberToLikeResponseDtos(List<MemberRoom> memberRoomList, long memberId){
+    default List<MemberDto.LikeRoomResponseDtos> memberToLikeResponseDtos(List<MemberRoom> memberRoomList, long memberId) {
 
         return memberRoomList.stream()
                 .filter(memberRoom -> memberRoom.getMember().getMemberId() == memberId && memberRoom.getFavorite().equals(MemberRoom.Favorite.LIKE))
@@ -103,11 +101,8 @@ public interface MemberMapper {
     }
 
 
-
-
-
     //Todo : 생성한채팅방 목록
-    default List<MemberDto.CreatedRoomResponseDtos> memberToCreatedResponseDtos(List<MemberRoom> memberRoomList){
+    default List<MemberDto.CreatedRoomResponseDtos> memberToCreatedResponseDtos(List<MemberRoom> memberRoomList) {
         return memberRoomList.stream()
                 .filter(memberRoom -> memberRoom.getAuthority().equals(MemberRoom.Authority.ADMIN))
                 .map(MemberRoom::getRoom)
@@ -118,7 +113,7 @@ public interface MemberMapper {
                     responseDtos.setInfo(room.getInfo());
                     responseDtos.setImageUrl(room.getImageUrl());
                     responseDtos.setFavoriteCount(room.getFavoriteCount());
-                    responseDtos.setFavoriteStatus(getRoomFavorite(room,room.getMemberRoomList()));
+                    responseDtos.setFavoriteStatus(getRoomFavorite(room, room.getMemberRoomList()));
                     responseDtos.setMemberMaxCount(room.getMemberMaxCount());
                     //responseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
                     responseDtos.setPrivate(room.isPrivate());
@@ -128,7 +123,7 @@ public interface MemberMapper {
                 .collect(Collectors.toList());
     }
 
-    default MemberRoom.Favorite getRoomFavorite(Room room, List<MemberRoom> memberRoomList){
+    default MemberRoom.Favorite getRoomFavorite(Room room, List<MemberRoom> memberRoomList) {
         if (memberRoomList == null) {
             return null;
         }
@@ -137,11 +132,8 @@ public interface MemberMapper {
     }
 
 
-
-
-
-    //Todo : 채팅방 방문기록 목록
-    default List<MemberDto.RecordRoomResponseDtos> memberToRecordResponseDtos(List<MemberRoom> memberRoomList){
+    //Todo : 채팅방 방문기록 목록 (사용 X)
+    default List<MemberDto.RecordRoomResponseDtos> memberToRecordResponseDtos(List<MemberRoom> memberRoomList) {
         return memberRoomList.stream()
                 .filter(memberRoom -> memberRoom.getHistory().equals(MemberRoom.History.VISITED))
                 .map(MemberRoom::getRoom)
@@ -160,4 +152,3 @@ public interface MemberMapper {
                 .collect(Collectors.toList());
     }
 }
-

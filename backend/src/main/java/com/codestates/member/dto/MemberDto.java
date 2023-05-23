@@ -149,6 +149,25 @@ public class MemberDto {
         private List<MemberRoomTagDtos> tags;
     }
 
+    @Getter
+    @Setter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class RecommendRoomResponseDtos {
+        private long roomId;
+        private String title;
+        private String info;
+        private int memberMaxCount;
+        private int memberCurrentCount;
+        @JsonProperty("image_url")
+        private String imageUrl;
+        @JsonProperty("is_private")
+        private boolean isPrivate;
+        private int favoriteCount;
+        @JsonProperty("favorite_status")
+        private MemberRoom.Favorite favoriteStatus;
+        private List<MemberRoomTagDtos> tags;
+    }
+
 
 
     //Todo : 사용X
