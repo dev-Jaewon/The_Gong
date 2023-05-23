@@ -44,6 +44,9 @@ public class StompChatController {
     @MessageMapping("/chat/enter")
     public void enterMember(@Payload ChatMessageDto message, SimpMessageHeaderAccessor headerAccessor) {
         //DB, 방 인원수 +1 증가 & 유저추가
+        log.info(message.getWriter());
+        log.info(message.getRoomId());
+
         Long longroomId = Long.parseLong(message.getRoomId());
         roomService.enterChatRoom(longroomId, message.getWriter());
 
@@ -72,6 +75,7 @@ public class StompChatController {
 
     @MessageMapping("/chat/message")
     public void sendMessage(@Payload ChatMessageDto message) {
+
         message.setType(ChatMessageDto.MessageType.TALK);
         //pub 으로 전달된 메세지를 다시 sub에게 전달하자
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
