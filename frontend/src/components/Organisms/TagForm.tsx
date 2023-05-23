@@ -58,7 +58,7 @@ function TagForm({ isPopupOpen, ChangeisPopupOpen, setTags }: TagFormProps) {
 
   const fetchData = async () => {
     try {
-      const response = await api.get('https://9af7-211-193-143-25.ngrok-free.app/tags?page=1&size=10');
+      const response = await api.get('https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/tags?page=1&size=10');
       const colorData = response.data.data.map((el:any) => {
         return {
           'content':el.name,
@@ -75,9 +75,6 @@ function TagForm({ isPopupOpen, ChangeisPopupOpen, setTags }: TagFormProps) {
     fetchData();
     // changeTagData(tagData[1])
   }, []);
-
-  
-
 
   // 태그 추가 기능
   const changeTagData = (tagContent: TagData) => {

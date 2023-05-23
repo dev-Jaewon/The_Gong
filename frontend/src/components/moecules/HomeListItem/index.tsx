@@ -37,8 +37,13 @@ export const HomeListItem = (props: RoomType) => {
 
   console.log(props);
 
+  const room = () => {
+    navigate(`/room?roomId=${props.title}`);
+
+  }
+
   return (
-    <Container>
+    <Container onClick={room}>
       <ImageContaienr>
         <img src={props.image_url} alt={`${props.title} 이미지`} />
         <i>
@@ -94,6 +99,8 @@ export const HomeListItem = (props: RoomType) => {
 };
 
 const Container = styled.div`
+  cursor: pointer;
+
   h3 {
     color: #333;
     font-size: 18px;
