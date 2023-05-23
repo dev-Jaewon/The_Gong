@@ -1,6 +1,8 @@
 package com.codestates.room.service;
 
 import com.codestates.member.entity.MemberRoom;
+import com.codestates.member.entity.MemberTag;
+import com.codestates.member.repository.MemberTagRepository;
 import com.codestates.room.entity.Room;
 import com.codestates.room.repository.RoomRepository;
 import com.codestates.tag.entity.Tag;
@@ -17,10 +19,9 @@ import com.codestates.room.entity.RoomTag;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -32,6 +33,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final MemberRepository memberRepository;
     private final MemberRoomRepository memberRoomRepository;
+    private final MemberTagRepository memberTagRepository;
 
 
     public Room createRoom(Room room, long adminMemberId) {
@@ -46,7 +48,7 @@ public class RoomService {
                     String roomTagName = rt.getTag().getName();
                     Optional<Tag> optionalTag = tagRepository.findByName(roomTagName);
 
-                    if(optionalTag.isPresent()) rt.setTag(optionalTag.get());
+                    if (optionalTag.isPresent()) rt.setTag(optionalTag.get());
                     else throw new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND);
                     return rt;
                 }).collect(Collectors.toList());
@@ -75,7 +77,6 @@ public class RoomService {
         if (!findRoom.getAdminMemberId().equals(findMember.getMemberId()))
             throw new BusinessLogicException(ExceptionCode.ONLY_ADMIN);
 
-        ;
         //이미지 수정 제거
         Optional.ofNullable(room.getTitle())
                 .ifPresent(findRoom::setTitle);
@@ -96,28 +97,22 @@ public class RoomService {
                     .ifPresent(password -> {
                         if (password != null && !password.isEmpty()) {
                             findRoom.setPassword(password);
-                        } else {
-                            throw new BusinessLogicException(ExceptionCode.NEED_PASSWORD);
-                        }
+                        } else {throw new BusinessLogicException(ExceptionCode.NEED_PASSWORD);}
                     });
-        } else {
-            findRoom.setPassword(null);
-        }
 
+        } else {findRoom.setPassword(null);}
 
         if (room.getRoomTagList() != null) {
             findRoom.getRoomTagList().clear();
 
             for (RoomTag tag : room.getRoomTagList()) {
-                tag.setRoom(findRoom);
-            }
-            findRoom.setRoomTagList(room.getRoomTagList());
-        }
+                tag.setRoom(findRoom);}
+
+            findRoom.setRoomTagList(room.getRoomTagList());}
 
         roomRepository.save(findRoom);
         return findRoom;
     }
-
 
 
     public Room switchAdmin(Room room, long newAdminId) {
@@ -138,7 +133,6 @@ public class RoomService {
     }
 
 
-
     public void addFavorite(Room room, boolean isFavorite, long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         Room findRoom = findVerifiedRoom(room.getRoomId());
@@ -148,7 +142,7 @@ public class RoomService {
                 .filter(mr -> mr.getRoom().getRoomId() == findRoom.getRoomId())
                 .findFirst();
 
-        if(existingFavorite.isPresent())
+        if (existingFavorite.isPresent())
             throw new BusinessLogicException(ExceptionCode.DOUBLE_VOTE);
 
         else if (isFavorite) {
@@ -171,7 +165,7 @@ public class RoomService {
             memberRepository.save(findMember);
             roomRepository.save(findRoom);
         }
-      }
+    }
 
 
     public void undoFavorite(Room room, boolean isFavorite, long memberId) {
@@ -206,8 +200,8 @@ public class RoomService {
     }
 
 
-    public Room findRoom(String roomTitle){
-        Room room = roomRepository.findByTitle(roomTitle).orElseThrow(()->new BusinessLogicException(ExceptionCode.ROOM_NOT_FOUND));
+    public Room findRoom(String roomTitle) {
+        Room room = roomRepository.findByTitle(roomTitle).orElseThrow(() -> new BusinessLogicException(ExceptionCode.ROOM_NOT_FOUND));
         return room;
     }
 
@@ -220,6 +214,67 @@ public class RoomService {
     }
 
 
+    //비회원 추천목록
+    public Page<Room> findRecommendRoomsNonMember(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        List<Room> findRooms= roomRepository.findAll();
+
+        findRooms.sort(Comparator.comparingInt(Room::getFavoriteCount).reversed()); //좋아요순으로 정렬
+        List<Room> seletedRooms = findRooms.subList(0, Math.min(findRooms.size(), 50)); //50개 선택
+        Collections.shuffle(seletedRooms);
+        seletedRooms = seletedRooms.subList(0, Math.min(seletedRooms.size(), 20));
+
+        return new PageImpl<>(seletedRooms, pageable, seletedRooms.size());
+    }
+
+
+    //회원 추천목록
+    public Page<Room> findRecommendRooms(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        List<MemberTag> memberTags = memberTagRepository.findAll();
+        //log.info("# 관심태그 {}", memberTags.isEmpty());
+
+        if (memberTags.isEmpty()) {
+            return null;
+        }
+
+        Collections.shuffle(memberTags);
+        String tag1 = null, tag2 = null, tag3 = null;
+
+        switch (memberTags.size()) {
+            case 3:
+                tag3 = memberTags.get(2).getTag().getName();
+                //log.info("# 첫번째 스위치문 {}", tag3);
+            case 2:
+                tag2 = memberTags.get(1).getTag().getName();
+                //log.info("# 두번째 스위치문 {}", tag2);
+            case 1:
+                tag1 = memberTags.get(0).getTag().getName();
+                //log.info("# 세번째 스위치문 {}", tag1);
+                break;
+        }
+
+
+        List<Room> findRooms = new ArrayList<>();
+        Stream.of(tag1, tag2, tag3)
+                .filter(tag -> tag != null)
+                .forEach(tag -> {
+                    List<Room> roomList = roomRepository.findAllByRoomTagList_TagNameContaining(tag, pageable);
+                    findRooms.addAll(roomList);
+                });
+
+        findRooms.sort(Comparator.comparingInt(Room::getFavoriteCount).reversed()); //좋아요순으로 정렬
+        List<Room> seletedRooms = findRooms.subList(0, Math.min(findRooms.size(), 50)); //50개 선택
+        Collections.shuffle(seletedRooms);
+        seletedRooms = seletedRooms.subList(0, Math.min(seletedRooms.size(), 20));
+
+
+        //log.info("# 리턴값 {}", findRooms);
+        return new PageImpl<>(seletedRooms, pageable, seletedRooms.size());
+    }
+
+
     // 외래키 제약조건 해결
     public void deleteRoom(long roomId) {
         Room findRoom = findVerifiedRoom(roomId);
@@ -229,8 +284,6 @@ public class RoomService {
         }
         roomRepository.delete(findRoom);
     }
-
-
 
 
     //Todo : DB 체크 메서드
@@ -251,14 +304,10 @@ public class RoomService {
 
 
     //Todo :
-    // - 최신순 정렬 조회
-    // - 인기순 정렬 조회
-    // - 추천목록 정렬조회
-    // - 생성한방 정렬조회
-    // - 찜한방 정렬조회
-    // - 방문했던 방 정렬조회
-
-
-
-
+        // - 최신순 정렬 조회
+        // - 인기순 정렬 조회
+        // - 추천목록 정렬조회
+        // - 생성한방 정렬조회
+        // - 찜한방 정렬조회
+        // - 방문했던 방 정렬조회
 }
