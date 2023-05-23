@@ -54,7 +54,7 @@ public class StompChatController {
 
         //Session, 새로운 멤버 정보 세션서비스로 저장
         String writer = message.getWriter();
-        String roomId = message.getRoomId();
+        String roomId = Long.toString(longroomId);
         String sessionId = headerAccessor.getSessionId();
         sessionService.registerSession(sessionId, writer, roomId);
         log.info("{} info is saved in session", writer);
