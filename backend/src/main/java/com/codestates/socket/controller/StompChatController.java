@@ -1,5 +1,6 @@
 package com.codestates.socket.controller;
 
+import com.codestates.room.service.RoomService;
 import com.codestates.room.service.RoomServiceTransient;
 import com.codestates.socket.dto.ChatMessageDto;
 import com.codestates.socket.service.ChatRoomService;
@@ -29,6 +30,7 @@ public class StompChatController {
     //특정 메세지를 전달
     private final SimpMessageSendingOperations template;
     private final RoomServiceTransient roomService;
+    private final RoomService roomService2;
     private final ChatRoomService chatRoomService;
     private final WebSocketSessionService sessionService;
 
@@ -47,7 +49,7 @@ public class StompChatController {
         log.info(message.getWriter());
         log.info(message.getRoomId());
 
-        Long longroomId = Long.parseLong(message.getRoomId());
+        Long longroomId = roomService2.findRoom(message.getRoomId()).getRoomId();
         roomService.enterChatRoom(longroomId, message.getWriter());
 
         //Session, 새로운 멤버 정보 세션서비스로 저장
