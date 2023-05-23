@@ -42,6 +42,8 @@ const CreateRoomPage = () => {
   if (userInfoString && usermemberId) {
     setToken(JSON.parse(userInfoString));
     setMemberId(JSON.parse(usermemberId));
+    console.log(userInfoString);
+    console.log(usermemberId);
   } else {
     console.log('스토리지 값 없음');
   }
@@ -58,7 +60,7 @@ const CreateRoomPage = () => {
     console.log('@@@이거 보냅니다@@@');
     console.log(requestData);
 
-    api.post('https://9af7-211-193-143-25.ngrok-free.app/rooms/add', requestData,{
+    api.post(`https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/rooms/${memberId}/add`, requestData,{
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -89,7 +91,7 @@ const CreateRoomPage = () => {
     console.log(memberId)
 
 
-    api.post(`https://9af7-211-193-143-25.ngrok-free.app/thumbnail/${memberId}`, formData,{
+    api.post(`https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/thumbnail/${memberId}`, formData,{
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',
