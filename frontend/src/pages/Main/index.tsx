@@ -15,7 +15,7 @@ export const Main = () => {
         queryFn: () =>
           api
             .get(
-              `https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/members/${localStorage.getItem(
+              `${import.meta.env.VITE_BASE_URL}members/${localStorage.getItem(
                 'member_id'
               )}/created?page=1&size=4`
             )
@@ -25,14 +25,14 @@ export const Main = () => {
       {
         queryKey: ['newRoom', 2],
         queryFn: () =>
-          api.get('https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/rooms/new?page=1&size=5').then((res) => res.data),
+          api.get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`).then((res) => res.data),
         staleTime: Infinity,
       },
       {
         queryKey: ['popularRoom', 2],
         queryFn: () =>
           api
-            .get('https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/search?keyword=&sort=favoriteCount')
+            .get(`${import.meta.env.VITE_BASE_URL}search?keyword=&sort=favoriteCount`)
             .then((res) => res.data),
         staleTime: Infinity,
       },

@@ -10,6 +10,7 @@ import RoomParts from './RoomParts';
 import { MdViewModule } from "react-icons/md"
 import { MdViewQuilt } from "react-icons/md"
 import { FaUser } from "react-icons/fa"
+import Test from './Test';
 
 const RoomPage = () => {
 
@@ -19,8 +20,7 @@ const RoomPage = () => {
     const roomId = searchParams.get('roomId');
   
     const edge = 1.5;
-    const mainColer = 'rgb(79, 175, 177)';
-
+    const mainColor = 'rgb(79, 175, 177)';
 
     useEffect(() => {
       // 페이지 진입 시 로컬 스토리지 값 확인
@@ -43,7 +43,7 @@ const RoomPage = () => {
 
           <RoomPageTitle>
             <Horizontal gap={0.5}>
-              <RoomParts topLeft={edge} flex={1} bgColor={mainColer}>
+              <RoomParts topLeft={edge} flex={1} bgColor={mainColor}>
                 <div className="spanDiv">
                   <span className="icon">{roomId}</span>
                   <span className="icon"> | </span>
@@ -51,9 +51,9 @@ const RoomPage = () => {
                 </div>
               </RoomParts>
               <RoomParts flex={4} color={'rgb(75, 75, 75)'}>
-                <span className="icon">공지사항 : 2주 남았습니다 다들 더 일하십쇼</span> 
+                <span className="icon">공지사항 : 0주 남았습니다 다들 더 일하십쇼</span> 
               </RoomParts>
-              <RoomParts flex={0.3} color={mainColer} gap={1}>
+              <RoomParts flex={0.3} color={mainColor} gap={1}>
                 <MdViewModule></MdViewModule>
                 <MdViewQuilt></MdViewQuilt>
               </RoomParts>
@@ -61,13 +61,14 @@ const RoomPage = () => {
           </RoomPageTitle>
 
           {/* 카메라 컨테이너 */}
-          <Webcam roomId={roomId} userName={userName} edge={edge} mainColer={mainColer}/>
-
+          {/* <Webcam roomId={roomId} userName={userName} edge={edge} mainColer={mainColer}/> */}
+          <Test room={roomId} name={userName} edge={edge} mainColor={mainColor}/>
+        
         </RoomPageLeft>
 
         <RoomPageRight>
           {/* 채팅 컨테이너 */}
-          <Chat roomId={roomId} userName={userName} edge={edge} mainColer={mainColer}/>
+          <Chat roomId={roomId} userName={userName} edge={edge} mainColer={mainColor}/>
         </RoomPageRight>
       </>
     )}

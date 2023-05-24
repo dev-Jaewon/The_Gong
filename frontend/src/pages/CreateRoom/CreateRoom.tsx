@@ -83,8 +83,10 @@ const CreateRoomPage = () => {
   const isLoading = false;
 
   const [selectedFile, setSelectedFile] = useState('');
+  const [formError, setError] = useState(false);
 
-  const handleFileUpload = () => {
+  const handleFileUpload = (e:any) => {
+    e.preventDefault()
     const formData = new FormData();
     formData.append('image', selectedFile);
     console.log(formData)
@@ -99,13 +101,13 @@ const CreateRoomPage = () => {
     })
       .then(response => {
         // 요청 성공 시 처리
-        console.log('@@@이거 받았습니다@@@');
-        console.log(response.data);
+  
+        setError(true)
         setImgUrl(response.data)
       })
       .catch(error => {
         // 요청 실패 시 처리
-        console.error(error);
+        setError(false)
       });
   }
 
@@ -116,7 +118,7 @@ const CreateRoomPage = () => {
       <Container>
         <div>
           <h1>스터디 만들기</h1>
-          <RoomForm onSubmit={handleSubmit} isLoading={isLoading} setSelectedFile={setSelectedFile} handleFileUpload={handleFileUpload}></RoomForm>
+          <RoomForm formError={formError} setError={setError} onSubmit={handleSubmit} isLoading={isLoading} setSelectedFile={setSelectedFile} handleFileUpload={handleFileUpload}></RoomForm>
         </div>
       </Container>
     </CreateRoomPageContainer>

@@ -5,26 +5,45 @@ import { BsPencilSquare } from 'react-icons/bs';
 import { BiUser } from 'react-icons/bi';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../util/api';
+import { useEffect, useState } from 'react';
 
 export const Header = () => {
   const { data } = useQuery(
     ['auth'],
-    () => api.get('/auth').then((res) => res.data),
+    () => api.get('https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/auth').then((res) => res.data),
     { enabled: Boolean(localStorage.getItem('access_token')) }
   );
+
+  const [nickname, setNickname] = useState()
+
+  useEffect(() => {
+  const userNickname = localStorage.getItem('nickname');
+
+  if (userNickname) {
+    setNickname(JSON.parse(userNickname));
+    console.log(setNickname);
+  } else {
+    console.log('스토리지 값 없음');
+  }
+  }, []);
 
   return (
     <Container>
       <div className="content">
         <div className="auth_container">
-          {!data ? (
+          {!nickname ? (
             <>
               <Link to="/signin">로그인</Link>
               <div className="divider"></div>
               <Link to="/signup">회원가입</Link>
             </>
           ) : (
-            <>{data.nickname}님 환영합니다.</>
+            <div className='user'>
+              <div>
+                <span className='userName'>{nickname}</span>님 환영합니다.
+              </div>
+              <button>로그아웃</button>
+            </div>
           )}
         </div>
         <div className="service_container">
@@ -56,6 +75,28 @@ const Container = styled.div`
   user-select: none;
   box-shadow: rgba(0, 0, 0, 0.07) 0px 3px 4px 0px;
   font-family: Noto Sans KR;
+  position: relative;
+  z-index: 10;
+
+  .user{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 12rem;
+    font-size: 0.9rem;
+    color: rgb(61, 61, 61);
+
+    .userName{
+      color: #4FAFB1
+    }
+
+    button{
+      padding: 0.3rem;
+      border: 1px solid #4FAFB1;
+      border-radius: 0.2rem;
+    }
+  }
 
   > div {
     width: 100%;
@@ -115,6 +156,7 @@ const Container = styled.div`
         margin-left: 30px;
       }
     }
+
   }
 `;
 
