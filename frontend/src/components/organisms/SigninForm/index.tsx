@@ -44,15 +44,18 @@ export const SigninForm = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: SigninData) =>
-      api.post<ResSignin>(`${import.meta.env.VITE_BASE_URL}members/login`, data),
+      api.post<ResSignin>(
+        `${import.meta.env.VITE_BASE_URL}members/login`,
+        data
+      ),
 
-    onSuccess: ({ data }) => {
-      (Object.keys(data) as Array<keyof ResSignin>).forEach((key) => {
-        localStorage.setItem(key, JSON.stringify(data[key]));
+    onSuccess: (res) => {
+      (Object.keys(res.data) as Array<keyof ResSignin>).forEach((key) => {
+        localStorage.setItem(key, JSON.stringify(res.data[key]));
       });
 
-      console.log(data)
-      // navigate('/');
+      localStorage.setItem('email', JSON.stringify(data.email));
+      navigate('/');
     },
     onError: () => setFetchErrorMessage(SIGNIN_VALID_MESSAGE.login),
   });
