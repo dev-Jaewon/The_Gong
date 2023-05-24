@@ -20,19 +20,25 @@ export const Main = () => {
               )}/created?page=1&size=4`
             )
             .then((res) => res.data),
-        staleTime: Infinity,
+        refetchOnMount: 'always',
       },
       {
         queryKey: ['newRoom', 2],
         queryFn: () =>
-          api.get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`).then((res) => res.data),
+          api
+            .get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`)
+            .then((res) => res.data),
         staleTime: Infinity,
       },
       {
         queryKey: ['popularRoom', 2],
         queryFn: () =>
           api
-            .get(`${import.meta.env.VITE_BASE_URL}search?keyword=&sort=favoriteCount`)
+            .get(
+              `${
+                import.meta.env.VITE_BASE_URL
+              }search?keyword=&sort=favoriteCount`
+            )
             .then((res) => res.data),
         staleTime: Infinity,
       },
