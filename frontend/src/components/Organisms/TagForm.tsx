@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import TagBox from "../Molecules/TagBox";
+import TagBox from "../moecules/TagBox";
 import BorderBox from "../atoms/Tag/BorderBox";
 import XMark from "../atoms/Tag/XMark";
 import { useEffect, useState } from "react";
@@ -48,7 +48,6 @@ const TagFormContainer = styled.div<TagFormProps>`
  }
 `;
 
-
 function TagForm({ isPopupOpen, ChangeisPopupOpen, setTags }: TagFormProps) {
   //임시 데이터
   const [tagData, setTagData ] = useState<TagData[]>([]);;
@@ -66,6 +65,7 @@ function TagForm({ isPopupOpen, ChangeisPopupOpen, setTags }: TagFormProps) {
         }
       })
       setTagData(colorData)
+      console.log(response.data.data)
     } catch (error) {
       console.error(error);
     }

@@ -43,8 +43,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
 
   // 렌더링 시 실행되는 코드
   useEffect(() => {
-
-    socketRef.current = new SockJS('https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/stomp');
+    socketRef.current = new SockJS(`${import.meta.env.VITE_BASE_URL}stomp`);
 
     //WebSocket 객체를 Stomp.js의 클라이언트 객체로 변환
     stompClientRef.current = Stomp.over(socketRef.current);
@@ -94,10 +93,8 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
     console.log('========== 이거 받았다 ==========')
     console.log(chat)
 
-  
     if (chat.type === 'ENTER') {
       setReceivedMessage((prevState) => [...prevState, chat]);
-      chatParticipants = chat.length;
 
     } else if (chat.type === 'LEAVE') {
       setReceivedMessage((prevState) => [...prevState, chat]);
@@ -105,6 +102,12 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
     } else if (chat.type === 'TALK') {
       setReceivedMessage((prevState) => [...prevState, chat]);
     }
+     else {
+       console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+      chatParticipants = chat.length;
+      console.log(chat)
+    }
+
 
     // 스크롤 내리기
     scrollToBottom();

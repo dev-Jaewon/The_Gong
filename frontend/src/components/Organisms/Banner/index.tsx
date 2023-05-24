@@ -35,14 +35,18 @@ export const Banner = () => {
 };
 
 const Container = styled.div`
-  width: 1900px;
 `;
 
 const ImgContainer = styled.div`
-  outline: none;
+  width: 100vw;
+  height: 20rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Img = styled.img`
   width: 100%;
+  height: 20rem;
   object-fit: cover;
 `;

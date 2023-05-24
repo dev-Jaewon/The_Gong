@@ -12,7 +12,7 @@ export const SignupTemplate = () => {
   const [errors, setErrors] = useState<SignupData | null>(null);
 
   const mutation = useMutation({
-    mutationFn: async (data: SignupData) => api.post(`https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/members/add`, data),
+    mutationFn: async (data: SignupData) => api.post(`${import.meta.env.VITE_BASE_URL}members/add`, data),
 
     onSuccess: () => setStep(SIGNUP_STEP.DONE),
     onError: (err: any) => {

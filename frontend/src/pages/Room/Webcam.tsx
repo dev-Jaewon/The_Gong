@@ -35,20 +35,24 @@ const Webcam: React.FC<WebcamProps> = ({
   // 언마운트 될 때 실행되는 클린 업 함수
   useEffect(() => {
     rtcSocket.current = new SockJS(
-      'https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/groupcall'
+      `${import.meta.env.VITE_BASE_URL}groupcall`
     );
 
     // 연결될 때 실행되는 이벤트 핸들러 코드
     rtcSocket.current.onopen = () => {
       console.log('========== 화상채팅 연결됨 ==========');
 
+      // 1 - 입장
       var message = {
         id: 'joinRoom',
         name: userName,
         room: roomId,
       };
 
-      sendMessage(message);
+      if (rtcSocket.current && rtcSocket.current.readyState === SockJS.OPEN) {
+        sendMessage(message);
+      }
+
     };
 
     // 연결이 끊어졌을 때 실행되는 코드
@@ -61,6 +65,7 @@ const Webcam: React.FC<WebcamProps> = ({
     };
   }, []);
 
+    
   function sendMessage(message: any) {
     if (rtcSocket.current && rtcSocket.current.readyState === SockJS.OPEN) {
       const jsonMessage = JSON.stringify(message);
@@ -86,13 +91,19 @@ const Webcam: React.FC<WebcamProps> = ({
 
         switch (parsedMessage.id) {
           case 'existingParticipants':
+            
+            // 2 - 현재 참여자들
             console.log('========== existingParticipants ==========');
             onExistingParticipants(parsedMessage);
             break;
-
+            
           case 'newParticipantArrived':
             console.log('========== newParticipantArrived ==========');
             onNewParticipant(parsedMessage);
+            break;
+
+          case 'participantLeft':
+            onParticipantLeft(parsedMessage);
             break;
 
           case 'receiveVideoAnswer':
@@ -101,19 +112,18 @@ const Webcam: React.FC<WebcamProps> = ({
             break;
 
           case 'iceCandidate':
-            console.log('========== iceCandidate ==========');
-            participants.current[
-              participants.current.name
-            ].rtcPeer.addIceCandidate(
+            console.log('========== iceCandidate ==========');      
+            participants.current[parsedMessage.name].rtcPeer.addIceCandidate(
               parsedMessage.candidate,
               function (error: Error) {
                 if (error) {
-                  console.error('Error adding candidate: ' + error);
+                  console.error('아이스캔디데이트 애러 ' + error);
                   return;
                 }
-                // changeParticipants()
               }
             );
+
+ 
             break;
 
           default:
@@ -125,7 +135,10 @@ const Webcam: React.FC<WebcamProps> = ({
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+  // 내 미디어에 대한 오퍼를 보내는 함수
   function onExistingParticipants(msg: any) {
+    
+    // 나의 미디어 스트림 정보
     var constraints = {
       audio: true,
       video: {
@@ -137,46 +150,124 @@ const Webcam: React.FC<WebcamProps> = ({
       },
     };
 
+    // 내 이름으로 참가자 객체 생성
     var participant = new Participant(userName);
+
+    // 참가자들 객체에 내 이름으로 참가자 객체 추가
     participants.current[userName] = participant;
+
+    // 설정해 둔 비디오 요소를 저장
     var video = participant.getVideoElement();
 
+    // options 객체는 WebRTC 피어의 생성 옵션을 설정한다.
+    // localVideo는 로컬 비디오 요소를 지정한다.
+    // mediaConstraints 미디어 스트림의 제약 조건을 설정한다.
+    // onicecandidate 콜백 함수를 지정하여 ICE candidate 이벤트를 처리한다.
     var options = {
       localVideo: video,
       mediaConstraints: constraints,
+          
+      // onicecandidate는 WebRTC에서 ICE 후보자 이벤트를 처리하기 위한 콜백 함수입니다. 
+      // ICE 후보자는 피어 간의 네트워크 연결을 수립하기 위해 사용되는 네트워크 정보입니다.
       onicecandidate: participant.onIceCandidate.bind(participant),
     };
 
+    // participant.rtcPeer에 참가자의 피어 객체를 생성하는 작업
     participant.rtcPeer = new (kurentoUtils.WebRtcPeer
-      .WebRtcPeerSendonly as any)(options, (error: string | undefined) => {
+
+      // WebRtcPeerSendonly는 WebRTC 피어 객체를 생성한다.
+      // participant.rtcPeer에 WebRTC 피어 객체가 생성되면, 
+      // 해당 피어를 사용하여 Offer SDP를 생성하고 상대 피어에게 전송할 수 있습니다.
+
+      // WebRtcPeerSendonly는 다른 피어(예: WebRtcPeerRecvonly, 와 연결된 
+      // WebRTC 세션에서 송신 역할을 담당합니다. 
+      // 즉, 오디오 및 비디오 스트림을 상대방에게 전송할 수 있습니다.
+      .WebRtcPeerSendonly as any)
+
+      //options 객체는 WebRTC 피어의 생성 옵션을 설정한다.
+      (options, (error:Error) => {
       if (error) {
         return console.error(error);
       }
     });
 
+    // generateOffer()는 Offer WebRTC 피어 객체를 사용해서 SDP를 생성한다.
+    participant.rtcPeer.generateOffer(
+      // offerToReceiveVideo() 메서드는 생성된 Offer SDP를 
+      // 상대 피어에게 전송하는 등의 작업을 처리할 수 있습니다.
+      participant.offerToReceiveVideo.bind(participant)
+    );
+
+    // 참가자들이 담겨있는 data 배열에 있는 각 항목에 대해 
+    // receiveVideo 함수를 실행하는 코드.
+    msg.data.forEach(receiveVideo);
+
+  }
+
+
+  // 4 - Answere를 만드는 함수 
+  function receiveVideo(sender: any) {
+
+    var participant = new Participant(sender);
+    participants.current[sender] = participant;
+    console.log(participants.current[sender])
+
+    var video = participant.getVideoElement();
+
+    var options = {
+      remoteVideo: video,
+      onicecandidate: participant.onIceCandidate.bind(participant),
+    }
+
+
+    // WebRtcPeerRecvonly는수신 전용(peerReceive) 역할을 나타내는 클래스이다. 
+    // 이 클래스를 사용하여 WebRTC 피어 객체를 생성할 수 있다.
+    // WebRtcPeerRecvonly는 다른 피어(예: WebRtcPeerSendonly)와 연결된 WebRTC 세션에서 
+    // 수신 역할을 담당합니다. 즉, 상대방으로부터 오디오 및 비디오 스트림을 수신할 수 있습니다. 
+    // 따라서, WebRtcPeerRecvonly를 사용하여 수신 역할을 할 수 있는 WebRTC 피어 객체를 생성하고, 
+    // 상대방에게 Offer SDP를 전송하여 비디오 및 오디오 스트림을 수신할 수 있습니다.
+    participant.rtcPeer = new (kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly as any)
+    (options, (error:Error) => {
+      if (error) {
+        return console.error(error);
+      }
+    });
+    
+
+    // generateOffer() 메서드는 해당 WebRTC 피어 객체를 사용하여 
+    // Answer SDP를 생성합니다. Answer SDP는 Offer SDP에 대한 응답으로 생성되며, 
+    // 피어 간의 연결 설정에 필요한 정보를 포함합니다.
     participant.rtcPeer.generateOffer(
       participant.offerToReceiveVideo.bind(participant)
     );
 
-    msg.data.forEach(receiveVideo);
+
   }
+
+  
+  function onParticipantLeft(request:any) {
+    console.log('Participant ' + request.name + ' left');
+    var participant = participants.current[request.name];
+    participant.dispose();
+    delete participants.current[request.name];
+  }
+
 
   function onNewParticipant(request: any) {
     receiveVideo(request.name);
   }
 
+
+  // 6 - 내가 보낸 오퍼에 대한 Answer SDP를 처리하는 작업입니다.
   function receiveVideoResponse(result: any) {
-    // participants[result.name].rtcPeer
-    // 해당하는 참가자의 WebRTC Peer 객체
+    // 참가자 목록에 Answer SDP를 보낸 참가자의 rtcPeer에 접근
+    // processAnswer() 메서드는 Answer SDP를 처리하여 연결을 설정하는 역할을 합니다
+    // 첫 번째 인자로는 수신한 Answer SDP(result.sdpAnswer)가 전달되며
+    // 두 번째 인자는 처리 과정에서 발생하는 오류를 처리하는 콜백 함수입니다
+    // Answer SDP를 수신한 참가자의 WebRTC 피어 객체에 전달되어 연결 설정이 이루어집니다.
 
-    // processAnswer
-    // 응답 SDP를 처리하고, 연결 설정을 수행합니다
-
-    // result.sdpAnswer,
-    // 이 응답 SDP에는 상대방이 선택한 미디어 형식, 코덱, IP 주소, 포트 번호 등이 포함되어 있습니다.
-    // 응답 SDP를 처리하여 자신의 WebRTC Peer 객체에 연결 설정을 수행하고,
-    // 이를 통해 미디어 스트림의 전송이 이루어집니다.
-
+    // 따라서, 해당 코드는 이제윤이 보낸 Answer SDP를 
+    // 이제윤의 참가자 객체의 WebRTC 피어 객체에 전달하여 연결을 설정하는 역할을 합니다.
     participants.current[result.name].rtcPeer.processAnswer(
       result.sdpAnswer,
       function (error: Error) {
@@ -184,6 +275,8 @@ const Webcam: React.FC<WebcamProps> = ({
       }
     );
   }
+
+
 
   // function callResponse(message:any) {
   //   if (message.response != "accepted") {
@@ -196,35 +289,14 @@ const Webcam: React.FC<WebcamProps> = ({
   //   }
   // }
 
-  function receiveVideo(sender: any) {
-    var participant = new Participant(sender);
-    participants.current[sender] = participant;
-    var video = participant.getVideoElement();
-
-    var options = {
-      remoteVideo: video,
-      onicecandidate: participant.onIceCandidate.bind(participant),
-    };
-
-    participant.rtcPeer = new (kurentoUtils.WebRtcPeer
-      .WebRtcPeerRecvonly as any)(options, (error: string | undefined) => {
-      if (error) {
-        return console.error(error);
-      }
-    });
-
-    participant.rtcPeer.generateOffer(
-      participant.offerToReceiveVideo.bind(participant)
-    );
-  }
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
   class Participant {
-    name: string;
-    container: HTMLDivElement;
-    span: HTMLSpanElement;
-    video: HTMLVideoElement;
+    name: any;
+    container: any;
+    span: any;
+    video: any;
     rtcPeer: any;
 
     constructor(name: string) {
@@ -263,21 +335,25 @@ const Webcam: React.FC<WebcamProps> = ({
       this.video.controls = false;
     }
 
-    getElement(): HTMLDivElement {
+    getElement(): any {
       return this.container;
     }
 
-    getVideoElement(): HTMLVideoElement {
+    getVideoElement(): any {
       return this.video;
     }
 
+    // generateOffer에서 생성된 sdp를 인자로 전달받고
+    // 상대 피어에게 sdp를 전송하는 코드
+    // 상대 피어는 전달받은 Offer SDP를 기반으로 Answer SDP를 생성하고 다시 응답한다.
     offerToReceiveVideo(error: any, offerSdp: any, wp: any) {
       if (error) return console.error('sdp offer error');
-      // console.log("Invoking SDP offer callback function");
 
       console.log('========== offer ==========');
+      console.log(this.name)
       console.log(offerSdp);
 
+      // 3 - 오퍼를 보낸다.
       const msg = {
         id: 'receiveVideoFrom',
         sender: this.name,
@@ -287,9 +363,16 @@ const Webcam: React.FC<WebcamProps> = ({
       sendMessage(msg);
     }
 
+    // SDP 교환 후에는 피어가 생성한 ICE candidate를 상대 피어에게 전송하여 
+    // 서로의 네트워크 정보를 교환하게 됩니다. 
+    // 이를 통해 피어 간의 연결이 수립되고 미디어 스트림의 송수신이 가능해집니다.
     onIceCandidate(candidate: any, wp: any) {
       // console.log("Local candidate" + JSON.stringify(candidate));
+      
+      
 
+      console.log('========== candidate ==========');
+      console.log(this.name)
       const message = {
         id: 'onIceCandidate',
         candidate: candidate,
@@ -306,6 +389,10 @@ const Webcam: React.FC<WebcamProps> = ({
 
   const videoOn = () => {
     setCameraOn((prev) => !prev);
+
+    console.log(participants.current[userName].rtcPeer );
+    console.log(participants.current['판다류'].rtcPeer );
+
     participants.current[userName].rtcPeer.videoEnabled =
       !participants.current[userName].rtcPeer.videoEnabled;
   };

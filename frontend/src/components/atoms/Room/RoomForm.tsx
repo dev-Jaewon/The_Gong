@@ -4,7 +4,7 @@ import useForm from "../../../hooks/useForm";
 import { InputLabel } from "../../moecules/InputLabel";
 import { Button } from "../Button";
 import { useState } from "react";
-import TagForm from "../../Organisms/TagForm";
+import TagForm from "../../organisms/TagForm";
 import { api } from "../../../util/api";
 import TagButton from "../Tag/TagButton";
 
@@ -34,6 +34,7 @@ const RadioContainer = styled.div`
     outline: max(2px, 0.1em) dotted tomato;
   }
 
+
 `;
 
 const ContainerForm = styled.form`
@@ -46,6 +47,11 @@ const ContainerForm = styled.form`
 
   button {
     margin-top: 20px;
+  }
+
+  .error{
+    font-size: 0.8rem;
+    color: #FF0100;
   }
 `
 const TagsContainer = styled.div`
@@ -78,6 +84,30 @@ const InputTitle = styled.div`
     cursor: pointer;
   }
 
+`
+const ImgContainer = styled.div`
+
+  .imgBox{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    div{
+    color:#4D5358;
+    font-size: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #D3D3D3;
+    border-radius: 0.2rem;
+    cursor: pointer;
+    }
+
+    input{
+      color:#4D5358;
+      font-size: 0.5rem;
+    }
+  }
+
+
   
 `
 
@@ -92,6 +122,8 @@ export type RoomData = {
 };
 
 export type RoomFormProps = {
+  formError: boolean;
+  setError: (value: any) => void;
   isLoading: boolean;
   onSubmit: (value: RoomData) => void;
   setSelectedFile: (value: any) => void;
@@ -99,7 +131,7 @@ export type RoomFormProps = {
 };
 
 const RoomForm = (props: RoomFormProps) => {
-  const { setSelectedFile, handleFileUpload } = props;
+  const { setSelectedFile, handleFileUpload, formError, setError} = props;
 
 
   const [isPrivate, setIsPrivate] = useState(false);
@@ -197,10 +229,19 @@ const RoomForm = (props: RoomFormProps) => {
           isValid={errors.member_max_count ? false : true}
         />
 
-        <div>
-          <input type="file" onChange={handleFileChange} />
-          <button onClick={handleFileUpload}>Upload</button>
-        </div>
+        <ImgContainer>
+          <InputTitle>
+            <span>썸네일</span>
+          </InputTitle>
+
+          <div className="imgBox">
+            <input type="file" onChange={handleFileChange} />
+            <div onClick={handleFileUpload}>Upload</div>
+          </div>
+
+        {formError && <span className="error">파일의 용량이 너무 큽니다</span>}
+        </ImgContainer>
+
 
         <RadioContainer>
 

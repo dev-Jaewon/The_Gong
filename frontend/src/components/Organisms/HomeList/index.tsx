@@ -48,8 +48,8 @@ export const HomeList = (props: HomeListItemProps) => {
           <IoIosArrowForward size={30} />
         </i>
         <Swiper {...swiperSetProperty}>
-          {props.list.map((room) => (
-            <SwiperSlide>
+          {props.list.map((room, idx) => (
+            <SwiperSlide key={idx}>
               <ItemContainer imgMaxWidth={props.imgMaxWidth}>
                 <HomeListItem {...room} />
               </ItemContainer>
