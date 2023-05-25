@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useEffect } from 'react';
 import SockJS from 'sockjs-client';
-import { WebRtcPeer } from 'kurento-utils';
+import kurentoUtils from 'kurento-utils';
 import styled from 'styled-components';
 import RoomParts from './RoomParts';
 import { useNavigate } from 'react-router-dom';
@@ -13,11 +13,8 @@ import { BsFillMicMuteFill } from 'react-icons/bs';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { IoLogOut } from 'react-icons/io5';
 
-// type Test = {
-//   name: string;
-// };
 
-const Test1 = ({ room, name, edge, mainColor }) => {
+const Test1 = ({room, name, edge, mainColor}) => {
   let participants = useRef({});
   let view = true;
   const rtcSocket = useRef(null);
@@ -29,7 +26,7 @@ const Test1 = ({ room, name, edge, mainColor }) => {
     rtcSocket.current.onopen = () => {
       console.log('연결됨');
 
-      const message = {
+      var message = {
         id: 'joinRoom',
         name: name,
         room: room,
@@ -40,22 +37,24 @@ const Test1 = ({ room, name, edge, mainColor }) => {
       // }
 
       sendMessage(message);
+      
     };
 
     // 연결이 끊어졌을 때 실행되는 코드
     return () => {
-      // 예상하지 못한 오류를 방지하기위해 명시적으로 연결을 끊어주는 코드
-      rtcSocket.current.close();
-      console.log('========== 화상채팅 연결 종료 ==========');
+        // 예상하지 못한 오류를 방지하기위해 명시적으로 연결을 끊어주는 코드
+        rtcSocket.current.close();
+        console.log('========== 화상채팅 연결 종료 ==========');
     };
   }, []);
 
-  window.onbeforeunload = function () {
-    rtcSocket.current.close();
+  window.onbeforeunload = function() {
+     rtcSocket.current.close();
   };
 
   // 컴포넌트가 렌더링 될 때 마다 실행되는 코드
   useEffect(() => {
+    
     rtcSocket.current.onmessage = (message) => {
       var parsedMessage = JSON.parse(message.data);
 
@@ -72,7 +71,7 @@ const Test1 = ({ room, name, edge, mainColor }) => {
           break;
 
         case 'participantLeft':
-          onParticipantLeft(parsedMessage);
+          onParticipantLeft(parsedMessage);;
           break;
 
         case 'receiveVideoAnswer':
@@ -100,15 +99,17 @@ const Test1 = ({ room, name, edge, mainColor }) => {
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-  function onParticipantLeft(request) {
-    const element = document.getElementById(request.name);
-    element.parentNode.removeChild(element);
-    delete participants.current[request.name];
-  }
+
+function onParticipantLeft(request) {  
+  const element = document.getElementById(request.name);
+  element.parentNode.removeChild(element);
+	delete participants.current[request.name];
+}
 
   function onNewParticipant(request) {
     receiveVideo(request.name);
   }
+
 
   function receiveVideoResponse(result) {
     participants.current[result.name].rtcPeer.processAnswer(
@@ -119,6 +120,7 @@ const Test1 = ({ room, name, edge, mainColor }) => {
     );
   }
 
+
   function sendMessage(message) {
     if (rtcSocket.current && rtcSocket.current.readyState === SockJS.OPEN) {
       const jsonMessage = JSON.stringify(message);
@@ -127,6 +129,7 @@ const Test1 = ({ room, name, edge, mainColor }) => {
       console.error('Connection is not established yet.');
     }
   }
+
 
   // function callResponse(message) {
   //   if (message.response != 'accepted') {
@@ -139,7 +142,8 @@ const Test1 = ({ room, name, edge, mainColor }) => {
   //   }
   // }
 
-  const onExistingParticipants = (msg) => {
+
+  function onExistingParticipants(msg) {
     let constraints = {
       audio: true,
       video: {
@@ -151,6 +155,7 @@ const Test1 = ({ room, name, edge, mainColor }) => {
       },
     };
 
+
     let participant = new Participant(name);
     participants.current[name] = participant;
     let video = participant.getVideoElement();
@@ -160,21 +165,21 @@ const Test1 = ({ room, name, edge, mainColor }) => {
       mediaConstraints: constraints,
       onicecandidate: participant.onIceCandidate.bind(participant),
     };
-    participant.rtcPeer = new WebRtcPeer.WebRtcPeerSendonly(
+    participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
       options,
-      (error) => {
-        if (error) return console.error(error);
-
-        this.generateOffer(
-          participant.offerToReceiveVideo.bind(participant)
-        );
+      function (error) {
+        if (error) {
+          return console.error(error);
+        }
+        this.generateOffer(participant.offerToReceiveVideo.bind(participant));
       }
     );
 
     msg.data.forEach(receiveVideo);
-  };
+  }
 
-  const receiveVideo = (sender) => {
+
+  function receiveVideo(sender) {
     let participant = new Participant(sender);
     participants.current[sender] = participant;
     let video = participant.getVideoElement();
@@ -184,103 +189,107 @@ const Test1 = ({ room, name, edge, mainColor }) => {
       onicecandidate: participant.onIceCandidate.bind(participant),
     };
 
-    participant.rtcPeer = new WebRtcPeer.WebRtcPeerRecvonly(
+    participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
-      (error) => {
-        if (error) return console.error(error);
-
-        this.generateOffer(
-          participant.offerToReceiveVideo.bind(participant)
-        );
+      function (error) {
+        if (error) {
+          return console.error(error);
+        }
+        this.generateOffer(participant.offerToReceiveVideo.bind(participant));
       }
     );
-  };
+  }
+
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-  // const Participant = (name: string) => {
-  //   (this as any).name = name;
-  //   let container = document.createElement('div');
-  //   container.id = name;
-  //   container.classList.add('container');
-  //   let span = document.createElement('span');
-  //   let video = document.createElement('video');
-  //   span.classList.add('name');
-  //   video.classList.add('video');
-  //   video.classList.add('roomCam');
-  //   let rtcPeer;
 
-  //   container.appendChild(video);
-  //   container.appendChild(span);
+  function Participant(name) {
+    this.name = name;
+    let container = document.createElement('div');
+    container.id = name;
+    container.classList.add('container');
+    let span = document.createElement('span');
+    let video = document.createElement('video');
+    span.classList.add('name');
+    video.classList.add('video');
+    video.classList.add('roomCam');
+    let rtcPeer;
 
-  //   if (view) {
-  //     document.getElementById('participants1').appendChild(container);
-  //     view = !view;
-  //   } else {
-  //     document.getElementById('participants2').appendChild(container);
-  //     view = !view;
-  //   }
+    container.appendChild(video);
+    container.appendChild(span);
 
-  //   span.appendChild(document.createTextNode(name));
+    if (view) {
+      document.getElementById('participants1').appendChild(container);
+      view = !view;
+    } else {
+      document.getElementById('participants2').appendChild(container);
+      view = !view;
+    }
 
-  //   video.id = 'video-' + name;
-  //   video.autoplay = true;
-  //   video.controls = false;
+    span.appendChild(document.createTextNode(name));
 
-  //   (this as any).getElement = () => container;
+    video.id = 'video-' + name;
+    video.autoplay = true;
+    video.controls = false;
 
-  //   (this as any).getVideoElement = () => video;
+    this.getElement = function () {
+      return container;
+    };
 
-  //   (this as any).offerToReceiveVideo = (
-  //     error: any,
-  //     offerSdp: any,
-  //     wp: any
-  //   ) => {
-  //     if (error) return console.error('sdp offer error');
-  //     // console.log("Invoking SDP offer callback function");
+    this.getVideoElement = function () {
+      return video;
+    };
 
-  //     let msg = {
-  //       id: 'receiveVideoFrom',
-  //       sender: name,
-  //       sdpOffer: offerSdp,
-  //     };
+    this.offerToReceiveVideo = function (error, offerSdp, wp) {
+      if (error) return console.error('sdp offer error');
+      // console.log("Invoking SDP offer callback function");
 
-  //     sendMessage(msg);
-  //   };
+      let msg = {
+        id: 'receiveVideoFrom',
+        sender: name,
+        sdpOffer: offerSdp,
+      };
 
-  //   (this as any).onIceCandidate = (candidate: any, wp: any) => {
-  //     // console.log("Local candidate" + JSON.stringify(candidate));
+      sendMessage(msg);
+    };
 
-  //     let message = {
-  //       id: 'onIceCandidate',
-  //       candidate: candidate,
-  //       name: name,
-  //     };
-  //     sendMessage(message);
-  //   };
+    this.onIceCandidate = function (candidate, wp) {
+      // console.log("Local candidate" + JSON.stringify(candidate));
 
-  //   Object.defineProperty(this, 'rtcPeer', { writable: true });
-  // };
+      let message = {
+        id: 'onIceCandidate',
+        candidate: candidate,
+        name: name,
+      };
+      sendMessage(message);
+    };
 
-  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    Object.defineProperty(this, 'rtcPeer', { writable: true });
+  }
 
-  const [isCameraOn, setCameraOn] = useState(true);
-  const [isMicOn, setMicOn] = useState(true);
+  
+ //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-  const videoOn = () => {
-    setCameraOn((prev) => !prev);
-    console.log(participants.current);
-    participants.current[name].rtcPeer.videoEnabled =
-      !participants.current[name].rtcPeer.videoEnabled;
-  };
 
-  const audioOn = () => {
-    setMicOn((prev) => !prev);
-    participants.current[name].rtcPeer.audioEnabled =
-      !participants.current[name].rtcPeer.audioEnabled;
-  };
+ const [isCameraOn, setCameraOn] = useState(true);
+ const [isMicOn, setMicOn] = useState(true);
 
-  const roomLeave = () => {
+ const videoOn = () => {
+   setCameraOn((prev) => !prev);
+   console.log(participants.current)
+   participants.current[name].rtcPeer.videoEnabled =
+     !participants.current[name].rtcPeer.videoEnabled;
+ };
+
+ const audioOn = () => {
+   setMicOn((prev) => !prev);
+   participants.current[name].rtcPeer.audioEnabled =
+     !participants.current[name].rtcPeer.audioEnabled;
+ };
+
+ const roomLeave = () => {
+
     sendMessage({
       id: 'leaveRoom',
     });
@@ -293,7 +302,8 @@ const Test1 = ({ room, name, edge, mainColor }) => {
     // }
 
     console.log('========== 화상채팅 연결 종료 ==========');
-  };
+  
+ };
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   return (
