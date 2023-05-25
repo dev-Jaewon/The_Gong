@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import { GlobalStyles } from './styles/GlobalStyle';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
@@ -37,13 +37,13 @@ let router = createBrowserRouter([
     path: '/signin',
     Component: () => <Signin />,
   },
-  { 
-    path: '/search', 
-    Component: () => <Search /> 
+  {
+    path: '/search',
+    Component: () => <Search />,
   },
-  { 
-    path: '/room', 
-    Component: () => <RoomPage/> 
+  {
+    path: '/room',
+    Component: lazy(() => import('./pages/Room/RoomPage.tsx')),
   },
 ]);
 

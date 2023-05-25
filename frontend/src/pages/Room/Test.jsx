@@ -13,12 +13,12 @@ import { BsFillMicMuteFill } from 'react-icons/bs';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { IoLogOut } from 'react-icons/io5';
 
-type Test = {
-  name: string;
-};
+// type Test = {
+//   name: string;
+// };
 
-const Test1 = ({ room, name, edge, mainColor }: any) => {
-  let participants = useRef<{ [key: string]: any }>({});
+const Test1 = ({ room, name, edge, mainColor }) => {
+  let participants = useRef({});
   let view = true;
   const rtcSocket = useRef(null);
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
     rtcSocket.current.onopen = () => {
       console.log('연결됨');
 
-      var message = {
+      const message = {
         id: 'joinRoom',
         name: name,
         room: room,
@@ -56,7 +56,7 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
 
   // 컴포넌트가 렌더링 될 때 마다 실행되는 코드
   useEffect(() => {
-    rtcSocket.current.onmessage = (message: any) => {
+    rtcSocket.current.onmessage = (message) => {
       var parsedMessage = JSON.parse(message.data);
 
       console.log('========== 이거 받았다 ==========');
@@ -82,7 +82,7 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
         case 'iceCandidate':
           participants.current[parsedMessage.name].rtcPeer.addIceCandidate(
             parsedMessage.candidate,
-            function (error: any) {
+            function (error) {
               if (error) {
                 console.error('Error adding candidate: ' + error);
                 return;
@@ -100,26 +100,26 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-  function onParticipantLeft(request: any) {
+  function onParticipantLeft(request) {
     const element = document.getElementById(request.name);
     element.parentNode.removeChild(element);
     delete participants.current[request.name];
   }
 
-  function onNewParticipant(request: any) {
+  function onNewParticipant(request) {
     receiveVideo(request.name);
   }
 
-  function receiveVideoResponse(result: any) {
+  function receiveVideoResponse(result) {
     participants.current[result.name].rtcPeer.processAnswer(
       result.sdpAnswer,
-      function (error: any) {
+      function (error) {
         if (error) return console.error(error);
       }
     );
   }
 
-  function sendMessage(message: any) {
+  function sendMessage(message) {
     if (rtcSocket.current && rtcSocket.current.readyState === SockJS.OPEN) {
       const jsonMessage = JSON.stringify(message);
       rtcSocket.current.send(jsonMessage);
@@ -139,7 +139,7 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
   //   }
   // }
 
-  const onExistingParticipants = (msg: any) => {
+  const onExistingParticipants = (msg) => {
     let constraints = {
       audio: true,
       video: {
@@ -151,7 +151,7 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
       },
     };
 
-    let participant = new (Participant as any)(name);
+    let participant = new Participant(name);
     participants.current[name] = participant;
     let video = participant.getVideoElement();
 
@@ -162,10 +162,10 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
     };
     participant.rtcPeer = new WebRtcPeer.WebRtcPeerSendonly(
       options,
-      (error: any) => {
+      (error) => {
         if (error) return console.error(error);
 
-        (this as any).generateOffer(
+        this.generateOffer(
           participant.offerToReceiveVideo.bind(participant)
         );
       }
@@ -174,8 +174,8 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
     msg.data.forEach(receiveVideo);
   };
 
-  const receiveVideo = (sender: any) => {
-    let participant = new (Participant as any)(sender);
+  const receiveVideo = (sender) => {
+    let participant = new Participant(sender);
     participants.current[sender] = participant;
     let video = participant.getVideoElement();
 
@@ -186,10 +186,10 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
 
     participant.rtcPeer = new WebRtcPeer.WebRtcPeerRecvonly(
       options,
-      (error: any) => {
+      (error) => {
         if (error) return console.error(error);
 
-        (this as any).generateOffer(
+        this.generateOffer(
           participant.offerToReceiveVideo.bind(participant)
         );
       }
@@ -198,69 +198,69 @@ const Test1 = ({ room, name, edge, mainColor }: any) => {
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-  const Participant = (name: string) => {
-    (this as any).name = name;
-    let container = document.createElement('div');
-    container.id = name;
-    container.classList.add('container');
-    let span = document.createElement('span');
-    let video = document.createElement('video');
-    span.classList.add('name');
-    video.classList.add('video');
-    video.classList.add('roomCam');
-    let rtcPeer;
+  // const Participant = (name: string) => {
+  //   (this as any).name = name;
+  //   let container = document.createElement('div');
+  //   container.id = name;
+  //   container.classList.add('container');
+  //   let span = document.createElement('span');
+  //   let video = document.createElement('video');
+  //   span.classList.add('name');
+  //   video.classList.add('video');
+  //   video.classList.add('roomCam');
+  //   let rtcPeer;
 
-    container.appendChild(video);
-    container.appendChild(span);
+  //   container.appendChild(video);
+  //   container.appendChild(span);
 
-    if (view) {
-      document.getElementById('participants1').appendChild(container);
-      view = !view;
-    } else {
-      document.getElementById('participants2').appendChild(container);
-      view = !view;
-    }
+  //   if (view) {
+  //     document.getElementById('participants1').appendChild(container);
+  //     view = !view;
+  //   } else {
+  //     document.getElementById('participants2').appendChild(container);
+  //     view = !view;
+  //   }
 
-    span.appendChild(document.createTextNode(name));
+  //   span.appendChild(document.createTextNode(name));
 
-    video.id = 'video-' + name;
-    video.autoplay = true;
-    video.controls = false;
+  //   video.id = 'video-' + name;
+  //   video.autoplay = true;
+  //   video.controls = false;
 
-    (this as any).getElement = () => container;
+  //   (this as any).getElement = () => container;
 
-    (this as any).getVideoElement = () => video;
+  //   (this as any).getVideoElement = () => video;
 
-    (this as any).offerToReceiveVideo = (
-      error: any,
-      offerSdp: any,
-      wp: any
-    ) => {
-      if (error) return console.error('sdp offer error');
-      // console.log("Invoking SDP offer callback function");
+  //   (this as any).offerToReceiveVideo = (
+  //     error: any,
+  //     offerSdp: any,
+  //     wp: any
+  //   ) => {
+  //     if (error) return console.error('sdp offer error');
+  //     // console.log("Invoking SDP offer callback function");
 
-      let msg = {
-        id: 'receiveVideoFrom',
-        sender: name,
-        sdpOffer: offerSdp,
-      };
+  //     let msg = {
+  //       id: 'receiveVideoFrom',
+  //       sender: name,
+  //       sdpOffer: offerSdp,
+  //     };
 
-      sendMessage(msg);
-    };
+  //     sendMessage(msg);
+  //   };
 
-    (this as any).onIceCandidate = (candidate: any, wp: any) => {
-      // console.log("Local candidate" + JSON.stringify(candidate));
+  //   (this as any).onIceCandidate = (candidate: any, wp: any) => {
+  //     // console.log("Local candidate" + JSON.stringify(candidate));
 
-      let message = {
-        id: 'onIceCandidate',
-        candidate: candidate,
-        name: name,
-      };
-      sendMessage(message);
-    };
+  //     let message = {
+  //       id: 'onIceCandidate',
+  //       candidate: candidate,
+  //       name: name,
+  //     };
+  //     sendMessage(message);
+  //   };
 
-    Object.defineProperty(this, 'rtcPeer', { writable: true });
-  };
+  //   Object.defineProperty(this, 'rtcPeer', { writable: true });
+  // };
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
