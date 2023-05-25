@@ -5,7 +5,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 3000,
+  timeout: 10000,
 });
 
 api.defaults.withCredentials = true;
@@ -34,7 +34,7 @@ api.interceptors.response.use(
       response: { status },
     } = err;
 
-    if (status !== 401 || code === 'ERR_NETWORK') {
+    if (!status || status !== 401 || code === 'ERR_NETWORK') {
       return Promise.reject(err);
     }
 

@@ -8,6 +8,7 @@ import { Skeleton } from '../../components/atoms/Skeleton/Skeleton';
 import { Banner } from '../../components/organisms/Banner';
 
 export const Main = () => {
+
   const [myRoom, newRoom, popularRoom] = useQueries({
     queries: [
       {
@@ -19,6 +20,7 @@ export const Main = () => {
                 'member_id'
               )}/created?page=1&size=4`
             )
+
             .then((res) => res.data),
         refetchOnMount: 'always',
       },

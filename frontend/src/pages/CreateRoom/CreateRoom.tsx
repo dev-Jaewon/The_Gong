@@ -93,7 +93,7 @@ const CreateRoomPage = () => {
     console.log(memberId)
 
 
-    api.post(`https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/thumbnail/${memberId}`, formData,{
+    api.post(`${import.meta.env.VITE_BASE_URL}thumbnail/${memberId}`, formData,{
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',
@@ -101,12 +101,15 @@ const CreateRoomPage = () => {
     })
       .then(response => {
         // 요청 성공 시 처리
-  
+        console.log('성공')
+        console.log(response)
         setError(true)
         setImgUrl(response.data)
       })
       .catch(error => {
         // 요청 실패 시 처리
+        console.log('애러')
+        console.log(error)
         setError(false)
       });
   }
