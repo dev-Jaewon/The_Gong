@@ -10,6 +10,9 @@ import { RiMessage2Fill } from 'react-icons/ri';
 import { HiPencil } from 'react-icons/hi';
 import { FaUserCircle } from 'react-icons/fa';
 
+import { BsFillMicFill } from 'react-icons/bs';
+import { BsFillCameraVideoFill } from 'react-icons/bs';
+
 interface ChatProps {
   roomId: string;
   userName: string;
@@ -38,7 +41,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
   // 스크롤을 관리하는 변수
   const chatWindowRef = useRef<any>(null);
 
-  let chatParticipants = 0;
+  let [ chatParticipants,  setChatParticipants] = useState([]);
 
   // 렌더링 시 실행되는 코드
   useEffect(() => {
@@ -50,22 +53,35 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
     // 연결될 때 실행되는 이벤트 핸들러 코드
     stompClientRef.current.connect({}, onConnected);
 
-    // // 연결이 끊어졌을 때 실행되는 코드
-    // return () => {
-    //   console.log('========== 채팅방 연결 끊어짐 ==========')
-    //   stompClientRef.current.send("/pub/chat/leave",
-    //     {},
-    //     JSON.stringify({
-    //       "roomId": roomId,
-    //       writer: userName,
-    //       messageType: 'LEAVE'
-    //     })
-    //   );
+    // 연결이 끊어졌을 때 실행되는 코드
+    return () => {
+      if (stompClientRef.current && stompClientRef.current.connected) {
+        // 연결이 확립된 상태에서 컴포넌트가 언마운트될 경우 클린업 함수를 호출합니다.
+        onLeave();
+      }
+    };
 
-    //   // 예상하지 못한 오류를 방지하기위해 명시적으로 연결을 끊어주는 코드
-    //   stompClientRef.current.disconnect();
-    // };
   }, []);
+
+  window.onbeforeunload = function () {
+    onLeave()
+  };
+
+  //나갈 때 실행되는 코드
+  const onLeave = () => {
+    console.log('========== 채팅방 연결 끊어짐 ==========')
+    stompClientRef.current.send("/pub/chat/leave",
+      {},
+      JSON.stringify({
+        "roomId": roomId,
+        writer: userName,
+        messageType: 'LEAVE'
+      })
+    );
+
+    // 예상하지 못한 오류를 방지하기위해 명시적으로 연결을 끊어주는 코드
+    stompClientRef.current.disconnect();
+  };
 
   // 연결이 되었을 때 실행되는 코드
   const onConnected = () => {
@@ -97,8 +113,9 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
       setReceivedMessage((prevState) => [...prevState, chat]);
     } else if (chat.type === 'TALK') {
       setReceivedMessage((prevState) => [...prevState, chat]);
-    } else {
-      chatParticipants = chat.length;
+    }
+     else {
+      setChatParticipants(chat);
     }
 
     // 스크롤 내리기
@@ -146,12 +163,29 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
   return (
     <Verticality gap={0.5}>
       <RoomParts topRight={edge} flex={1} bgColor={mainColer}>
-        {String(chatParticipants)}
+      <ChatLists>
+        {chatParticipants.map((el, idx) => (
+
+          <ChatList key={idx}>
+            <div className='chatListUser'>
+              {idx+1}. 
+              {el}
+            </div>
+
+            <div className='chatListUserInfo'>
+              <BsFillCameraVideoFill></BsFillCameraVideoFill>
+              <BsFillMicFill></BsFillMicFill>
+            </div>
+          </ChatList>
+
+        ))}
+      </ChatLists>
       </RoomParts>
 
       <RoomParts flex={4}>
         <ChatContainer>
           <ChatWindowContainer ref={chatWindowRef}>
+          
             {ReceivedMessage.map((message, idx) => {
               // 내가 보낸 메시지는 오른쪽으로
               // 이외의 메시지는 왼쪽으로
@@ -287,4 +321,38 @@ const ChatSendButtun = styled.button`
   border: none;
 `;
 
+
+const ChatLists = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: left;
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  overflow: auto;
+`
+
+const ChatList = styled.div`
+  background-color: white;
+  border-radius: 0.3rem;
+  color: rgb(75, 75, 75);
+  font-size: 0.9rem;
+  padding: 0.3rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
+  max-width: 10rem;
+  display: flex;
+  justify-content: space-between;
+
+  .chatListUser{
+    border: 1px solid red;
+  }
+  
+  .chatListUserInfo{
+    border: 1px solid red;
+
+  }
+`
+
 export default Chat;
+
