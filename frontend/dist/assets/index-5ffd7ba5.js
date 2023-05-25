@@ -455,7 +455,7 @@ table {
   svg {
     cursor: pointer;
   }
-`;function TR(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{fillRule:"evenodd",d:"M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5z"}}]})(e)}function RR(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z"}},{tag:"path",attr:{d:"M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"}}]})(e)}function _R(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M13 8c0 .564-.094 1.107-.266 1.613l-.814-.814A4.02 4.02 0 0 0 12 8V7a.5.5 0 0 1 1 0v1zm-5 4c.818 0 1.578-.245 2.212-.667l.718.719a4.973 4.973 0 0 1-2.43.923V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 1 0v1a4 4 0 0 0 4 4zm3-9v4.879L5.158 2.037A3.001 3.001 0 0 1 11 3z"}},{tag:"path",attr:{d:"M9.486 10.607 5 6.12V8a3 3 0 0 0 4.486 2.607zm-7.84-9.253 12 12 .708-.708-12-12-.708.708z"}}]})(e)}function LR(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{fillRule:"evenodd",d:"M10.961 12.365a1.99 1.99 0 0 0 .522-1.103l3.11 1.382A1 1 0 0 0 16 11.731V4.269a1 1 0 0 0-1.406-.913l-3.111 1.382A2 2 0 0 0 9.5 3H4.272l6.69 9.365zm-10.114-9A2.001 2.001 0 0 0 0 5v6a2 2 0 0 0 2 2h5.728L.847 3.366zm9.746 11.925-10-14 .814-.58 10 14-.814.58z"}}]})(e)}function T2(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"}},{tag:"path",attr:{fillRule:"evenodd",d:"M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"}}]})(e)}const _f=()=>{My(["auth"],()=>Tt.get("https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/auth").then(r=>r.data),{enabled:!!localStorage.getItem("access_token")});const[e,t]=L.useState();L.useEffect(()=>{const r=localStorage.getItem("nickname");r?(t(JSON.parse(r)),console.log(t)):console.log("스토리지 값 없음")},[]);const n=()=>{localStorage.clear(),t(void 0)};return x.jsx(R2,{children:x.jsxs("div",{className:"content",children:[x.jsx("div",{className:"auth_container",children:e?x.jsxs("div",{className:"user",children:[x.jsxs("div",{children:[x.jsx("span",{className:"userName",children:e}),"님 환영합니다."]}),x.jsx("button",{onClick:n,children:"로그아웃"})]}):x.jsxs(x.Fragment,{children:[x.jsx(us,{to:"/signin",children:"로그인"}),x.jsx("div",{className:"divider"}),x.jsx(us,{to:"/signup",children:"회원가입"})]})}),x.jsxs("div",{className:"service_container",children:[x.jsx(us,{className:"logo",to:"/",children:"THE GONG"}),x.jsx("div",{className:"search",children:x.jsx(O2,{})}),x.jsx("div",{className:"icons",children:x.jsx(us,{to:"/createRoom",children:x.jsx(T2,{size:30,color:"#4a4a4a"})})})]})]})})},R2=Y.div`
+`;function TR(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{fillRule:"evenodd",d:"M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5z"}}]})(e)}function RR(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V3z"}},{tag:"path",attr:{d:"M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"}}]})(e)}function _R(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M13 8c0 .564-.094 1.107-.266 1.613l-.814-.814A4.02 4.02 0 0 0 12 8V7a.5.5 0 0 1 1 0v1zm-5 4c.818 0 1.578-.245 2.212-.667l.718.719a4.973 4.973 0 0 1-2.43.923V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 1 0v1a4 4 0 0 0 4 4zm3-9v4.879L5.158 2.037A3.001 3.001 0 0 1 11 3z"}},{tag:"path",attr:{d:"M9.486 10.607 5 6.12V8a3 3 0 0 0 4.486 2.607zm-7.84-9.253 12 12 .708-.708-12-12-.708.708z"}}]})(e)}function LR(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{fillRule:"evenodd",d:"M10.961 12.365a1.99 1.99 0 0 0 .522-1.103l3.11 1.382A1 1 0 0 0 16 11.731V4.269a1 1 0 0 0-1.406-.913l-3.111 1.382A2 2 0 0 0 9.5 3H4.272l6.69 9.365zm-10.114-9A2.001 2.001 0 0 0 0 5v6a2 2 0 0 0 2 2h5.728L.847 3.366zm9.746 11.925-10-14 .814-.58 10 14-.814.58z"}}]})(e)}function T2(e){return st({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"}},{tag:"path",attr:{fillRule:"evenodd",d:"M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"}}]})(e)}const _f=()=>{My(["auth"],()=>Tt.get("https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/auth").then(r=>r.data),{enabled:!!localStorage.getItem("accessToken")});const[e,t]=L.useState();L.useEffect(()=>{const r=localStorage.getItem("nickname");r?(t(JSON.parse(r)),console.log(t)):console.log("스토리지 값 없음")},[]);const n=()=>{localStorage.clear(),t(void 0)};return x.jsx(R2,{children:x.jsxs("div",{className:"content",children:[x.jsx("div",{className:"auth_container",children:e?x.jsxs("div",{className:"user",children:[x.jsxs("div",{children:[x.jsx("span",{className:"userName",children:e}),"님 환영합니다."]}),x.jsx("button",{onClick:n,children:"로그아웃"})]}):x.jsxs(x.Fragment,{children:[x.jsx(us,{to:"/signin",children:"로그인"}),x.jsx("div",{className:"divider"}),x.jsx(us,{to:"/signup",children:"회원가입"})]})}),x.jsxs("div",{className:"service_container",children:[x.jsx(us,{className:"logo",to:"/",children:"THE GONG"}),x.jsx("div",{className:"search",children:x.jsx(O2,{})}),x.jsx("div",{className:"icons",children:x.jsx(us,{to:"/createRoom",children:x.jsx(T2,{size:30,color:"#4a4a4a"})})})]})]})})},R2=Y.div`
   display: flex;
   padding-bottom: 15px;
   justify-content: center;
@@ -466,7 +466,7 @@ table {
   position: relative;
   z-index: 10;
 
-  .user{
+  .user {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -475,13 +475,13 @@ table {
     font-size: 0.9rem;
     color: rgb(61, 61, 61);
 
-    .userName{
-      color: #4FAFB1
+    .userName {
+      color: #4fafb1;
     }
 
-    button{
+    button {
       padding: 0.3rem;
-      border: 1px solid #4FAFB1;
+      border: 1px solid #4fafb1;
       border-radius: 0.2rem;
     }
   }
@@ -544,7 +544,6 @@ table {
         margin-left: 30px;
       }
     }
-
   }
 `,us=Y(jC)`
   color: #333333;
@@ -1270,4 +1269,4 @@ See https://reactjs.org/docs/forms.html#controlled-components`),V=j.initialPage?
     gap: 10px;
     width: 100%;
   }
-`;let ER=TC([{path:"/",Component:()=>x.jsx(SR,{})},{path:"/signup",Component:()=>x.jsx(q2,{})},{path:"/createRoom",Component:()=>x.jsx(M2,{})},{path:"/oauth",Component:()=>x.jsx(rk,{})},{path:"/signin",Component:()=>x.jsx(nk,{})},{path:"/search",Component:()=>x.jsx(Sk,{})},{path:"/room",Component:L.lazy(()=>f1(()=>import("./RoomPage-f0e7c998.js"),[]))}]);const kR=new Zx({defaultOptions:{queries:{refetchOnWindowFocus:!1,retry:!1,staleTime:3e4}}});_u.createRoot(document.getElementById("root")).render(x.jsx(Ce.StrictMode,{children:x.jsxs(pb,{client:kR,children:[x.jsx(Dx,{}),x.jsx(wC,{router:ER,fallbackElement:x.jsx("p",{children:"Loading..."})})]})}));export{PR as A,TR as B,st as G,LR as a,RR as b,zi as c,_R as d,Rr as e,ka as g,x as j,L as r,Y as s,an as u};
+`;let ER=TC([{path:"/",Component:()=>x.jsx(SR,{})},{path:"/signup",Component:()=>x.jsx(q2,{})},{path:"/createRoom",Component:()=>x.jsx(M2,{})},{path:"/oauth",Component:()=>x.jsx(rk,{})},{path:"/signin",Component:()=>x.jsx(nk,{})},{path:"/search",Component:()=>x.jsx(Sk,{})},{path:"/room",Component:L.lazy(()=>f1(()=>import("./RoomPage-690aa463.js"),[]))}]);const kR=new Zx({defaultOptions:{queries:{refetchOnWindowFocus:!1,retry:!1,staleTime:3e4}}});_u.createRoot(document.getElementById("root")).render(x.jsx(Ce.StrictMode,{children:x.jsxs(pb,{client:kR,children:[x.jsx(Dx,{}),x.jsx(wC,{router:ER,fallbackElement:x.jsx("p",{children:"Loading..."})})]})}));export{PR as A,TR as B,st as G,RR as a,LR as b,zi as c,_R as d,Rr as e,ka as g,x as j,L as r,Y as s,an as u};
