@@ -7,7 +7,7 @@
 
 
 
-**📜 서비스메뉴얼: <a href="https://" target='_blank'>pdf</a>** 
+**📜 서비스메뉴얼: <a href="https://github.com/codestates-seb/seb43_main_025/files/11567075/SEB43_Main25_._.pdf" target='_blank'>pdf</a>** 
 
 **📹 기술발표영상: <a href="https://www.youtube.com/watch?v=QVOPZTOya_4" target='_blank'>youtube</a>** 
 
