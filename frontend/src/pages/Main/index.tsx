@@ -8,6 +8,7 @@ import { Skeleton } from '../../components/atoms/Skeleton/Skeleton';
 import { Banner } from '../../components/organisms/Banner';
 
 export const Main = () => {
+
   const [myRoom, newRoom, popularRoom] = useQueries({
     queries: [
       {
@@ -19,13 +20,25 @@ export const Main = () => {
                 'member_id'
               )}/created?page=1&size=4`
             )
-            .then((res) => res.data),
-        staleTime: Infinity,
+            .then((res) => {
+              return res.data})
+              .catch((error) => {
+                // 실패한 요청에 대한 에러 처리
+                console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+                console.error('Failed to fetch myRoom:', error);
+                throw error;
+              }),
+              staleTime: Infinity,
       },
       {
         queryKey: ['newRoom', 2],
         queryFn: () =>
-          api.get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`).then((res) => res.data),
+          api.get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`).then((res) => res.data).catch((error) => {
+            // 실패한 요청에 대한 에러 처리
+            console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+            console.error('Failed to fetch newRoom:', error);
+            throw error;
+          }),
         staleTime: Infinity,
       },
       {
@@ -33,7 +46,12 @@ export const Main = () => {
         queryFn: () =>
           api
             .get(`${import.meta.env.VITE_BASE_URL}search?keyword=&sort=favoriteCount`)
-            .then((res) => res.data),
+            .then((res) => res.data).catch((error) => {
+              // 실패한 요청에 대한 에러 처리
+              console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+              console.error('Failed to fetch popularRoom:', error);
+              throw error;
+            }),
         staleTime: Infinity,
       },
     ],

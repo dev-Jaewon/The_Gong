@@ -52,7 +52,7 @@ export const SigninForm = () => {
       });
 
       console.log(data)
-      // navigate('/');
+      navigate('/');
     },
     onError: () => setFetchErrorMessage(SIGNIN_VALID_MESSAGE.login),
   });
