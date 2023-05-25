@@ -71,8 +71,8 @@ public class StompChatController {
         // 1. 만약 dto에 값을 설정해서 보낸다 -> null 값처리에 대한 문제가 발생할 수 있음
         // 2. 메시지를 2번 보낸다. -> 클라이언트에서 2개를 다 처리해야하지만. 데어터 전송량을 최소화 할 수 있음(최종선택)
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
-        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatRoomService.getParticipants(message.getRoomId()));
-        log.info(chatRoomService.getParticipants(message.getRoomId()).toString());
+        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatRoomService.getParticipants(roomId));
+        log.info(chatRoomService.getParticipants(roomId).toString());
     }
 
     @MessageMapping("/chat/message")
