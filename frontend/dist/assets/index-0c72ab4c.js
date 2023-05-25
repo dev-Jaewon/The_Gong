@@ -323,23 +323,23 @@ table {
   background-color: white;
   display: ${({isPopupOpen:e})=>e?"block":"none"};
 
-  .none{
+  .none {
     display: none;
   }
 
- h2{
-  color: #4A5056;
-  font-size: 1.2rem;
-  font-weight: bolder;
-  margin: 1rem 0;
-  margin-top: 3rem;
- }
+  h2 {
+    color: #4a5056;
+    font-size: 1.2rem;
+    font-weight: bolder;
+    margin: 1rem 0;
+    margin-top: 3rem;
+  }
 
- .closeButtonContainer{
-  display: flex;
-  justify-content: end;
- }
-`;function h2({isPopupOpen:e,ChangeisPopupOpen:t,setTags:n}){const[r,i]=L.useState([]),[o,s]=L.useState([]),a=async()=>{try{const c=await Tt.get("https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/tags?page=1&size=10"),f=c.data.data.map(p=>({content:p.name,color:"#e3f7f7"}));i(f),console.log(c.data.data)}catch(c){console.error(c)}};L.useEffect(()=>{a()},[]);const l=c=>{const f=r.filter(p=>p.content!==c.content);i(f),s([...o,c]),n&&n(p=>[...p,c.content])},u=c=>{const f=o.filter(p=>p.content!==c.content);s(f),i([...r,c]),n&&(console.log("일단 옴"),n(p=>p.filter(g=>g!==c.content)))};return x.jsx(p2,{isPopupOpen:e,children:x.jsxs("div",{children:[x.jsx("div",{className:"closeButtonContainer ",children:x.jsx(Xy,{func:t})}),x.jsx("h2",{children:"전체 태그"}),x.jsx(Bh,{children:x.jsx($h,{tagData:r,fontSize:1,func:l,isDeleteTag:!1})}),x.jsx("h2",{children:"스터디 태그"}),x.jsx(Bh,{children:x.jsx($h,{tagData:o,fontSize:1,func:u,isDeleteTag:!0})})]})})}const m2=Y.div`
+  .closeButtonContainer {
+    display: flex;
+    justify-content: end;
+  }
+`;function h2({isPopupOpen:e,ChangeisPopupOpen:t,setTags:n}){const[r,i]=L.useState([]),[o,s]=L.useState([]),a=async()=>{try{const c=await Tt.get("https://www.apithegong.com/tags?page=1&size=10"),f=c.data.data.map(p=>({content:p.name,color:"#e3f7f7"}));i(f),console.log(c.data.data)}catch(c){console.error(c)}};L.useEffect(()=>{a()},[]);const l=c=>{const f=r.filter(p=>p.content!==c.content);i(f),s([...o,c]),n&&n(p=>[...p,c.content])},u=c=>{const f=o.filter(p=>p.content!==c.content);s(f),i([...r,c]),n&&(console.log("일단 옴"),n(p=>p.filter(g=>g!==c.content)))};return x.jsx(p2,{isPopupOpen:e,children:x.jsxs("div",{children:[x.jsx("div",{className:"closeButtonContainer ",children:x.jsx(Xy,{func:t})}),x.jsx("h2",{children:"전체 태그"}),x.jsx(Bh,{children:x.jsx($h,{tagData:r,fontSize:1,func:l,isDeleteTag:!1})}),x.jsx("h2",{children:"스터디 태그"}),x.jsx(Bh,{children:x.jsx($h,{tagData:o,fontSize:1,func:u,isDeleteTag:!0})})]})})}const m2=Y.div`
 
 `,g2=Y.div`
   font-size: 0.8rem;
@@ -560,7 +560,7 @@ table {
   display: flex;
   justify-content: center;
   align-items: center;
-`,M2=()=>{const e=an(),[t,n]=L.useState(""),[r,i]=L.useState(""),[o,s]=L.useState("");L.useEffect(()=>{const v=localStorage.getItem("access_token"),w=localStorage.getItem("member_id");v&&w?(n(JSON.parse(v)),i(JSON.parse(w)),console.log(v),console.log(w)):console.log("스토리지 값 없음")},[]);const a=async v=>{const w={...v,img_url:o,admin_member_id:r+""};console.log("@@@이거 보냅니다@@@"),console.log(w),Tt.post(`https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/rooms/${r}/add`,w,{headers:{Authorization:`Bearer ${t}`}}).then(d=>{console.log("@@@이거 보냈습니다@@@"),console.log(d.data),e("/")}).catch(d=>{console.error(d)})},l=v=>{a(v)},u=!1,[c,f]=L.useState(""),[p,m]=L.useState(!1),g=v=>{v.preventDefault();const w=new FormData;w.append("image",c),console.log(w),console.log(r),Tt.post(`https://www.apithegong.com/thumbnail/${r}`,w,{headers:{Authorization:`Bearer ${t}`,"Content-Type":"multipart/form-data"}}).then(d=>{console.log("성공"),console.log(d),m(!0),s(d.data)}).catch(d=>{console.log("애러"),console.log(d),m(!1)})};return x.jsxs(_2,{children:[x.jsx(_f,{}),x.jsx(L2,{children:x.jsxs("div",{children:[x.jsx("h1",{children:"스터디 만들기"}),x.jsx(S2,{formError:p,setError:m,onSubmit:l,isLoading:u,setSelectedFile:f,handleFileUpload:g})]})})]})},j2=e=>{const{data:t,errors:n,handleChange:r,handleSubmit:i,setErrors:o}=Ef({validations:{nickname:{required:{value:!0,message:"닉네임은 필수로 입력하셔야합니다."}},email:{required:{value:!0,message:"이메일은 필수로 입력하셔야합니다."}},password:{required:{value:!0,message:"패스워드는 필수로 입력하셔야합니다."}},passwordRe:{required:{value:!0,message:"패스워드는 필수로 입력하셔야합니다."}}},onSubmit:s});function s(){e.onSubmit(t)}return L.useEffect(()=>{e.errors&&o(e.errors)},[e.errors]),x.jsxs(N2,{onSubmit:i,children:[x.jsx(fn,{label:"닉네임",onChange:r("nickname"),placeholder:"닉네임을 입력해주세요.",errorMessage:n.nickname,isValid:!n.nickname}),x.jsx(fn,{label:"이메일",onChange:r("email"),placeholder:"이메일을 입력해주세요.",errorMessage:n.email,isValid:!n.email}),x.jsx(fn,{type:"password",label:"비밀번호",onChange:r("password"),placeholder:"영문, 숫자 8자이상의 비밀번호를 입력해주세요.",errorMessage:n.password,isValid:!n.password}),x.jsx(fn,{type:"password",label:"비밀번호 확인",onChange:r("passwordRe"),placeholder:"비밀번호를 재확인해주세요.",errorMessage:n.passwordRe,isValid:!n.passwordRe}),x.jsx(Do,{fillColor:!0,isLoading:e.isLoading,children:"회원가입"})]})},N2=Y.form`
+`,M2=()=>{const e=an(),[t,n]=L.useState(""),[r,i]=L.useState(""),[o,s]=L.useState("");L.useEffect(()=>{const v=localStorage.getItem("access_token"),w=localStorage.getItem("member_id");v&&w?(n(JSON.parse(v)),i(JSON.parse(w)),console.log(v),console.log(w)):console.log("스토리지 값 없음")},[]);const a=async v=>{const w={...v,img_url:o,admin_member_id:r+""};console.log("@@@이거 보냅니다@@@"),console.log(w),Tt.post(`https://www.apithegong.com/rooms/${r}/add`,w,{headers:{Authorization:`Bearer ${t}`}}).then(d=>{console.log("@@@이거 보냈습니다@@@"),console.log(d.data),e("/")}).catch(d=>{console.error(d)})},l=v=>{a(v)},u=!1,[c,f]=L.useState(""),[p,m]=L.useState(!1),g=v=>{v.preventDefault();const w=new FormData;w.append("image",c),console.log(w),console.log(r),Tt.post(`https://www.apithegong.com/thumbnail/${r}`,w,{headers:{Authorization:`Bearer ${t}`,"Content-Type":"multipart/form-data"}}).then(d=>{console.log("성공"),console.log(d),m(!0),s(d.data)}).catch(d=>{console.log("애러"),console.log(d),m(!1)})};return x.jsxs(_2,{children:[x.jsx(_f,{}),x.jsx(L2,{children:x.jsxs("div",{children:[x.jsx("h1",{children:"스터디 만들기"}),x.jsx(S2,{formError:p,setError:m,onSubmit:l,isLoading:u,setSelectedFile:f,handleFileUpload:g})]})})]})},j2=e=>{const{data:t,errors:n,handleChange:r,handleSubmit:i,setErrors:o}=Ef({validations:{nickname:{required:{value:!0,message:"닉네임은 필수로 입력하셔야합니다."}},email:{required:{value:!0,message:"이메일은 필수로 입력하셔야합니다."}},password:{required:{value:!0,message:"패스워드는 필수로 입력하셔야합니다."}},passwordRe:{required:{value:!0,message:"패스워드는 필수로 입력하셔야합니다."}}},onSubmit:s});function s(){e.onSubmit(t)}return L.useEffect(()=>{e.errors&&o(e.errors)},[e.errors]),x.jsxs(N2,{onSubmit:i,children:[x.jsx(fn,{label:"닉네임",onChange:r("nickname"),placeholder:"닉네임을 입력해주세요.",errorMessage:n.nickname,isValid:!n.nickname}),x.jsx(fn,{label:"이메일",onChange:r("email"),placeholder:"이메일을 입력해주세요.",errorMessage:n.email,isValid:!n.email}),x.jsx(fn,{type:"password",label:"비밀번호",onChange:r("password"),placeholder:"영문, 숫자 8자이상의 비밀번호를 입력해주세요.",errorMessage:n.password,isValid:!n.password}),x.jsx(fn,{type:"password",label:"비밀번호 확인",onChange:r("passwordRe"),placeholder:"비밀번호를 재확인해주세요.",errorMessage:n.passwordRe,isValid:!n.passwordRe}),x.jsx(Do,{fillColor:!0,isLoading:e.isLoading,children:"회원가입"})]})},N2=Y.form`
   gap: 20px;
   display: flex;
   flex-direction: column;
@@ -1269,4 +1269,4 @@ See https://reactjs.org/docs/forms.html#controlled-components`),V=j.initialPage?
     gap: 10px;
     width: 100%;
   }
-`;let ER=TC([{path:"/",Component:()=>x.jsx(SR,{})},{path:"/signup",Component:()=>x.jsx(q2,{})},{path:"/createRoom",Component:()=>x.jsx(M2,{})},{path:"/oauth",Component:()=>x.jsx(rk,{})},{path:"/signin",Component:()=>x.jsx(nk,{})},{path:"/search",Component:()=>x.jsx(Sk,{})},{path:"/room",Component:L.lazy(()=>f1(()=>import("./RoomPage-bebd7a67.js"),[]))}]);const kR=new Zx({defaultOptions:{queries:{refetchOnWindowFocus:!1,retry:!1,staleTime:3e4}}});_u.createRoot(document.getElementById("root")).render(x.jsx(Ce.StrictMode,{children:x.jsxs(pb,{client:kR,children:[x.jsx(Dx,{}),x.jsx(wC,{router:ER,fallbackElement:x.jsx("p",{children:"Loading..."})})]})}));export{PR as A,TR as B,st as G,RR as a,LR as b,zi as c,_R as d,Rr as e,ka as g,x as j,L as r,Y as s,an as u};
+`;let ER=TC([{path:"/",Component:()=>x.jsx(SR,{})},{path:"/signup",Component:()=>x.jsx(q2,{})},{path:"/createRoom",Component:()=>x.jsx(M2,{})},{path:"/oauth",Component:()=>x.jsx(rk,{})},{path:"/signin",Component:()=>x.jsx(nk,{})},{path:"/search",Component:()=>x.jsx(Sk,{})},{path:"/room",Component:L.lazy(()=>f1(()=>import("./RoomPage-0eee0d9d.js"),[]))}]);const kR=new Zx({defaultOptions:{queries:{refetchOnWindowFocus:!1,retry:!1,staleTime:3e4}}});_u.createRoot(document.getElementById("root")).render(x.jsx(Ce.StrictMode,{children:x.jsxs(pb,{client:kR,children:[x.jsx(Dx,{}),x.jsx(wC,{router:ER,fallbackElement:x.jsx("p",{children:"Loading..."})})]})}));export{PR as A,TR as B,st as G,RR as a,LR as b,zi as c,_R as d,Rr as e,ka as g,x as j,L as r,Y as s,an as u};
