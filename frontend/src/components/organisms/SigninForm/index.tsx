@@ -54,6 +54,7 @@ export const SigninForm = () => {
         localStorage.setItem(key, JSON.stringify(res.data[key]));
       });
 
+
       localStorage.setItem('email', JSON.stringify(data.email));
       navigate('/');
     },

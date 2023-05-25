@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 export const Header = () => {
   const { data } = useQuery(
     ['auth'],
-    () => api.get('https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/auth').then((res) => res.data),
+    () => api.get(`${import.meta.env.VITE_BASE_URL}auth`).then((res) => res.data),
     { enabled: Boolean(localStorage.getItem('access_token')) }
   );
 
@@ -27,6 +27,11 @@ export const Header = () => {
   }
   }, []);
 
+  const logOut = () => {
+    localStorage.clear();
+    setNickname(undefined)
+  }
+
   return (
     <Container>
       <div className="content">
@@ -42,7 +47,7 @@ export const Header = () => {
               <div>
                 <span className='userName'>{nickname}</span>님 환영합니다.
               </div>
-              <button>로그아웃</button>
+              <button onClick={logOut}>로그아웃</button>
             </div>
           )}
         </div>
