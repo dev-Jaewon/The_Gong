@@ -90,7 +90,8 @@
 
 
 <p align="center">
-  <img src="https://github.com/codestates-seb/seb43_main_025/assets/76944115/615cae03-d532-41ee-8188-cbe258445a03">
+  <img width="692" alt="스크린샷 2023-05-25 오후 11 36 33" src="https://github.com/codestates-seb/seb43_main_025/assets/125559598/8261d2ad-208d-4d1c-abaa-76fa6f7d6744">
+ 
 </p>
 
  <br>
