@@ -34,7 +34,7 @@ api.interceptors.response.use(
       response: { status },
     } = err;
 
-    if (status !== 401 || code === 'ERR_NETWORK') {
+    if (!status || status !== 401 || code === 'ERR_NETWORK') {
       return Promise.reject(err);
     }
 
