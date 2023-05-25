@@ -20,38 +20,28 @@ export const Main = () => {
                 'member_id'
               )}/created?page=1&size=4`
             )
-            .then((res) => {
-              return res.data})
-              .catch((error) => {
-                // 실패한 요청에 대한 에러 처리
-                console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-                console.error('Failed to fetch myRoom:', error);
-                throw error;
-              }),
-              staleTime: Infinity,
+
+            .then((res) => res.data),
+        refetchOnMount: 'always',
       },
       {
         queryKey: ['newRoom', 2],
         queryFn: () =>
-          api.get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`).then((res) => res.data).catch((error) => {
-            // 실패한 요청에 대한 에러 처리
-            console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-            console.error('Failed to fetch newRoom:', error);
-            throw error;
-          }),
+          api
+            .get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`)
+            .then((res) => res.data),
         staleTime: Infinity,
       },
       {
         queryKey: ['popularRoom', 2],
         queryFn: () =>
           api
-            .get(`${import.meta.env.VITE_BASE_URL}search?keyword=&sort=favoriteCount`)
-            .then((res) => res.data).catch((error) => {
-              // 실패한 요청에 대한 에러 처리
-              console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-              console.error('Failed to fetch popularRoom:', error);
-              throw error;
-            }),
+            .get(
+              `${
+                import.meta.env.VITE_BASE_URL
+              }search?keyword=&sort=favoriteCount`
+            )
+            .then((res) => res.data),
         staleTime: Infinity,
       },
     ],

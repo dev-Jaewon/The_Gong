@@ -12,5 +12,15 @@ public class AuthDto {
     private long memberId;
     private String nickname;
     private String imageUrl;
-    private String accessToken; //추가
+
+
+
+    @Getter
+    @Setter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class Refresh {
+        private long memberId;
+        private String email;
+        private String refreshToken;
+    }
 }

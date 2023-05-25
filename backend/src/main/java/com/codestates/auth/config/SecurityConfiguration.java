@@ -76,7 +76,7 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
         cors.setAllowCredentials(true);
-        cors.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        cors.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://thegong.site", "https://thegong.site"));
         cors.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
         cors.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
