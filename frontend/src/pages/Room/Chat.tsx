@@ -345,12 +345,11 @@ const ChatList = styled.div`
   justify-content: space-between;
 
   .chatListUser{
-    border: 1px solid red;
+    margin-left: 0.3rem;
   }
   
   .chatListUserInfo{
-    border: 1px solid red;
-
+    margin-left: 0.3rem;
   }
 `
 
