@@ -3,7 +3,7 @@
   <img width="40%" alt="2023-05-10_6 22 58" src="https://github.com/codestates-seb/seb43_main_025/assets/76944115/66ffaeef-9ebf-41e4-b8c9-31daa05d0333">
 </div>
 
-<h3 align="center"> <a href="https://" target='_blank'>➡️ The Gong 바로가기 ⬅️</a> </h3>
+<h3 align="center"> <a href="https://thegong.site/" target='_blank'>➡️ The Gong 바로가기 ⬅️</a> </h3>
 
 
 
