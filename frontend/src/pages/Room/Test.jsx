@@ -374,6 +374,7 @@ function onParticipantLeft(request) {
 const WebcamContainer = styled.div`
   flex: 1;
   width: 100%;
+  margin: 1rem;
 `;
 
 const RoomCamContainer = styled.div`

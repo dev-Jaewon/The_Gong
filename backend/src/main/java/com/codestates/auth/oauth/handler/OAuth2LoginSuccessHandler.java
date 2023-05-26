@@ -41,7 +41,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         jwtTokenProvider.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         response.sendRedirect(createURI(accessToken, refreshToken));
     }
-
     private String createURI(String accessToken, String refreshToken) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("access_token", accessToken);
@@ -49,7 +48,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         return UriComponentsBuilder.newInstance()
                 .scheme("http")
-                .host("localhost")
+                .host("thegong.site")
 //                .port(3000)
                 .path("/oauth")
                 .queryParams(queryParams)

@@ -62,6 +62,7 @@ public class JwtTokenizer {
     }
 
 
+
     //엑세스 토큰 생성
     public String generateAccessToken(Map<String, Object> claims, String subject, Date expiration, String base64EncodedSecretKey) {
         Key key = getKey(base64EncodedSecretKey);
@@ -106,16 +107,6 @@ public class JwtTokenizer {
                 .compact();
     }
 
-    //엑세스 토큰 재발급
-    public String regenerateAccessToken(Claims claims, String key) {
-        Key singKey = getKey(key);
-        return Jwts.builder()
-                .setClaims(claims)
-                .setExpiration(getExpiration(accessTokenExpirationMinutes))
-                .signWith(singKey)
-                .compact();
-    }
-
 
     public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
         Key key = getKey(base64EncodedSecretKey);
@@ -125,13 +116,6 @@ public class JwtTokenizer {
         return claims;
     }
 
-
-    public Claims getClaimsRefresh(String refreshToken) {
-        String secretKey = getSecretKey();
-        String key = encodedBase64SecretKey(secretKey);
-        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(refreshToken).getBody();
-        return claims;
-    }
 
     public Long getMemberIdRefresh(String refreshToken) {
         String base64SecretKey = encodedBase64SecretKey(secretKey);

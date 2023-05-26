@@ -39,8 +39,8 @@ export const HomeListItem = (props: RoomType) => {
 
   const room = () => {
     navigate(`/room?roomId=${props.title}`);
-
   }
+
 
   return (
     <Container onClick={room}>
