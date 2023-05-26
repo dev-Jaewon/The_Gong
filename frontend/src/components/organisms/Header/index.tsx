@@ -87,8 +87,9 @@ const Container = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 0.5rem;
 
-    width: 12rem;
+    width: fit-content;
     font-size: 0.9rem;
     color: rgb(61, 61, 61);
 

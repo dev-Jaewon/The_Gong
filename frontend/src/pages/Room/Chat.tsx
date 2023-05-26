@@ -23,10 +23,7 @@ interface ChatProps {
 const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
   // 받아온 메시지를 관리하는 state
   const [ReceivedMessage, setReceivedMessage] = useState([
-    {
-      writer: 'Manager',
-      message: ` ${userName}님, ${roomId}방에 오신걸 환영합니다.`,
-    },
+
   ]);
 
   // 보낸 메시지를 관리하는 state
@@ -108,7 +105,10 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
     const chat = JSON.parse(message.body);
 
     if (chat.type === 'ENTER') {
-      setReceivedMessage((prevState) => [...prevState, chat]);
+      setReceivedMessage((prevState) => [...prevState, {
+        writer: 'Manager',
+        message: chat.message,
+      }]);
     } else if (chat.type === 'LEAVE') {
       setReceivedMessage((prevState) => [...prevState, chat]);
     } else if (chat.type === 'TALK') {
@@ -168,12 +168,12 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
 
           <ChatList key={idx}>
             <div className='chatListUser'>
-              {idx+1}. 
-              {el}
+              {idx+1}. {el}
             </div>
 
             <div className='chatListUserInfo'>
-              <BsFillCameraVideoFill></BsFillCameraVideoFill>
+              <BsFillCameraVideoFill></BsFillCameraVideoFill> 
+              <span> </span>
               <BsFillMicFill></BsFillMicFill>
             </div>
           </ChatList>
@@ -338,18 +338,17 @@ const ChatList = styled.div`
   border-radius: 0.3rem;
   color: rgb(75, 75, 75);
   font-size: 0.9rem;
-  padding: 0.3rem;
+  padding: 0.2rem 0.4rem;
+  padding-top: 0.6rem;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
   max-width: 10rem;
   display: flex;
   justify-content: space-between;
 
   .chatListUser{
-    margin-left: 0.3rem;
   }
   
   .chatListUserInfo{
-    margin-left: 0.3rem;
   }
 `
 

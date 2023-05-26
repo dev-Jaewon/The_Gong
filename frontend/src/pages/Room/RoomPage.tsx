@@ -50,7 +50,7 @@ const RoomPage = () => {
                 </RoomParts>
                 <RoomParts flex={4} color={'rgb(75, 75, 75)'}>
                   <span className="icon">
-                    공지사항 : 0주 남았습니다 다들 더 일하십쇼
+                    공지사항 : 모두 너무너무 수고하셨습니다:)
                   </span>
                 </RoomParts>
                 <RoomParts flex={0.3} color={mainColor} gap={1}>
