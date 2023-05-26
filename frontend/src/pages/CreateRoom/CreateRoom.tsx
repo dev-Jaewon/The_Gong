@@ -60,7 +60,7 @@ const CreateRoomPage = () => {
     console.log('@@@이거 보냅니다@@@');
     console.log(requestData);
 
-    api.post(`https://ec2-13-209-93-6.ap-northeast-2.compute.amazonaws.com:8443/rooms/${memberId}/add`, requestData,{
+    api.post(`${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`, requestData,{
       headers: {
         Authorization: `Bearer ${token}`
       }
