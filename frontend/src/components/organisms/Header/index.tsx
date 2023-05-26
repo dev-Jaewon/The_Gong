@@ -10,27 +10,28 @@ import { useEffect, useState } from 'react';
 export const Header = () => {
   const { data } = useQuery(
     ['auth'],
-    () => api.get(`${import.meta.env.VITE_BASE_URL}auth`).then((res) => res.data),
-    { enabled: Boolean(localStorage.getItem('access_token')) }
+    () =>
+      api.get(`${import.meta.env.VITE_BASE_URL}auth`).then((res) => res.data),
+    { enabled: Boolean(localStorage.getItem('accessToken')) }
   );
 
-  const [nickname, setNickname] = useState()
+  const [nickname, setNickname] = useState();
 
   useEffect(() => {
-  const userNickname = localStorage.getItem('nickname');
+    const userNickname = localStorage.getItem('nickname');
 
-  if (userNickname) {
-    setNickname(JSON.parse(userNickname));
-    console.log(setNickname);
-  } else {
-    console.log('스토리지 값 없음');
-  }
+    if (userNickname) {
+      setNickname(JSON.parse(userNickname));
+      console.log(setNickname);
+    } else {
+      console.log('스토리지 값 없음');
+    }
   }, []);
 
   const logOut = () => {
     localStorage.clear();
-    setNickname(undefined)
-  }
+    setNickname(undefined);
+  };
 
   return (
     <Container>
@@ -43,9 +44,9 @@ export const Header = () => {
               <Link to="/signup">회원가입</Link>
             </>
           ) : (
-            <div className='user'>
+            <div className="user">
               <div>
-                <span className='userName'>{nickname}</span>님 환영합니다.
+                <span className="userName">{nickname}</span>님 환영합니다.
               </div>
               <button onClick={logOut}>로그아웃</button>
             </div>
@@ -83,7 +84,7 @@ const Container = styled.div`
   position: relative;
   z-index: 10;
 
-  .user{
+  .user {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -93,13 +94,13 @@ const Container = styled.div`
     font-size: 0.9rem;
     color: rgb(61, 61, 61);
 
-    .userName{
-      color: #4FAFB1
+    .userName {
+      color: #4fafb1;
     }
 
-    button{
+    button {
       padding: 0.3rem;
-      border: 1px solid #4FAFB1;
+      border: 1px solid #4fafb1;
       border-radius: 0.2rem;
     }
   }
@@ -162,7 +163,6 @@ const Container = styled.div`
         margin-left: 30px;
       }
     }
-
   }
 `;
 
