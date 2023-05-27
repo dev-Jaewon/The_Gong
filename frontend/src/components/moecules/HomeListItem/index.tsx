@@ -6,6 +6,8 @@ import { RoomType } from '../../templates/MainTemplate';
 import { api } from '../../../util/api';
 import { useMutation } from '@tanstack/react-query';
 import { formatDate } from '../../../util/formatDate';
+import { startTransition } from 'react';
+
 
 type ToogleFavorite = {
   room_id: number;
@@ -38,7 +40,9 @@ export const HomeListItem = (props: RoomType) => {
   console.log(props);
 
   const room = () => {
-    navigate(`/room?roomId=${props.title}`);
+    startTransition(() => {
+      navigate(`/room?roomId=${props.title}`);
+    });
   }
 
 

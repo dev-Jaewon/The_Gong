@@ -2,15 +2,13 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import Chat from './Chat';
-import Webcam from './Webcam';
 import Horizontal from './RoomHorizontal';
 import Verticality from './RoomVerticality';
 import RoomParts from './RoomParts';
 
 import { MdViewModule } from 'react-icons/md';
 import { MdViewQuilt } from 'react-icons/md';
-import { FaUser } from 'react-icons/fa';
-import Test from './Test';
+import Webcam from './Webcam';
 
 const RoomPage = () => {
   const [userName, setUserName] = useState('');
@@ -42,10 +40,6 @@ const RoomPage = () => {
                 <RoomParts topLeft={edge} flex={1} bgColor={mainColor}>
                   <div className="spanDiv">
                     <span className="icon">{roomId}</span>
-                    <span className="icon"> | </span>
-                    <span className="icon">
-                      <FaUser />6
-                    </span>
                   </div>
                 </RoomParts>
                 <RoomParts flex={4} color={'rgb(75, 75, 75)'}>
@@ -62,7 +56,7 @@ const RoomPage = () => {
 
             {/* 카메라 컨테이너 */}
             {/* <Webcam roomId={roomId} userName={userName} edge={edge} mainColer={mainColer}/> */}
-            <Test
+            <Webcam
               room={roomId}
               name={userName}
               edge={edge}
@@ -133,7 +127,7 @@ const RoomPageLeft = styled.div`
   gap: 0.5rem;
 `;
 const RoomPageTitle = styled.div`
-  height: 3rem;
+  height: 5%;
 `;
 
 export default RoomPage;

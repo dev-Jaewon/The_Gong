@@ -14,9 +14,8 @@ import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { IoLogOut } from 'react-icons/io5';
 
 
-const Test1 = ({room, name, edge, mainColor}) => {
+const Webcam = ({room, name, edge, mainColor}) => {
   let participants = useRef({});
-  let view = true;
   const rtcSocket = useRef(null);
   const navigate = useNavigate();
 
@@ -148,7 +147,7 @@ function onParticipantLeft(request) {
       audio: true,
       video: {
         mandatory: {
-          maxWidth: 2000,
+          maxWidth: 1500,
           maxFrameRate: 15,
           minFrameRate: 15,
         },
@@ -209,15 +208,13 @@ function onParticipantLeft(request) {
     let container = document.createElement('div');
     container.id = name;
     container.classList.add('container');
-    let span = document.createElement('span');
+    container.classList.add(name);
     let video = document.createElement('video');
-    span.classList.add('name');
     video.classList.add('video');
     video.classList.add('roomCam');
     let rtcPeer;
 
     container.appendChild(video);
-    container.appendChild(span);
 
     if (view) {
       document.getElementById('participants1').appendChild(container);
@@ -227,7 +224,7 @@ function onParticipantLeft(request) {
       view = !view;
     }
 
-    span.appendChild(document.createTextNode(name));
+
 
     video.id = 'video-' + name;
     video.autoplay = true;
@@ -288,6 +285,37 @@ function onParticipantLeft(request) {
      !participants.current[name].rtcPeer.audioEnabled;
  };
 
+ const party = participants.current; // participants.current에서 참여자 정보를 가져옴
+
+ function toggleDiv(element, className, enabled) {
+  let div = element.querySelector('div');
+
+  if (enabled) {
+    if (!div) {
+      div = document.createElement('div');
+      div.classList.add(className);
+      element.appendChild(div);
+    }
+  } else {
+    if (div && div.classList.contains(className)) {
+      div.remove();
+    }
+  }
+}
+
+for (const key in party) {
+  if (party.hasOwnProperty(key)) {
+    const participant = party[key];
+    const element = document.querySelector(`.${key}`);
+
+    toggleDiv(element, 'stopVideo', !participant.rtcPeer.videoEnabled);
+    toggleDiv(element, 'stopAudio', !participant.rtcPeer.audioEnabled);
+  }
+}
+
+
+
+
  const roomLeave = () => {
 
     sendMessage({
@@ -305,13 +333,16 @@ function onParticipantLeft(request) {
   
  };
 
+  // let view = false;
+  let view = true;
+
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   return (
     <WebcamContainer>
-      <RoomCamContainer>
+      <CamContainer>
         <div id="participants1"></div>
         <div id="participants2"></div>
-      </RoomCamContainer>
+      </CamContainer>
 
       <RoomController>
         <RoomParts
@@ -366,47 +397,52 @@ function onParticipantLeft(request) {
         </RoomParts>
 
         <div className="dummy"></div>
-      </RoomController>
+      </RoomController> 
     </WebcamContainer>
   );
 };
 
 const WebcamContainer = styled.div`
   flex: 1;
-  width: 100%;
-  margin: 1rem;
-`;
-
-const RoomCamContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 4rem);
-  /* max-height: 45rem;
-	border: 2px solid red; */
+  padding: 1.5rem 1.5rem 0 0;
+`;
 
+const CamContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 2rem;
+  
   #participants1,
   #participants2 {
     flex: 1;
     display: flex;
     justify-content: center;
+    height: 50%;
     gap: 2rem;
-  }
-
-  .roomCam {
-    flex: 1;
-    border-radius: 2.5rem;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
-    overflow: hidden;
-    max-width: 40rem;
-  }
-
-  .video {
-    width: 100%;
-    max-height: 375px;
   }
 
   .container {
     position: relative;
+    flex: 1;
+    max-width: 40%;
+  }
+
+  .roomCam {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 2.5rem;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+    overflow: hidden;
+  }
+
+  .video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .name {
@@ -417,14 +453,30 @@ const RoomCamContainer = styled.div`
     background-color: white;
     border-radius: 0.5rem;
   }
+
+  .stopVideo{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 2.5rem;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  }
+
+  .stopAudio{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: blue;
+  }
 `;
 
 const RoomController = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-
   height: 4rem;
+  margin-top: 2rem;
 
   .ControllerIcon {
     cursor: pointer;
@@ -439,4 +491,4 @@ const RoomController = styled.div`
   }
 `;
 
-export default Test1;
+export default Webcam;
