@@ -200,9 +200,13 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
               return (
                 <Chats
                   key={idx}
-                  className={
-                    message.writer === userName ? 'rightChat' : 'leftChat'
-                  }
+                  className={`${
+                    message.writer === 'Manager'
+                      ? 'manager'
+                      : message.writer === userName
+                      ? 'rightChat'
+                      : 'leftChat'
+                  }`}
                 >
                   <span className="sender">
                     {/* 한 사람이 여러번 체팅을 보냈을 때 sender의 값을 안보이게  */}
@@ -261,6 +265,22 @@ const ChatWindowContainer = styled.div`
   align-items: end;
   gap: 1rem;
   overflow-y: auto;
+
+  .manager{
+    align-items: center;
+    
+    .sender{
+      display: none;
+    }
+    
+    .content {
+      background-color: #bbb;
+      color: white;
+      font-size: 0.5rem;
+      font-weight: normal;
+      padding: 0.3rem;
+    }
+  }
 
   .rightChat {
     align-items: end;

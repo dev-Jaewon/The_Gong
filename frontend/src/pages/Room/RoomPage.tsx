@@ -17,7 +17,7 @@ const RoomPage = () => {
   const roomId = searchParams.get('roomId');
 
   const edge = 1.5;
-  const mainColor = 'rgb(79, 175, 177)';
+  const mainColor = '#4FAFB1';
 
   useEffect(() => {
     // 페이지 진입 시 로컬 스토리지 값 확인
