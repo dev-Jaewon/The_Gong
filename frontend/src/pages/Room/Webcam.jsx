@@ -285,7 +285,6 @@ function onParticipantLeft(request) {
 
  const videoOn = () => {
    setCameraOn((prev) => !prev);
-   console.log(participants.current)
    participants.current[name].rtcPeer.videoEnabled =
      !participants.current[name].rtcPeer.videoEnabled;
  };

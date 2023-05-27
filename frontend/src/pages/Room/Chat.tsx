@@ -112,6 +112,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
   // 메시지를 받았을 때 실행되는 코드
   const onMessageReceived = (message: any) => {
     const chat = JSON.parse(message.body);
+    console.log(chat)
 
     if (chat.type === 'ENTER') {
       setReceivedMessage((prevState) => [...prevState, {
@@ -134,7 +135,6 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
     //scrollTop: 요소의 스크롤된 세로 위치
     //scrollHeight: 요소의 콘텐츠의 전체 높이
     chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
-    console.log('내려간당')
   };
 
   // 메시지 인풋창의 value를 관리하는 코드
