@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private AuthService authService;
-    private JwtTokenizer jwtTokenizer;
+    private final AuthService authService;
+    private final JwtTokenizer jwtTokenizer;
 
     @PostMapping("/refresh")
     public ResponseEntity PostNewAccessToken(@RequestBody AuthDto.Refresh requestBody) {
