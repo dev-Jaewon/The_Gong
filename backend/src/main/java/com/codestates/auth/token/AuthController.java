@@ -1,13 +1,12 @@
 package com.codestates.auth.token;
 
-import com.codestates.auth.jwt.JwtAuthenticationFilter;
 import com.codestates.auth.jwt.JwtTokenizer;
 import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.member.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,20 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/auth")
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class AuthController {
 
     private AuthService authService;
     private JwtTokenizer jwtTokenizer;
-    private MemberService memberService;
-    private JwtAuthenticationFilter authenticationFilter;
-
-    public AuthController(AuthService authService, JwtTokenizer jwtTokenizer, MemberService memberService, JwtAuthenticationFilter authenticationFilter) {
-        this.authService = authService;
-        this.jwtTokenizer = jwtTokenizer;
-        this.memberService = memberService;
-        this.authenticationFilter = authenticationFilter;
-    }
 
     @PostMapping("/refresh")
     public ResponseEntity PostNewAccessToken(@RequestBody AuthDto.Refresh requestBody) {
