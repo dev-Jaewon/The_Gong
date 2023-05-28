@@ -1,5 +1,6 @@
 package com.codestates.room.service;
 
+import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.entity.MemberTag;
 import com.codestates.member.repository.MemberTagRepository;
@@ -17,6 +18,8 @@ import com.codestates.member.repository.MemberRoomRepository;
 import com.codestates.member.service.MemberService;
 import com.codestates.room.entity.RoomTag;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -38,7 +41,6 @@ public class RoomService {
 
     public Room createRoom(Room room, long adminMemberId) {
         Member findMember = memberRepository.findById(adminMemberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        verifyExistsTitle(room.getTitle());
 
         room.setAdminNickname(findMember.getNickname());
         findMember.setCreatedCount(findMember.getCreatedCount() + 1);
@@ -301,11 +303,13 @@ public class RoomService {
     }
 
 
-    private void verifyExistsTitle(String title) {
+    public ResponseEntity<ErrorResponse> verifyExistsCheck(String title) {
         Optional<Room> optionalRoom = roomRepository.findByTitle(title);
         if (optionalRoom.isPresent()) {
-            throw new BusinessLogicException(ExceptionCode.ROOM_EXIST);
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "이미 사용중인 방제입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
+        return null;
     }
 
 
