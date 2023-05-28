@@ -55,6 +55,8 @@ public class RoomController {
         //기본썸네일 추가
         if(requestBody.getImageUrl()==null) requestBody.setImageUrl(thumbnail);
 
+        ResponseEntity checkTitle = roomService.verifyExistsCheck(requestBody.getTitle());
+
         requestBody.setAdminMemberId(memberId);
         Room room = mapper.postDtoToRoom(requestBody);
         room = roomService.createRoom(room, requestBody.getAdminMemberId());
