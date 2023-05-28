@@ -10,6 +10,7 @@ public enum ExceptionCode {
     NEED_PASSWORD(404, "This room needs a password"),
     NO_PASSWORD_REQUIRED(400, "No password required"),
     TAG_NOT_FOUND(404, "Tag not found"),
+    TAG_EXIST(409,"Already exists" ),
     PLEASE_VOTE(404, "Please vote"),
     DOUBLE_VOTE(409, "You cannot vote in duplicate"),
     ONLY_ADMIN(404, "Administrator only"),
