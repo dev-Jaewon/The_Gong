@@ -1,9 +1,8 @@
 package com.codestates.member.entity;
 
 import com.codestates.tag.entity.Tag;
-import com.codestates.common.entity.BaseEntity;
 import lombok.*;
-
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 
 @Entity
@@ -12,7 +11,8 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberTag extends BaseEntity {
+//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class MemberTag { //시간 불필요 체크하기
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -22,16 +22,13 @@ public class MemberRoom extends BaseEntity {
     private Favorite favorite = Favorite.NONE;
 
     @Enumerated(value = EnumType.STRING)
-    private History history;
-
-    @Enumerated(value = EnumType.STRING)
     private Authority authority;
 
     @ManyToOne
     @JoinColumn(name = "ROOM_ID")
     private Room room;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne  //(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
@@ -47,9 +44,5 @@ public class MemberRoom extends BaseEntity {
         NONE , LIKE
     }
 
-
-    @Getter
-    public enum History {
-        VISITED
-    }
+//    public enum History { VISITED }
 }

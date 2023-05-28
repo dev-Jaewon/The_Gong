@@ -132,23 +132,23 @@ public interface MemberMapper {
     }
 
 
-    //Todo : 채팅방 방문기록 목록 (사용 X)
-    default List<MemberDto.RecordRoomResponseDtos> memberToRecordResponseDtos(List<MemberRoom> memberRoomList) {
-        return memberRoomList.stream()
-                .filter(memberRoom -> memberRoom.getHistory().equals(MemberRoom.History.VISITED))
-                .map(MemberRoom::getRoom)
-                .map(room -> {
-                    MemberDto.RecordRoomResponseDtos responseDtos = new MemberDto.RecordRoomResponseDtos();
-                    responseDtos.setRoomId(room.getRoomId());
-                    responseDtos.setTitle(room.getTitle());
-                    responseDtos.setInfo(room.getInfo());
-                    responseDtos.setImageUrl(room.getImageUrl());
-                    responseDtos.setFavoriteCount(room.getFavoriteCount());
-                    responseDtos.setMemberMaxCount(room.getMemberMaxCount());
-                    responseDtos.setPrivate(room.isPrivate());
-                    responseDtos.setTags(getRoomTags(room.getRoomTagList()));
-                    return responseDtos;
-                })
-                .collect(Collectors.toList());
-    }
+//    //Todo : 채팅방 방문기록 목록 (사용 X)
+//    default List<MemberDto.RecordRoomResponseDtos> memberToRecordResponseDtos(List<MemberRoom> memberRoomList) {
+//        return memberRoomList.stream()
+//                .filter(memberRoom -> memberRoom.getHistory().equals(MemberRoom.History.VISITED))
+//                .map(MemberRoom::getRoom)
+//                .map(room -> {
+//                    MemberDto.RecordRoomResponseDtos responseDtos = new MemberDto.RecordRoomResponseDtos();
+//                    responseDtos.setRoomId(room.getRoomId());
+//                    responseDtos.setTitle(room.getTitle());
+//                    responseDtos.setInfo(room.getInfo());
+//                    responseDtos.setImageUrl(room.getImageUrl());
+//                    responseDtos.setFavoriteCount(room.getFavoriteCount());
+//                    responseDtos.setMemberMaxCount(room.getMemberMaxCount());
+//                    responseDtos.setPrivate(room.isPrivate());
+//                    responseDtos.setTags(getRoomTags(room.getRoomTagList()));
+//                    return responseDtos;
+//                })
+//                .collect(Collectors.toList());
+//    }
 }

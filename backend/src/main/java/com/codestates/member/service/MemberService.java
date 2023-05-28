@@ -26,15 +26,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberTagRepository memberTagRepository;
-    private final RoomRepository roomRepository;
     private final TagRepository tagRepository;
-    private final SearchService searchService;
     private final PasswordEncoder passwordEncoder;
+
+    public MemberService(MemberRepository memberRepository, MemberTagRepository memberTagRepository, TagRepository tagRepository, PasswordEncoder passwordEncoder) {
+        this.memberRepository = memberRepository;
+        this.memberTagRepository = memberTagRepository;
+        this.tagRepository = tagRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
     public Member createMember(Member member, String profile) {
@@ -154,8 +158,11 @@ public class MemberService {
         if (memberEmail.isPresent()) {
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일입니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } else if(memberNickname.isPresent()){
+            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "이미 사용중인 닉네임입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
-        verifyExistsNickname(String.valueOf(memberNickname));
+        //verifyExistsNickname(String.valueOf(memberNickname));
         return null;
     }
 
@@ -184,28 +191,52 @@ public class MemberService {
 
 
 
-
-
     //Todo : 관심태그
     public List<MemberTagDtos> selectMyTag(String name, long memberId) {
+        System.out.println("==================================================");
         Member member = findMember(memberId);
+        System.out.println("==================================================");
         List<MemberTag> memberTagList = member.getMemberTagList();
 
+        //✅test
+        long startTime, endTime;
+        long loadingTime;
+
+        //✅test
+        startTime = System.currentTimeMillis();
+        System.out.println("==================================================");
+
         Tag tag = tagRepository.findByName(name).orElseThrow(() -> new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND));
+
+        System.out.println("==================================================");
+
         Optional<MemberTag> optionalMemberTag = memberTagRepository.findByTag(tag);
 
-        if(optionalMemberTag.isPresent()) throw new BusinessLogicException(ExceptionCode.MEMBER_EXIST); //이미존재 태그로 변경해야함.
+        System.out.println("==================================================");
+        if(optionalMemberTag.isPresent()) throw new BusinessLogicException(ExceptionCode.TAG_EXIST);
 
         MemberTag memberTag = MemberTag.builder().tag(tag).member(member).build();
+
+        System.out.println("==================================================");
         memberTagRepository.save(memberTag);
         memberRepository.save(member);
 
+        System.out.println("==================================================");
         List<MemberTagDtos> memberTagDtosList = memberTagList.stream()
                 .map(mt -> MemberTagDtos.builder()
                         .tagId(mt.getTag().getTagId())
                         .name(mt.getTag().getName())
                         .build())
                 .collect(Collectors.toList());
+        System.out.println("==================================================");
+
+        //✅test
+        endTime = System.currentTimeMillis();
+        loadingTime = endTime - startTime;
+
+
+        //✅test
+        System.out.println("Loading Time: " + loadingTime + "ms");
         return memberTagDtosList;
     }
 
