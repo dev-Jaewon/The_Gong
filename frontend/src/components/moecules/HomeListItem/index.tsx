@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-import { MouseEvent } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RoomType } from '../../templates/MainTemplate';
 import { api } from '../../../util/api';
@@ -15,7 +15,22 @@ type ToogleFavorite = {
   is_favorite: boolean;
 };
 
+
+
 export const HomeListItem = (props: RoomType) => {
+
+  const [memberId, setMemberId] = useState('');
+
+  useEffect(() => {
+    // 페이지 진입 시 로컬 스토리지 값 확인
+    const usermemberId = localStorage.getItem('member_id');
+    if ( usermemberId) {
+      setMemberId(JSON.parse(usermemberId));
+    } else {
+      console.log('스토리지 값 없음');
+    }
+  }, []);
+
   const navigate = useNavigate();
 
   const handleTagClick = (e: MouseEvent<HTMLButtonElement>, tag: string) => {
@@ -37,12 +52,23 @@ export const HomeListItem = (props: RoomType) => {
     });
   };
 
-  console.log(props);
-
   const room = () => {
-    startTransition(() => {
-      navigate(`/room?roomId=${props.title}`);
-    });
+
+    if(memberId){
+
+      if(props.member_current_count >= props.member_max_count){
+        alert('입장 인원을 초과했습니다.')
+      } else {
+        startTransition(() => {
+          // navigate(`/room?roomId=${props.title}`);
+        });
+      }
+
+    } else {
+      alert('로그인이 필요한 서비스 입니다.')
+      navigate(`/signin`);
+    }
+
   }
 
 
@@ -72,7 +98,7 @@ export const HomeListItem = (props: RoomType) => {
         <InfoItem>
           <p className="subject">인원</p>
           <p className="value">
-            {props.member_current_count + 1}/{props.member_max_count}명
+            {props.member_current_count}/{props.member_max_count}명
           </p>
         </InfoItem>
         <InfoItem>
