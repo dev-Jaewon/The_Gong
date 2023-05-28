@@ -2,10 +2,11 @@ package com.codestates.room.controller;
 
 import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.common.response.MultiResponseDto;
+import com.codestates.member.entity.Member;
+import com.codestates.member.service.MemberService;
 import com.codestates.room.dto.RoomDto;
 import com.codestates.room.entity.Room;
 import com.codestates.room.mapper.RoomMapper;
-import com.codestates.common.history.RoomHistoryService;
 import com.codestates.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +31,8 @@ import java.util.Map;
 public class RoomController {
 
     private final RoomService roomService;
+    private final MemberService memberService;
     private final RoomMapper mapper;
-    private final RoomHistoryService roomHistoryService;
 
     @Value("${default.thumbnail.image}")
     private String thumbnail;
@@ -142,6 +144,47 @@ public class RoomController {
         return new ResponseEntity<>(
                 new MultiResponseDto<>(responseDtosList, roomPage), HttpStatus.OK);
     }
+
+
+
+    @GetMapping("/0/recommend") //url 수정
+    public ResponseEntity getRecommendRooms(@RequestParam(value = "page", defaultValue = "1") @Positive int page,
+                                            @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
+
+            Page<Room> nonMemberPage = roomService.findRecommendRoomsNonMember(page - 1, size);
+            List<Room> nonMemberList = nonMemberPage.getContent();
+            List<RoomDto.GetRecommendRoomResponseDtos> responseDtoList = mapper.memberToNonMemberRecommendResponseDtos(nonMemberList);
+
+            return new ResponseEntity<>(
+                    new MultiResponseDto<>(responseDtoList, nonMemberPage), HttpStatus.OK);
+        }
+
+
+    @GetMapping("/{member-id}/recommend") //url 수정
+    public ResponseEntity getRecommendRooms(@PathVariable("member-id") long memberId,
+                                            @RequestParam(value = "page", defaultValue = "1") @Positive int page,
+                                            @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
+
+        memberService.findMember(memberId);
+        //log.info("# 회원 {}",member);
+        Page<Room> recommendPage = roomService.findRecommendRooms(page-1, size);
+
+        //null 일 경우 빈응답 페이지 반환
+        if (recommendPage == null || recommendPage.isEmpty()) {
+            return new ResponseEntity<>(
+                    new MultiResponseDto<>(new ArrayList<>(), Page.empty()),
+                    HttpStatus.OK
+            );
+        }
+
+        List<Room> recommendList = recommendPage.getContent();
+        List<RoomDto.GetRecommendRoomResponseDtos> responseDtoList = mapper.memberToRecommendResponseDtos(recommendList);
+        //log.info("# 응답리스트 {}",responseDtoList.isEmpty());
+
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(responseDtoList,recommendPage), HttpStatus.OK);
+    }
+
 
 
 

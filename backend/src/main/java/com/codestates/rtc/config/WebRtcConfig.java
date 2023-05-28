@@ -43,7 +43,7 @@ public class WebRtcConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(kurentoHandler(), "/groupcall")
-                .setAllowedOrigins("http://localhost:3000")
+                .setAllowedOrigins("http://localhost:3000","http://thegong.site", "https://thegong.site")
                 .withSockJS();
     }
 }

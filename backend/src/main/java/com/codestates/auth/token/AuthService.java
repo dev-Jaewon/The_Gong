@@ -21,14 +21,15 @@ public class AuthService {
         return jwtTokenizer.encodedBase64SecretKey(secretKey);
     }
 
+
     // member 추출
     public Member getMemberFromToken(Claims claims) {
-        String memberId = String.valueOf(claims.get("memberId", Integer.class));
+        String memberId = String.valueOf(claims.get("memberId", Long.class));
         return memberService.findMember(Long.parseLong(memberId));
     }
 
 
-    //액세스+리프레시 토큰 반환
+
     public AuthDto convertToDto(Member member) {
         AuthDto authDto = new AuthDto();
         authDto.setMemberId(member.getMemberId());
@@ -36,6 +37,7 @@ public class AuthService {
         authDto.setImageUrl(member.getImageUrl());
         return authDto;
     }
+
 
 
     public AuthDto getAuthMemberInfo(Claims claims) {

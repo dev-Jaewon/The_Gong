@@ -7,8 +7,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../util/api';
 
-
-
 const CreateRoomPageContainer = styled.div`
   h1 {
     font-size: 25px;
@@ -26,50 +24,55 @@ const Container = styled.div`
 `;
 
 const CreateRoomPage = () => {
-
   const navigate = useNavigate();
   const [token, setToken] = useState('');
   const [memberId, setMemberId] = useState('');
-  const [imgUrl, setImgUrl] = useState('')
-
+  const [imgUrl, setImgUrl] = useState('');
 
   useEffect(() => {
     // 페이지 진입 시 로컬 스토리지 값 확인
-  // 페이지 진입 시 로컬 스토리지 값 확인
-  const userInfoString = localStorage.getItem('access_token');
-  const usermemberId = localStorage.getItem('member_id');
+    // 페이지 진입 시 로컬 스토리지 값 확인
+    const userInfoString = localStorage.getItem('access_token');
+    const usermemberId = localStorage.getItem('member_id');
 
-  if (userInfoString && usermemberId) {
-    setToken(JSON.parse(userInfoString));
-    setMemberId(JSON.parse(usermemberId));
-  } else {
-    console.log('스토리지 값 없음');
-  }
+    if (userInfoString && usermemberId) {
+      setToken(JSON.parse(userInfoString));
+      setMemberId(JSON.parse(usermemberId));
+      console.log(userInfoString);
+      console.log(usermemberId);
+    } else {
+      console.log('스토리지 값 없음');
+    }
   }, []);
 
   const sendFormData = async (data: any) => {
-
     const requestData = {
       ...data,
-      'img_url': imgUrl,
-      'admin_member_id': memberId + ''
+      img_url: imgUrl,
+      admin_member_id: memberId + '',
     };
-    
+
     console.log('@@@이거 보냅니다@@@');
     console.log(requestData);
 
-    api.post('https://9af7-211-193-143-25.ngrok-free.app/rooms/add', requestData,{
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then(response => {
+    api
+      .post(
+        `${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`,
+        requestData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
         // 요청 성공 시 처리
         console.log('@@@이거 보냈습니다@@@');
         console.log(response.data);
-        navigate('/')
+        navigate('/');
+        window.location.reload(); // 페이지 리로드
       })
-      .catch(error => {
+      .catch((error) => {
         // 요청 실패 시 처리
         console.error(error);
       });
@@ -81,32 +84,36 @@ const CreateRoomPage = () => {
   const isLoading = false;
 
   const [selectedFile, setSelectedFile] = useState('');
+  const [formError, setError] = useState(false);
 
-  const handleFileUpload = () => {
+  const handleFileUpload = (e: any) => {
+    e.preventDefault();
     const formData = new FormData();
     formData.append('image', selectedFile);
-    console.log(formData)
-    console.log(memberId)
+    console.log(formData);
+    console.log(memberId);
 
-
-    api.post(`https://9af7-211-193-143-25.ngrok-free.app/thumbnail/${memberId}`, formData,{
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      }
-    })
-      .then(response => {
-        // 요청 성공 시 처리
-        console.log('@@@이거 받았습니다@@@');
-        console.log(response.data);
-        setImgUrl(response.data)
+    api
+      .post(`${import.meta.env.VITE_BASE_URL}thumbnail/${memberId}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       })
-      .catch(error => {
+      .then((response) => {
+        // 요청 성공 시 처리
+        console.log('성공');
+        console.log(response);
+        setError(false);
+        setImgUrl(response.data);
+      })
+      .catch((error) => {
         // 요청 실패 시 처리
-        console.error(error);
+        console.log('애러');
+        console.log(error);
+        setError(true);
       });
-  }
-
+  };
 
   return (
     <CreateRoomPageContainer>
@@ -114,7 +121,14 @@ const CreateRoomPage = () => {
       <Container>
         <div>
           <h1>스터디 만들기</h1>
-          <RoomForm onSubmit={handleSubmit} isLoading={isLoading} setSelectedFile={setSelectedFile} handleFileUpload={handleFileUpload}></RoomForm>
+          <RoomForm
+            formError={formError}
+            setError={setError}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+            setSelectedFile={setSelectedFile}
+            handleFileUpload={handleFileUpload}
+          ></RoomForm>
         </div>
       </Container>
     </CreateRoomPageContainer>

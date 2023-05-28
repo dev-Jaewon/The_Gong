@@ -6,8 +6,10 @@ import { useQueries } from '@tanstack/react-query';
 import { api } from '../../util/api';
 import { Skeleton } from '../../components/atoms/Skeleton/Skeleton';
 import { Banner } from '../../components/organisms/Banner';
+import { useEffect } from 'react';
 
 export const Main = () => {
+
   const [myRoom, newRoom, popularRoom] = useQueries({
     queries: [
       {
@@ -15,24 +17,31 @@ export const Main = () => {
         queryFn: () =>
           api
             .get(
-              `/members/${localStorage.getItem(
+              `${import.meta.env.VITE_BASE_URL}members/${localStorage.getItem(
                 'member_id'
               )}/created?page=1&size=4`
             )
+
             .then((res) => res.data),
-        staleTime: Infinity,
+        refetchOnMount: 'always',
       },
       {
         queryKey: ['newRoom', 2],
         queryFn: () =>
-          api.get('/rooms/new?page=1&size=5').then((res) => res.data),
+          api
+            .get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`)
+            .then((res) => res.data),
         staleTime: Infinity,
       },
       {
         queryKey: ['popularRoom', 2],
         queryFn: () =>
           api
-            .get('/search?keyword=&sort=favoriteCount')
+            .get(
+              `${
+                import.meta.env.VITE_BASE_URL
+              }search?keyword=&sort=favoriteCount`
+            )
             .then((res) => res.data),
         staleTime: Infinity,
       },

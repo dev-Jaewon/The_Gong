@@ -1,6 +1,7 @@
 package com.codestates.room.dto;
 
 import com.codestates.member.entity.MemberRoom;
+import com.codestates.room.entity.Room;
 import com.codestates.tag.dto.TagDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

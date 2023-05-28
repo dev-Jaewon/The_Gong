@@ -16,6 +16,7 @@ public class AuthDto {
     private String imageUrl;
 
 
+
     @Getter
     @Setter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)

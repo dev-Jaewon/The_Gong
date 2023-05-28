@@ -1,5 +1,6 @@
 package com.codestates.socket.controller;
 
+import com.codestates.member.service.MemberService;
 import com.codestates.room.service.RoomService;
 import com.codestates.room.service.RoomServiceTransient;
 import com.codestates.socket.dto.ChatMessageDto;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -64,21 +66,22 @@ public class StompChatController {
         log.info("{} info is saved in server", writer);
 
         //새로운 멤버 입장을 Sub 에게 전달
-        message.setMessage(message.getWriter() + "님이 채팅방에 입장하였습니다");
+        message.setMessage(message.getWriter() + "님이 체팅방에 입장하였습니다");
         message.setType(ChatMessageDto.MessageType.ENTER);
 
         //유저 목록을 어떻게 넘길 것인가 2가지 방법이 존재함
         // 1. 만약 dto에 값을 설정해서 보낸다 -> null 값처리에 대한 문제가 발생할 수 있음
         // 2. 메시지를 2번 보낸다. -> 클라이언트에서 2개를 다 처리해야하지만. 데어터 전송량을 최소화 할 수 있음(최종선택)
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
-        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatRoomService.getParticipants(message.getRoomId()));
-        log.info(chatRoomService.getParticipants(message.getRoomId()).toString());
+        template.convertAndSend("/sub/chat/room/" + message.getRoomId(), chatRoomService.getParticipants(roomId));
+        log.info(chatRoomService.getParticipants(roomId).toString());
     }
 
     @MessageMapping("/chat/message")
     public void sendMessage(@Payload ChatMessageDto message) {
 
         message.setType(ChatMessageDto.MessageType.TALK);
+        message.setTime(LocalDateTime.now());
         //pub 으로 전달된 메세지를 다시 sub에게 전달하자
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
     }
@@ -100,6 +103,7 @@ public class StompChatController {
         roomService.leaveSession(roomId);
         sessionService.removeSession(sessionId);
         chatRoomService.removeParticipant(roomId,nickname);
+        roomService2.leaveRoom(nickname, roomId);
 
         // 세션 변경 내용을 sub 에게 전달
         if (nickname != null) {

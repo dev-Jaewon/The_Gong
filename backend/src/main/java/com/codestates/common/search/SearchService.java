@@ -69,7 +69,7 @@ public class SearchService {
 
 
 
-    private RoomDto.SearchResponseDto createSearchResponseDto(Room room) {
+    public RoomDto.SearchResponseDto createSearchResponseDto(Room room) {
         MemberRoom memberRoom = new MemberRoom();
         memberRoom.setRoom(room);
 

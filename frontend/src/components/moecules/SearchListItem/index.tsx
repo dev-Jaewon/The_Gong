@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineLock } from 'react-icons/ai';
 import { formatDate } from '../../../util/formatDate';
-import { MouseEvent } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import searchThumbnail from '../../../assets/image/searchThumbnail.jpg';
 
 export type SearchItem = {
@@ -25,9 +25,29 @@ export type SearchItem = {
 export const SearchListItem = (props: SearchItem) => {
   const navigate = useNavigate();
 
+  const [memberId, setMemberId] = useState('');
+
+  useEffect(() => {
+    // 페이지 진입 시 로컬 스토리지 값 확인
+    const usermemberId = localStorage.getItem('member_id');
+    if ( usermemberId) {
+      setMemberId(JSON.parse(usermemberId));
+    } else {
+      console.log('스토리지 값 없음');
+    }
+  }, []);
+
+
   const handleItemClick = () => {
-    // 제윤님 여기 작업 private or public 일 경우 패스 작업
-    props.is_private ? navigate('') : navigate('');
+
+    if(memberId){
+      navigate(`/room?roomId=${props.title}`);
+    } else {
+      alert('로그인이 필요한 서비스 입니다.')
+      navigate(`/signin`);
+    }
+    // props.is_private ? navigate('') : navigate('');
+    
   };
 
   const handleTagClick = (e: MouseEvent<HTMLButtonElement>, tag: string) => {

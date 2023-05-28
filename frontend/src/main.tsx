@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import { GlobalStyles } from './styles/GlobalStyle';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
@@ -9,6 +9,7 @@ import { Signin } from './pages/Signin/index.tsx';
 import { Oauth } from './pages/Oauth/index.tsx';
 import { Search } from './pages/search/index.tsx';
 import { Main } from './pages/Main/index.tsx';
+import RoomPage from './pages/Room/RoomPage.tsx';
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./__mocks__/browser');
@@ -36,7 +37,14 @@ let router = createBrowserRouter([
     path: '/signin',
     Component: () => <Signin />,
   },
-  { path: '/search', Component: () => <Search /> },
+  {
+    path: '/search',
+    Component: () => <Search />,
+  },
+  {
+    path: '/room',
+    Component: lazy(() => import('./pages/Room/RoomPage.tsx')),
+  },
 ]);
 
 const queryClient = new QueryClient({
