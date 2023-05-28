@@ -60,8 +60,6 @@ public class RoomService {
         memberRoom.setRoom(room);
         memberRoom.setFavorite(MemberRoom.Favorite.NONE);
         memberRoom.setAuthority(MemberRoom.Authority.ADMIN);
-        memberRoom.setHistory(MemberRoom.History.VISITED);
-
         roomRepository.save(room);
         memberRoomRepository.save(memberRoom);
         memberRepository.save(findMember);
