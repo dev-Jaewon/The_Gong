@@ -4,7 +4,6 @@ import com.codestates.auth.jwt.JwtAuthenticationFilter;
 import com.codestates.auth.jwt.JwtTokenizer;
 import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.member.entity.Member;
-import com.codestates.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -39,8 +38,9 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
 
-        Member member = memberService.findMember(requestBody.getMemberId());
-        String accessToken = authenticationFilter.delegateAccessToken(member);
+
+        Member member = authService.findMember(requestBody.getMemberId());
+        String accessToken = authService.delegateAccessToken(member);
 
         // new access token
         return ResponseEntity.ok(accessToken);
@@ -64,7 +64,6 @@ public class AuthController {
 //        return ResponseEntity.ok(accessToken);
 //    }
 //
-
 
 
 
