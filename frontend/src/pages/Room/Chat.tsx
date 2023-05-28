@@ -12,6 +12,8 @@ import { FaUserCircle } from 'react-icons/fa';
 
 import { BsFillMicFill } from 'react-icons/bs';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
+import { FaUser } from 'react-icons/fa';
+
 
 interface ChatProps {
   roomId: string;
@@ -60,6 +62,13 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
 
   }, []);
 
+  // 스테이트가 변경 될 때 마다 스크롤 내리기
+  useEffect(() => {
+    // 스크롤 내리기
+    scrollToBottom();
+  }, [ReceivedMessage])
+
+
   window.onbeforeunload = function () {
     onLeave()
   };
@@ -103,6 +112,7 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
   // 메시지를 받았을 때 실행되는 코드
   const onMessageReceived = (message: any) => {
     const chat = JSON.parse(message.body);
+    console.log(chat)
 
     if (chat.type === 'ENTER') {
       setReceivedMessage((prevState) => [...prevState, {
@@ -118,8 +128,6 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
       setChatParticipants(chat);
     }
 
-    // 스크롤 내리기
-    scrollToBottom();
   };
 
   // 스크롤을 하단으로 내려주는 코드
@@ -164,16 +172,16 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
     <Verticality gap={0.5}>
       <RoomParts topRight={edge} flex={1} bgColor={mainColer}>
       <ChatLists>
+        <span className='listTitle'>참가자들 <FaUser className='listIcon'/>{chatParticipants.length}</span>
         {chatParticipants.map((el, idx) => (
 
           <ChatList key={idx}>
-            <div className='chatListUser'>
-              {idx+1}. {el}
+            <div>
+              {el}
             </div>
 
-            <div className='chatListUserInfo'>
-              <BsFillCameraVideoFill></BsFillCameraVideoFill> 
-              <span> </span>
+            <div>
+              <BsFillCameraVideoFill className=''></BsFillCameraVideoFill> 
               <BsFillMicFill></BsFillMicFill>
             </div>
           </ChatList>
@@ -192,9 +200,13 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
               return (
                 <Chats
                   key={idx}
-                  className={
-                    message.writer === userName ? 'rightChat' : 'leftChat'
-                  }
+                  className={`${
+                    message.writer === 'Manager'
+                      ? 'manager'
+                      : message.writer === userName
+                      ? 'rightChat'
+                      : 'leftChat'
+                  }`}
                 >
                   <span className="sender">
                     {/* 한 사람이 여러번 체팅을 보냈을 때 sender의 값을 안보이게  */}
@@ -254,6 +266,22 @@ const ChatWindowContainer = styled.div`
   gap: 1rem;
   overflow-y: auto;
 
+  .manager{
+    align-items: center;
+    
+    .sender{
+      display: none;
+    }
+    
+    .content {
+      background-color: #bbb;
+      color: white;
+      font-size: 0.5rem;
+      font-weight: normal;
+      padding: 0.3rem;
+    }
+  }
+
   .rightChat {
     align-items: end;
   }
@@ -304,6 +332,7 @@ const ChatInput = styled.input`
   box-shadow: rgba(0, 0, 0, 0.05) 0px 2px 8px inset;
   padding: 0.5rem 0.5rem 3rem 0.5rem;
 `;
+
 const ChatSendButtun = styled.button`
   display: flex;
   justify-content: center;
@@ -331,25 +360,31 @@ const ChatLists = styled.div`
   width: 100%;
   padding: 1rem;
   overflow: auto;
+
+  .listTitle{
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .listIcon{
+    height: 1rem;
+    margin-bottom: 0.2rem;
+    margin-left: 1rem;
+  }
 `
 
 const ChatList = styled.div`
   background-color: white;
   border-radius: 0.3rem;
   color: rgb(75, 75, 75);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   padding: 0.2rem 0.4rem;
   padding-top: 0.6rem;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px;
   max-width: 10rem;
   display: flex;
   justify-content: space-between;
-
-  .chatListUser{
-  }
-  
-  .chatListUserInfo{
-  }
 `
 
 export default Chat;

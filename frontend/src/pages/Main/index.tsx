@@ -6,6 +6,7 @@ import { useQueries } from '@tanstack/react-query';
 import { api } from '../../util/api';
 import { Skeleton } from '../../components/atoms/Skeleton/Skeleton';
 import { Banner } from '../../components/organisms/Banner';
+import { useEffect } from 'react';
 
 export const Main = () => {
 

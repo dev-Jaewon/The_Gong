@@ -14,9 +14,8 @@ import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { IoLogOut } from 'react-icons/io5';
 
 
-const Test1 = ({room, name, edge, mainColor}) => {
+const Webcam = ({room, name, edge, mainColor}) => {
   let participants = useRef({});
-  let view = true;
   const rtcSocket = useRef(null);
   const navigate = useNavigate();
 
@@ -148,7 +147,7 @@ function onParticipantLeft(request) {
       audio: true,
       video: {
         mandatory: {
-          maxWidth: 2000,
+          maxWidth: 1500,
           maxFrameRate: 15,
           minFrameRate: 15,
         },
@@ -206,28 +205,37 @@ function onParticipantLeft(request) {
 
   function Participant(name) {
     this.name = name;
+    let rtcPeer;
+
+
     let container = document.createElement('div');
     container.id = name;
     container.classList.add('container');
+    container.classList.add(name);
+
     let span = document.createElement('span');
-    let video = document.createElement('video');
     span.classList.add('name');
+    span.textContent = name;
+
+    let video = document.createElement('video');
     video.classList.add('video');
     video.classList.add('roomCam');
-    let rtcPeer;
 
     container.appendChild(video);
     container.appendChild(span);
 
-    if (view) {
+
+
+    // participants 값이 비동기적으로 할당되기 떄문에
+    // 현재 존재하는 video요소의 갯수로 판별
+    const isOdd = document.querySelectorAll('video').length % 2 === 0;
+    if (isOdd) {
       document.getElementById('participants1').appendChild(container);
-      view = !view;
     } else {
       document.getElementById('participants2').appendChild(container);
-      view = !view;
     }
 
-    span.appendChild(document.createTextNode(name));
+
 
     video.id = 'video-' + name;
     video.autoplay = true;
@@ -277,7 +285,6 @@ function onParticipantLeft(request) {
 
  const videoOn = () => {
    setCameraOn((prev) => !prev);
-   console.log(participants.current)
    participants.current[name].rtcPeer.videoEnabled =
      !participants.current[name].rtcPeer.videoEnabled;
  };
@@ -287,6 +294,49 @@ function onParticipantLeft(request) {
    participants.current[name].rtcPeer.audioEnabled =
      !participants.current[name].rtcPeer.audioEnabled;
  };
+
+ const party = participants.current; // participants.current에서 참여자 정보를 가져옴
+
+const toggleDiv = (element, className, enabled) => {
+  let div = element.querySelector('div');
+
+  if (enabled) {
+    if (!div) {
+      div = document.createElement('div');
+      div.classList.add(className);
+      element.appendChild(div);
+
+      // 'TheGong' 텍스트가 추가된 span 요소 생성
+      if (className === 'stopVideo') {
+        const span = document.createElement('span');
+        span.textContent = 'TheGong';
+        span.classList.add('additional-text'); // CSS 스타일을 위한 클래스 추가
+        div.appendChild(span);
+      }
+    }
+  } else {
+    if (div && div.classList.contains(className)) {
+      div.remove();
+
+      // 'TheGong' 텍스트를 포함한 span 요소 제거
+      const span = element.querySelector('.additional-text');
+      if (span) {
+        span.remove();
+      }
+    }
+  }
+}
+
+for (const key in party) {
+  if (party.hasOwnProperty(key)) {
+    const participant = party[key];
+    const element = document.querySelector(`.${key}`);
+
+    toggleDiv(element, 'stopVideo', !participant.rtcPeer.videoEnabled);
+    toggleDiv(element, 'stopAudio', !participant.rtcPeer.audioEnabled);
+  }
+}
+
 
  const roomLeave = () => {
 
@@ -305,13 +355,16 @@ function onParticipantLeft(request) {
   
  };
 
+  // let view = false;
+  let view = true;
+
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   return (
     <WebcamContainer>
-      <RoomCamContainer>
+      <CamContainer>
         <div id="participants1"></div>
         <div id="participants2"></div>
-      </RoomCamContainer>
+      </CamContainer>
 
       <RoomController>
         <RoomParts
@@ -366,47 +419,52 @@ function onParticipantLeft(request) {
         </RoomParts>
 
         <div className="dummy"></div>
-      </RoomController>
+      </RoomController> 
     </WebcamContainer>
   );
 };
 
 const WebcamContainer = styled.div`
   flex: 1;
-  width: 100%;
-  margin: 1rem;
-`;
-
-const RoomCamContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 4rem);
-  /* max-height: 45rem;
-	border: 2px solid red; */
+  padding: 1.5rem 1.5rem 0 0;
+`;
 
+const CamContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 2rem;
+  
   #participants1,
   #participants2 {
     flex: 1;
     display: flex;
     justify-content: center;
+    height: 50%;
     gap: 2rem;
-  }
-
-  .roomCam {
-    flex: 1;
-    border-radius: 2.5rem;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
-    overflow: hidden;
-    max-width: 40rem;
-  }
-
-  .video {
-    width: 100%;
-    max-height: 375px;
   }
 
   .container {
     position: relative;
+    flex: 1;
+    max-width: 40%;
+  }
+
+  .roomCam {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 2.5rem;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+    overflow: hidden;
+  }
+
+  .video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .name {
@@ -417,14 +475,41 @@ const RoomCamContainer = styled.div`
     background-color: white;
     border-radius: 0.5rem;
   }
+
+  .additional-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate( -50%, -50%);
+  display: inline-block; 
+  color: #4FAFB1; 
+  font-size: 2rem; 
+}
+
+  .stopVideo{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 2.5rem;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  }
+
+  .stopAudio{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 0.3rem solid tomato;
+    border-radius: 2.5rem;
+  }
 `;
 
 const RoomController = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-
   height: 4rem;
+  margin-top: 2rem;
 
   .ControllerIcon {
     cursor: pointer;
@@ -439,4 +524,4 @@ const RoomController = styled.div`
   }
 `;
 
-export default Test1;
+export default Webcam;

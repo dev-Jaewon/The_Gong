@@ -186,14 +186,12 @@ const RoomForm = (props: RoomFormProps) => {
 
   // 방 만들기 전송
   function handleSubmitFormHook() {
-    console.log('안돼나?')    
     const subData = {
       ...data,
       is_private: isPrivate,
       member_max_count: Number(data.member_max_count),
       tags: tags,
     };
-    console.log(subData)    
     props.onSubmit(subData);
   }
 

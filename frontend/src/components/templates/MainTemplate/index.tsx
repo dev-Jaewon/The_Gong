@@ -3,6 +3,7 @@ import { Banner } from '../../organisms/Banner';
 import { HomeList } from '../../organisms/HomeList';
 import { IoMdAddCircle } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 export type RoomType = {
   info: string;
@@ -30,6 +31,17 @@ export const MainTemplate = ({
   popularRoom,
 }: MainTemplateProps) => {
   const navigate = useNavigate();
+  const [memberId, setMemberId] = useState('');
+
+  useEffect(() => {
+    // 페이지 진입 시 로컬 스토리지 값 확인
+    const usermemberId = localStorage.getItem('member_id');
+    if ( usermemberId) {
+      setMemberId(JSON.parse(usermemberId));
+    } else {
+      console.log('스토리지 값 없음');
+    }
+  }, []);
 
   return (
     <Container>
@@ -47,7 +59,14 @@ export const MainTemplate = ({
           <NoneValueContainer>
             <h2>내가 만든 스터디</h2>
             <p className="subject_describe">스터디를 만들어주세요!.</p>
-            <CreateButton onClick={() => navigate('/createRoom')}>
+            <CreateButton onClick={() => {
+                if(memberId){
+                  navigate('/createRoom');
+                } else {
+                  alert('로그인이 필요한 서비스 입니다.')
+                  navigate(`/signin`);
+                }
+            }}>
               <IoMdAddCircle size={35} color={'rgb(138, 138, 138)'} />
               <p>스터디 만들기</p>
             </CreateButton>

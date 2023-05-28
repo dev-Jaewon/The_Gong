@@ -70,6 +70,7 @@ const CreateRoomPage = () => {
         console.log('@@@이거 보냈습니다@@@');
         console.log(response.data);
         navigate('/');
+        window.location.reload(); // 페이지 리로드
       })
       .catch((error) => {
         // 요청 실패 시 처리
@@ -103,14 +104,14 @@ const CreateRoomPage = () => {
         // 요청 성공 시 처리
         console.log('성공');
         console.log(response);
-        setError(true);
+        setError(false);
         setImgUrl(response.data);
       })
       .catch((error) => {
         // 요청 실패 시 처리
         console.log('애러');
         console.log(error);
-        setError(false);
+        setError(true);
       });
   };
 
