@@ -274,6 +274,15 @@ public class RoomService {
         return new PageImpl<>(seletedRooms, pageable, seletedRooms.size());
     }
 
+    public void leaveRoom(String nickName, String roomId){
+        long longRoomId = Long.parseLong(roomId);
+        Room room = findVerifiedRoom(longRoomId);
+
+        //decrease1
+        room.setMemberCurrentCount(room.getMemberCurrentCount()-1);
+//        memberRoomRepository.deleteById();
+    }
+
 
     // 외래키 제약조건 해결
     public void deleteRoom(long roomId) {
