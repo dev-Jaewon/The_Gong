@@ -1,5 +1,6 @@
 package com.codestates.auth.jwt;
 
+import com.codestates.member.entity.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
@@ -114,6 +115,21 @@ public class JwtTokenizer {
                 .setExpiration(getExpiration(accessTokenExpirationMinutes))
                 .signWith(singKey)
                 .compact();
+    }
+
+
+    //jwtAuthenticationManager -> jwtTokenizer copy
+    public String delegateAccessToken(Member member) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("memberId", member.getMemberId());
+        claims.put("username", member.getEmail());
+
+        String subject = String.valueOf(member.getMemberId());
+        Date expiration = getExpiration(getAccessTokenExpirationMinutes());
+        String base64EncodedSecretKey = encodedBase64SecretKey(getSecretKey());
+
+        String accessToken = generateAccessToken(claims,subject,expiration,base64EncodedSecretKey);
+        return accessToken;
     }
 
 

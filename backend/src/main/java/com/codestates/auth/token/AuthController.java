@@ -2,6 +2,7 @@ package com.codestates.auth.token;
 
 import com.codestates.auth.jwt.JwtTokenizer;
 import com.codestates.auth.utils.ErrorResponse;
+import com.codestates.member.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -9,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -23,23 +22,19 @@ public class AuthController {
 
 
     @PostMapping("/refresh")
-    public ResponseEntity PostNewAccessToken(@RequestBody Map<String, String> refreshTokenMap) {
+    public ResponseEntity PostNewAccessToken(@RequestBody AuthDto.Refresh requestBody) {
 
-        String refreshToken = refreshTokenMap.get("refreshToken");
-        String key = authService.getIngredients();
-
-        if(refreshToken == null) {
+        String refreshToken = requestBody.getRefreshToken();
+        if(!jwtTokenizer.validateRefresh(refreshToken)){
             return ResponseEntity.badRequest().build();
         }
 
-        if(!jwtTokenizer.validateRefresh(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        Member member = authService.findMember(requestBody.getMemberId());
+        String accessToken = authService.delegateAccessToken(member);
 
-        Map<String, String> tokens = authService.getGeneratedTokens(refreshToken, key);
-        return ResponseEntity.ok().body(tokens);
+        // new access token
+        return ResponseEntity.ok(accessToken);
     }
-
 
 
 
