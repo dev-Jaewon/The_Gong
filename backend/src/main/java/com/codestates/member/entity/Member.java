@@ -45,7 +45,7 @@ public class Member extends BaseEntity {
     @Column
     private int recordeCount;
 
-    @Column
+    @Column(name = "is_admin")
     private boolean isAdmin;
 
     @Column
