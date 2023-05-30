@@ -49,6 +49,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         Map<String, Object> principal = new HashMap<>();
         principal.put("memberId", claims.get("memberId"));
         principal.put("username", claims.get("username"));
+        principal.put("isAdmin", claims.get("isAdmin")); //추가 2
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
