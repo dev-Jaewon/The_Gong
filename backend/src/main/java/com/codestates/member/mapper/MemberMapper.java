@@ -38,7 +38,7 @@ public interface MemberMapper {
     }
 
 
-    //Todo : 회원수정 응답 : 응답물어보기
+    //Todo : 회원수정 응답
     default MemberDto.PatchResponseDto memberToPatchResponseDto(Member createMember) {
         if (createMember == null) return null;
         MemberDto.PatchResponseDto patchResponseDto = new MemberDto.PatchResponseDto();
@@ -81,6 +81,7 @@ public interface MemberMapper {
                     responseDtos.setMemberMaxCount(room.getRoom().getMemberMaxCount());
                     //responseDtos.setMemberCurrentCount(room.getRoom().getMemberCurrentCount());
                     responseDtos.setPrivate(room.getRoom().isPrivate());
+                    responseDtos.setPassword(room.getRoom().getPassword());
                     responseDtos.setFavoriteStatus(room.getFavorite());
                     responseDtos.setTags(getRoomTags(room.getRoom().getRoomTagList()));
                     return responseDtos;
@@ -117,6 +118,7 @@ public interface MemberMapper {
                     responseDtos.setMemberMaxCount(room.getMemberMaxCount());
                     //responseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
                     responseDtos.setPrivate(room.isPrivate());
+                    responseDtos.setPassword(room.getPassword());
                     responseDtos.setTags(getRoomTags(room.getRoomTagList()));
                     return responseDtos;
                 })
@@ -130,25 +132,4 @@ public interface MemberMapper {
         MemberRoom memberRoom = memberRoomList.stream().filter(r -> r.getRoom().getRoomId().equals(room.getRoomId())).findFirst().get();
         return memberRoom.getFavorite();
     }
-
-
-//    //Todo : 채팅방 방문기록 목록 (사용 X)
-//    default List<MemberDto.RecordRoomResponseDtos> memberToRecordResponseDtos(List<MemberRoom> memberRoomList) {
-//        return memberRoomList.stream()
-//                .filter(memberRoom -> memberRoom.getHistory().equals(MemberRoom.History.VISITED))
-//                .map(MemberRoom::getRoom)
-//                .map(room -> {
-//                    MemberDto.RecordRoomResponseDtos responseDtos = new MemberDto.RecordRoomResponseDtos();
-//                    responseDtos.setRoomId(room.getRoomId());
-//                    responseDtos.setTitle(room.getTitle());
-//                    responseDtos.setInfo(room.getInfo());
-//                    responseDtos.setImageUrl(room.getImageUrl());
-//                    responseDtos.setFavoriteCount(room.getFavoriteCount());
-//                    responseDtos.setMemberMaxCount(room.getMemberMaxCount());
-//                    responseDtos.setPrivate(room.isPrivate());
-//                    responseDtos.setTags(getRoomTags(room.getRoomTagList()));
-//                    return responseDtos;
-//                })
-//                .collect(Collectors.toList());
-//    }
 }
