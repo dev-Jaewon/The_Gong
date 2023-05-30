@@ -51,8 +51,12 @@ public class RoomService {
         room.setAdminNickname(findMember.getNickname());
         findMember.setCreatedCount(findMember.getCreatedCount() + 1);
 
-        if (room.getImageUrl().isEmpty()) room.setImageUrl(thumbnail);
-        //log.info("# 이미지 {}", room.getImageUrl());
+//        Optional.ofNullable(requestBody.getImageUrl())
+//                        .ifPresent(room::setImageUrl);
+//
+//        if(requestBody == null) room.setImageUrl(thumbnail);
+
+        log.info("# 이미지 {}", room.getImageUrl());
 
         List<RoomTag> roomTagList = room.getRoomTagList().stream()
                 .map(rt -> {
