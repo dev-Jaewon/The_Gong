@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineLock } from 'react-icons/ai';
 import { formatDate } from '../../../util/formatDate';
-import { MouseEvent, useEffect, useState } from 'react';
+import { MouseEvent, startTransition, useEffect, useState } from 'react';
 import searchThumbnail from '../../../assets/image/searchThumbnail.jpg';
 
 export type SearchItem = {
@@ -41,11 +41,20 @@ export const SearchListItem = (props: SearchItem) => {
   const handleItemClick = () => {
 
     if(memberId){
-      navigate(`/room?roomId=${props.title}`);
+
+      if(props.member_current_count >= props.member_max_count){
+        alert('입장 인원을 초과했습니다.')
+      } else {
+        startTransition(() => {
+          navigate(`/room?roomId=${props.title}`);
+        });
+      }
+
     } else {
       alert('로그인이 필요한 서비스 입니다.')
       navigate(`/signin`);
     }
+
     // props.is_private ? navigate('') : navigate('');
     
   };
