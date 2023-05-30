@@ -5,11 +5,8 @@ import com.codestates.member.entity.Member;
 import com.codestates.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -42,8 +39,21 @@ public class AuthService {
     }
 
 
+
     public AuthDto getAuthMemberInfo(Claims claims) {
         Member member = getMemberFromToken(claims);
         return convertToDto(member);
+    }
+
+
+    public Member findMember(long memberId) {
+        Member member = memberService.findMember(memberId);
+        return member;
+    }
+
+
+    public String delegateAccessToken(Member member) {
+        String token = jwtTokenizer.delegateAccessToken(member);
+        return token;
     }
 }

@@ -42,7 +42,6 @@ public class RoomServiceTransient {
         memberRoom.setRoom(foundRoom);
         memberRoom.setFavorite(MemberRoom.Favorite.NONE);
         memberRoom.setAuthority(MemberRoom.Authority.USER);
-        memberRoom.setHistory(MemberRoom.History.VISITED);
         MemberRoom madeMemberRoom = memberRoomRepository.save(memberRoom);
         log.info("Member {} is entering the room. . . ", madeMemberRoom.getMember().getMemberId());
         // 3

@@ -224,6 +224,13 @@ public class RoomDto {
         private List<TagDto.TagResponseDto> tags;
     }
 
+    @Getter
+    @Setter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteResponseDto {
+        private long adminMemberId;
+    }
+
 
 
     //Todo : 방장정보 DTO (사용X)

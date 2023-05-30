@@ -1,14 +1,12 @@
 package com.codestates.auth.token;
 
-import com.codestates.auth.jwt.JwtAuthenticationFilter;
 import com.codestates.auth.jwt.JwtTokenizer;
 import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.member.entity.Member;
-import com.codestates.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,20 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/auth")
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class AuthController {
 
-    private AuthService authService;
-    private JwtTokenizer jwtTokenizer;
-    private MemberService memberService;
-    private JwtAuthenticationFilter authenticationFilter;
-
-    public AuthController(AuthService authService, JwtTokenizer jwtTokenizer, MemberService memberService, JwtAuthenticationFilter authenticationFilter) {
-        this.authService = authService;
-        this.jwtTokenizer = jwtTokenizer;
-        this.memberService = memberService;
-        this.authenticationFilter = authenticationFilter;
-    }
+    private final AuthService authService;
+    private final JwtTokenizer jwtTokenizer;
 
     @PostMapping("/refresh")
     public ResponseEntity PostNewAccessToken(@RequestBody AuthDto.Refresh requestBody) {
@@ -39,8 +28,9 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
 
-        Member member = memberService.findMember(requestBody.getMemberId());
-        String accessToken = authenticationFilter.delegateAccessToken(member);
+
+        Member member = authService.findMember(requestBody.getMemberId());
+        String accessToken = authService.delegateAccessToken(member);
 
         // new access token
         return ResponseEntity.ok(accessToken);
@@ -64,7 +54,6 @@ public class AuthController {
 //        return ResponseEntity.ok(accessToken);
 //    }
 //
-
 
 
 

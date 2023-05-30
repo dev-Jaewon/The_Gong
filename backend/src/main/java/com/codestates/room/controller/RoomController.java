@@ -2,7 +2,6 @@ package com.codestates.room.controller;
 
 import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.common.response.MultiResponseDto;
-import com.codestates.member.entity.Member;
 import com.codestates.member.service.MemberService;
 import com.codestates.room.dto.RoomDto;
 import com.codestates.room.entity.Room;
@@ -54,6 +53,8 @@ public class RoomController {
 
         //기본썸네일 추가
         if(requestBody.getImageUrl()==null) requestBody.setImageUrl(thumbnail);
+
+        ResponseEntity checkTitle = roomService.verifyExistsCheck(requestBody.getTitle());
 
         requestBody.setAdminMemberId(memberId);
         Room room = mapper.postDtoToRoom(requestBody);
@@ -201,7 +202,10 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
         roomService.deleteRoom(roomId); //완전삭제
-        return new ResponseEntity<>(HttpStatus.OK);
+        RoomDto.DeleteResponseDto responseDto = new RoomDto.DeleteResponseDto();
+        responseDto.setAdminMemberId(memberId);
+
+        return new ResponseEntity<>(responseDto,HttpStatus.OK);
     }
 
 }
