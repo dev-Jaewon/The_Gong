@@ -14,6 +14,7 @@ import RoomPage from './pages/Room/RoomPage.tsx';
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./__mocks__/browser');
   // worker.start();
+  
 }
 
 let router = createBrowserRouter([
