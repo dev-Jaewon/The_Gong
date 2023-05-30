@@ -103,6 +103,7 @@ public class MemberDto {
         private String imageUrl;
         @JsonProperty("is_private")
         private boolean isPrivate;
+        private String password;
         private int favoriteCount;
         @JsonProperty("favorite_status")
         private MemberRoom.Favorite favoriteStatus;
@@ -123,6 +124,7 @@ public class MemberDto {
         private String imageUrl;
         @JsonProperty("is_private")
         private boolean isPrivate;
+        private String password;
         private int favoriteCount;
         @JsonProperty("favorite_status")
         private MemberRoom.Favorite favoriteStatus;
@@ -143,6 +145,7 @@ public class MemberDto {
         private String imageUrl;
         @JsonProperty("is_private")
         private boolean isPrivate;
+        private String password;
         private int favoriteCount;
         @JsonProperty("favorite_status")
         private MemberRoom.Favorite favoriteStatus;
@@ -162,6 +165,7 @@ public class MemberDto {
         private String imageUrl;
         @JsonProperty("is_private")
         private boolean isPrivate;
+        private String password;
         private int favoriteCount;
         @JsonProperty("favorite_status")
         private MemberRoom.Favorite favoriteStatus;
