@@ -115,6 +115,7 @@ public class JwtTokenizer {
         claims.put("memberId", member.getMemberId());
         claims.put("username", member.getEmail());
 
+
         String subject = String.valueOf(member.getMemberId());
         Date expiration = getExpiration(getAccessTokenExpirationMinutes());
         String base64EncodedSecretKey = encodedBase64SecretKey(getSecretKey());
@@ -130,18 +131,6 @@ public class JwtTokenizer {
                 .setSigningKey(key).build()
                 .parseClaimsJws(jws);
         return claims;
-    }
-
-
-    public Long getMemberIdRefresh(String refreshToken) {
-        String base64SecretKey = encodedBase64SecretKey(secretKey);
-        Key key = getKey(base64SecretKey);
-
-        Claims claims = Jwts.parser()
-                .setSigningKey(key)
-                .parseClaimsJws(refreshToken)
-                .getBody();
-        return claims.get("sub", Long.class);
     }
 
 
