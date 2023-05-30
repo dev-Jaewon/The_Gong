@@ -227,11 +227,20 @@ public class RoomDto {
         private List<TagDto.TagResponseDto> tags;
     }
 
+
     @Getter
     @Setter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class DeleteResponseDto {
         private long adminMemberId;
+    }
+
+
+    @Getter
+    @Setter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class CheckTitle {
+        private String title;
     }
 
 
@@ -248,4 +257,5 @@ public class RoomDto {
         @JsonProperty("image_url")
         private String imageUrl;
     }
+
 }

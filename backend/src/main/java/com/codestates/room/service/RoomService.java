@@ -4,6 +4,7 @@ import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.entity.MemberTag;
 import com.codestates.member.repository.MemberTagRepository;
+import com.codestates.room.dto.RoomDto;
 import com.codestates.room.entity.Room;
 import com.codestates.room.repository.RoomRepository;
 import com.codestates.tag.entity.Tag;
@@ -17,6 +18,7 @@ import com.codestates.member.repository.MemberRepository;
 import com.codestates.member.repository.MemberRoomRepository;
 import com.codestates.member.service.MemberService;
 import com.codestates.room.entity.RoomTag;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +40,19 @@ public class RoomService {
     private final MemberRoomRepository memberRoomRepository;
     private final MemberTagRepository memberTagRepository;
 
+    @Value("${default.thumbnail.image}")
+    private String thumbnail;
 
-    public Room createRoom(Room room, long adminMemberId) {
+
+    public Room createRoom(Room room, RoomDto.Post requestBody) {
+        long adminMemberId = requestBody.getAdminMemberId();
         Member findMember = memberRepository.findById(adminMemberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
         room.setAdminNickname(findMember.getNickname());
         findMember.setCreatedCount(findMember.getCreatedCount() + 1);
+
+        if (room.getImageUrl().isEmpty()) room.setImageUrl(thumbnail);
+        //log.info("# 이미지 {}", room.getImageUrl());
 
         List<RoomTag> roomTagList = room.getRoomTagList().stream()
                 .map(rt -> {
@@ -199,6 +208,11 @@ public class RoomService {
         }
     }
 
+
+    public Room findRoom(long roomId) {
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.ROOM_NOT_FOUND));
+        return room;
+    }
 
     public Room findRoom(String roomTitle) {
         Room room = roomRepository.findByTitle(roomTitle).orElseThrow(() -> new BusinessLogicException(ExceptionCode.ROOM_NOT_FOUND));
