@@ -168,6 +168,7 @@ public class RoomDto {
         private int MemberCurrentCount;
         @JsonProperty("is_private")
         private boolean isPrivate;
+        private String password;
         @Positive
         private int favoriteCount;
         private MemberRoom.Favorite favoriteStatus;
@@ -191,6 +192,7 @@ public class RoomDto {
         private int MemberCurrentCount;
         @JsonProperty("is_private")
         private boolean isPrivate;
+        private String password;
         @Positive
         private int favoriteCount;
         @JsonProperty("favorite_status")
@@ -216,6 +218,7 @@ public class RoomDto {
         private int MemberCurrentCount;
         @JsonProperty("is_private")
         private boolean isPrivate;
+        private String password;
         private int favoriteCount;
         @JsonProperty("favorite_status")
         private MemberRoom.Favorite favoriteStatus;
