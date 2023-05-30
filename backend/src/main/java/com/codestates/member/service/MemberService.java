@@ -151,15 +151,11 @@ public class MemberService {
     }
 
 
-    public ResponseEntity<ErrorResponse> verifyExistsCheck(String email, String nickname) {
+    public ResponseEntity<ErrorResponse> verifyExistsCheck(String email) {
         Optional<Member> memberEmail = memberRepository.findByEmail(email);
-        Optional<Member> memberNickname = memberRepository.findByNickname(nickname);
 
         if (memberEmail.isPresent()) {
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일입니다.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-        } else if(memberNickname.isPresent()){
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "이미 사용중인 닉네임입니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
         //verifyExistsNickname(String.valueOf(memberNickname));

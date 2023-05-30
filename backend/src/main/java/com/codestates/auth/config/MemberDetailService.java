@@ -41,6 +41,7 @@ public class MemberDetailService implements UserDetailsService {
             setImageUrl(member.getImageUrl());
             setEmail(member.getEmail());
             setPassword(member.getPassword());
+            setAdmin(member.isAdmin()); //추가 3
         }
 
         @Override

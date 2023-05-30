@@ -28,6 +28,7 @@ public class MemberDto {
     @Setter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class PatchNickname {
+        private long memberId; //추가
         private String nickname;
     }
 
@@ -36,6 +37,7 @@ public class MemberDto {
     @Setter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class PatchImage {
+        private long memberId;
         @JsonProperty("image_url")
         private String imageUrl;
     }
@@ -45,6 +47,7 @@ public class MemberDto {
     @Setter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class PatchPassword {
+        private long memberId;
         private String password; //기존비번
         private String newPassword;
     }
@@ -70,22 +73,6 @@ public class MemberDto {
         private long memberId;
         @JsonProperty("image_url")
         private String imageUrl;
-    }
-
-
-    @Getter
-    @Setter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class GetResponseDto {
-        private long memberId;
-        private String nickname;
-        private String email;
-        @JsonProperty("image_url")
-        private String imageUrl;
-        private int favoriteCount;
-        private int creationCount;
-        private int recordRoomCount;
-        private List<MemberTagDtos> tags;
     }
 
 
@@ -135,57 +122,15 @@ public class MemberDto {
     @Getter
     @Setter
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class RecordRoomResponseDtos {
-        private long roomId;
-        private String title;
-        private String info;
-        private int memberMaxCount;
-        private int memberCurrentCount;
-        @JsonProperty("image_url")
-        private String imageUrl;
-        @JsonProperty("is_private")
-        private boolean isPrivate;
-        private String password;
-        private int favoriteCount;
-        @JsonProperty("favorite_status")
-        private MemberRoom.Favorite favoriteStatus;
-        private List<MemberRoomTagDtos> tags;
-    }
-
-    @Getter
-    @Setter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class RecommendRoomResponseDtos {
-        private long roomId;
-        private String title;
-        private String info;
-        private int memberMaxCount;
-        private int memberCurrentCount;
-        @JsonProperty("image_url")
-        private String imageUrl;
-        @JsonProperty("is_private")
-        private boolean isPrivate;
-        private String password;
-        private int favoriteCount;
-        @JsonProperty("favorite_status")
-        private MemberRoom.Favorite favoriteStatus;
-        private List<MemberRoomTagDtos> tags;
-    }
-
-
-
-    //Todo : 사용X
-    @Getter
-    @Setter
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public static class PostResponseDto {
-        private long memberId;
-        private String email;
+    public static class CheckNickname {
         private String nickname;
-        @JsonProperty("image_url")
-        private String imageUrl;
-        private int favoriteCount;
-        private int creationCount;
-        private int recordRoomCount;
+    }
+
+
+    @Getter
+    @Setter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    public static class DeleteMember {
+        private long memberId;
     }
 }
