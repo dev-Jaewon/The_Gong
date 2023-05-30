@@ -33,6 +33,8 @@ public class RoomController {
     private final MemberService memberService;
     private final RoomMapper mapper;
 
+    @Value("${default.thumbnail.image}")
+    private String thumbnail;
 
     @PostMapping("/{member-id}/add")
     public ResponseEntity postRoom(@PathVariable("member-id") long memberId,
@@ -47,7 +49,12 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
 
-        requestBody.setAdminMemberId(memberId); //
+        requestBody.setAdminMemberId(memberId);
+
+        if(requestBody.getImageUrl() == null) {
+            requestBody.setImageUrl(thumbnail);
+        }
+
         Room room = mapper.postDtoToRoom(requestBody);
         room = roomService.createRoom(room, requestBody);
 
