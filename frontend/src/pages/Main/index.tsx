@@ -51,7 +51,7 @@ export const Main = () => {
   return (
     <Container>
       <Header />
-      <Banner />
+      {/* <Banner />
       {myRoom.isFetching || newRoom.isFetching || popularRoom.isFetching ? (
         <LodingContainer>
           <LodingContent>
@@ -88,7 +88,7 @@ export const Main = () => {
           newRoom={newRoom.data}
           popularRoom={popularRoom.data}
         />
-      )}
+      )} */}
       <Footer />
     </Container>
   );

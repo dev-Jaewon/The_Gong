@@ -3,7 +3,7 @@ import RoomForm from '../../components/atoms/Room/RoomForm';
 import axios from 'axios';
 // import Header from "../Main/Header";
 import { Header } from '../../components/organisms/Header';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../util/api';
 
@@ -27,7 +27,7 @@ const CreateRoomPage = () => {
   const navigate = useNavigate();
   const [token, setToken] = useState('');
   const [memberId, setMemberId] = useState('');
-  const [imgUrl, setImgUrl] = useState('');
+  const imgUrl = useRef('')
 
   useEffect(() => {
     // 페이지 진입 시 로컬 스토리지 값 확인
@@ -48,12 +48,13 @@ const CreateRoomPage = () => {
   const sendFormData = async (data: any) => {
     const requestData = {
       ...data,
-      img_url: imgUrl,
+      image_url: imgUrl.current,
       admin_member_id: memberId + '',
     };
 
     console.log('@@@이거 보냅니다@@@');
     console.log(requestData);
+    console.log(imgUrl);
 
     api
       .post(
@@ -67,8 +68,9 @@ const CreateRoomPage = () => {
       )
       .then((response) => {
         // 요청 성공 시 처리
-        console.log('@@@이거 보냈습니다@@@');
+        console.log('@@@이거 받았습니다@@@');
         console.log(response.data);
+        console.log(imgUrl);
         navigate('/');
         window.location.reload(); // 페이지 리로드
       })
@@ -103,9 +105,9 @@ const CreateRoomPage = () => {
       .then((response) => {
         // 요청 성공 시 처리
         console.log('성공');
-        console.log(response);
+        console.log(response.data);
         setError(false);
-        setImgUrl(response.data);
+        imgUrl.current = response.data
       })
       .catch((error) => {
         // 요청 실패 시 처리
