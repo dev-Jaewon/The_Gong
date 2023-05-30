@@ -1,8 +1,5 @@
 package com.codestates.room.mapper;
 
-import com.codestates.common.history.RoomHistory;
-import com.codestates.common.history.RoomHistoryDto;
-import com.codestates.member.entity.Member;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.room.dto.RoomDto;
 import com.codestates.room.dto.RoomTagDto;
@@ -10,11 +7,9 @@ import com.codestates.tag.dto.TagDto;
 import com.codestates.room.entity.Room;
 import com.codestates.room.entity.RoomTag;
 import com.codestates.tag.entity.Tag;
-import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -204,6 +199,7 @@ public interface RoomMapper {
         getNewRoomResponseDtos.setMemberMaxCount(room.getMemberMaxCount());
         getNewRoomResponseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
         getNewRoomResponseDtos.setPrivate(room.isPrivate());
+        getNewRoomResponseDtos.setPassword(room.getPassword());
         getNewRoomResponseDtos.setFavoriteCount(room.getFavoriteCount());
         getNewRoomResponseDtos.setFavoriteStatus(getRoomFavorite(room, room.getMemberRoomList()));
         getNewRoomResponseDtos.setTags(getRoomTags(room.getRoomTagList()));
@@ -260,6 +256,7 @@ public interface RoomMapper {
         recommendRoomResponseDtos.setMemberMaxCount(room.getMemberMaxCount());
         recommendRoomResponseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
         recommendRoomResponseDtos.setPrivate(room.isPrivate());
+        recommendRoomResponseDtos.setPassword(room.getPassword());
         recommendRoomResponseDtos.setFavoriteCount(room.getFavoriteCount());
         recommendRoomResponseDtos.setTags(getRoomTags(room.getRoomTagList()));
 
@@ -290,25 +287,11 @@ public interface RoomMapper {
         recommendRoomResponseDtos.setMemberMaxCount(room.getMemberMaxCount());
         recommendRoomResponseDtos.setMemberCurrentCount(room.getMemberCurrentCount());
         recommendRoomResponseDtos.setPrivate(room.isPrivate());
+        recommendRoomResponseDtos.setPassword(room.getPassword());
         recommendRoomResponseDtos.setFavoriteCount(room.getFavoriteCount());
         recommendRoomResponseDtos.setFavoriteStatus(getRoomFavorite(room, room.getMemberRoomList()));
         recommendRoomResponseDtos.setTags(getRoomTags(room.getRoomTagList()));
 
         return recommendRoomResponseDtos;
-    }
-
-
-    //Todo : 검색 응답
-    default List<RoomDto.SearchResponseDto> roomToSearchResponseDtos(List<RoomDto.SearchResponseDto> searchList) {
-        if (searchList == null) {
-            return null;
-        }
-
-        List<RoomDto.SearchResponseDto> list = new ArrayList<RoomDto.SearchResponseDto>(searchList.size());
-        for (RoomDto.SearchResponseDto searchResponseDto : searchList) {
-            list.add(searchResponseDto);
-        }
-
-        return list;
     }
 }

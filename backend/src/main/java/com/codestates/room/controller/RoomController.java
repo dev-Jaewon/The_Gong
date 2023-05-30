@@ -33,10 +33,6 @@ public class RoomController {
     private final MemberService memberService;
     private final RoomMapper mapper;
 
-    @Value("${default.thumbnail.image}")
-    private String thumbnail;
-
-
 
     @PostMapping("/{member-id}/add")
     public ResponseEntity postRoom(@PathVariable("member-id") long memberId,
@@ -46,23 +42,27 @@ public class RoomController {
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
 
-        if(jwtMemberId != requestBody.getAdminMemberId()) {
+        if(jwtMemberId != requestBody.getAdminMemberId() || jwtMemberId != memberId) {
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
         }
 
-        //기본썸네일 추가
-        if(requestBody.getImageUrl()==null) requestBody.setImageUrl(thumbnail);
-
-        ResponseEntity checkTitle = roomService.verifyExistsCheck(requestBody.getTitle());
-
-        requestBody.setAdminMemberId(memberId);
+        requestBody.setAdminMemberId(memberId); //
         Room room = mapper.postDtoToRoom(requestBody);
-        room = roomService.createRoom(room, requestBody.getAdminMemberId());
+        room = roomService.createRoom(room, requestBody);
+
         return new ResponseEntity<>(mapper.roomToPostResponseDto(room), HttpStatus.CREATED);
     }
 
 
+    //방제 중복체크
+    @PostMapping("/check")
+    public ResponseEntity checkTitle(@Valid @RequestBody RoomDto.CheckTitle requestBody) {
+        ResponseEntity checkTitle = roomService.verifyExistsCheck(requestBody.getTitle());
+
+        if(checkTitle != null) return checkTitle;
+        return new ResponseEntity(requestBody.getTitle(), HttpStatus.OK);
+    }
 
 
     @PatchMapping("/{room-id}/edit")
@@ -72,10 +72,13 @@ public class RoomController {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
+        boolean isAdmin = (boolean) principal.get("isAdmin");
 
-        if(jwtMemberId != requestBody.getAdminMemberId()) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        if (isAdmin == false) {
+            if (jwtMemberId != requestBody.getAdminMemberId()) {
+                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+            }
         }
 
         requestBody.setRoomId(roomId);
@@ -98,12 +101,14 @@ public class RoomController {
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
         Room findRoom = roomService.findVerifiedRoom(roomId);
+        boolean isAdmin = (boolean) principal.get("isAdmin");
 
-        if (jwtMemberId != findRoom.getAdminMemberId()){
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        if (isAdmin == false) {
+            if (jwtMemberId != findRoom.getAdminMemberId()){
+                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+            }
         }
-
         requestBody.setRoomId(roomId);
         Room room = mapper.patchAdminDtoToRoom(requestBody);
         room = roomService.switchAdmin(room, requestBody.getNewAdminId());
@@ -194,18 +199,20 @@ public class RoomController {
                                      @RequestParam("member") @Positive long memberId,
                                      Authentication authentication){
 
-        Map<String, Object> principal = (Map)authentication.getPrincipal();
+        Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
+        boolean isAdmin = (boolean) principal.get("isAdmin");
+        Room room = roomService.findRoom(roomId);
+        long adminId = room.getAdminMemberId();
 
-        if(jwtMemberId != memberId){
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        if (isAdmin == false) {
+            if (jwtMemberId != memberId || jwtMemberId != adminId || memberId != adminId) {
+                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+            }
         }
         roomService.deleteRoom(roomId); //완전삭제
-        RoomDto.DeleteResponseDto responseDto = new RoomDto.DeleteResponseDto();
-        responseDto.setAdminMemberId(memberId);
 
-        return new ResponseEntity<>(responseDto,HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
