@@ -36,6 +36,7 @@ public class TagDto {
         private int memberCurrentCount;
         @JsonProperty("is_private")
         private boolean isPrivate;
+        private String password;
         private int favoriteCount;
         @JsonProperty("favorite_status")
         private MemberRoom.Favorite favoriteStatus;
@@ -65,13 +66,3 @@ public class TagDto {
         private String name;
     }
 }
-
-
-
-//    @Getter
-//    @Setter
-//    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-//    public static class GetTagResponseDtos {
-//        private long tagId;
-//        private String name;
-//    }
