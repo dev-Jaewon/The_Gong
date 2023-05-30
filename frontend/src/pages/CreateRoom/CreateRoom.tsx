@@ -94,7 +94,7 @@ const CreateRoomPage = () => {
     console.log(memberId);
 
     api
-      .post(`${import.meta.env.VITE_BASE_URL}thumbnail/${memberId}`, formData, {
+      .post(`${import.meta.env.VITE_BASE_URL}thumbnail`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
