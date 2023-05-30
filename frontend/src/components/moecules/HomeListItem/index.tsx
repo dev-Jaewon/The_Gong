@@ -60,7 +60,7 @@ export const HomeListItem = (props: RoomType) => {
         alert('입장 인원을 초과했습니다.')
       } else {
         startTransition(() => {
-          // navigate(`/room?roomId=${props.title}`);
+          navigate(`/room?roomId=${props.title}`);
         });
       }
 
@@ -175,14 +175,18 @@ const Tag = styled.button`
 `;
 
 const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
-  width: fit-content;
+  max-width: 300px;
   position: relative;
+  height: 200px;
+  margin-bottom: 10px;
 
   img {
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 10px;
     width: 100%;
+    height: 100%;
+
   }
 
   i {

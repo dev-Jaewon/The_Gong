@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import RoomForm from '../../components/atoms/Room/RoomForm';
 import axios from 'axios';
-// import Header from "../Main/Header";
 import { Header } from '../../components/organisms/Header';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -58,7 +57,8 @@ const CreateRoomPage = () => {
 
     api
       .post(
-        `${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`,
+        // `${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`,
+        `https://www.apithegong.com/rooms/${memberId}/add`,
         requestData,
         {
           headers: {
@@ -96,7 +96,8 @@ const CreateRoomPage = () => {
     console.log(memberId);
 
     api
-      .post(`${import.meta.env.VITE_BASE_URL}thumbnail`, formData, {
+      // .post(`${import.meta.env.VITE_BASE_URL}thumbnail`, formData, {
+      .post(`https://www.apithegong.com/thumbnail`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

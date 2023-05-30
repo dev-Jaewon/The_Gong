@@ -13,7 +13,8 @@ export const Search = () => {
   const [params, setPrams] = useSearchParams();
 
   const { data, isFetching } = useQuery(['search', location], () =>
-    api<SearchData>(`${import.meta.env.VITE_BASE_URL}search${location.search}&page=1&sort=newRoom`).then(
+    // api<SearchData>(`${import.meta.env.VITE_BASE_URL}search${location.search}&page=1&sort=newRoom`).then(
+    api<SearchData>(`https://www.apithegong.com/search${location.search}&page=1&sort=newRoom`).then(
       (res) => res.data
     )
   );
