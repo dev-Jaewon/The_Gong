@@ -9,6 +9,9 @@ import { useNavigate } from 'react-router-dom';
 export const SigninTemplate = () => {
   const navigate = useNavigate();
 
+  console.log(import.meta.env.VITE_BASE_URL)
+
+
   return (
     <Container>
       <InputContainer>

@@ -32,7 +32,7 @@ export const HomeList = (props: HomeListItemProps) => {
 
   return (
     <Container>
-      {/* <h2>{props.title}</h2>
+      <h2>{props.title}</h2>
       <p className="subject_describe">{props.description}</p>
       <SwiperContainer>
         <i
@@ -56,7 +56,7 @@ export const HomeList = (props: HomeListItemProps) => {
             </SwiperSlide>
           ))}
         </Swiper>
-      </SwiperContainer> */}
+      </SwiperContainer>
     </Container>
   );
 };
