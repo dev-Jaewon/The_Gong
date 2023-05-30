@@ -46,7 +46,7 @@ public class TagController {
 
 
 
-    @GetMapping //매퍼로직 수정하기
+    @GetMapping
     public ResponseEntity getTags(@RequestParam(value = "page", defaultValue = "1") @Positive int page,
                                   @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
 
