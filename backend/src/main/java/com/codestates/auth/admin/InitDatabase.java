@@ -26,7 +26,7 @@ public class InitDatabase {
                 admin.setNickname("관리자");
                 admin.setStatus(Member.MemberStatus.ACTIVE);
                 admin.setImageUrl(profile);
-                admin.setAdmin(true);
+                admin.setIsAdmin(true);
                 repository.save(admin);
             }
         };
