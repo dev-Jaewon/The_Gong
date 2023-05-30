@@ -22,6 +22,8 @@ public class SchedulingConfig {
         LocalDateTime now = LocalDateTime.now();
 
         List<Member> deleteMemberList = memberRepository.findByDeletionDateBefore(now);
-        memberRepository.deleteAll(deleteMemberList);
+        if (deleteMemberList != null) {
+            memberRepository.deleteAll(deleteMemberList);
+        }
     }
 }
