@@ -16,7 +16,7 @@ public interface TagMapper {
 
 
 
-    //Todo : 태그조회 (태그 클릭시, 해당태그를 사용한 스터디룸 목록조회)
+    //Todo : 태그조회 (해당태그를 사용한 스터디룸 목록조회)
     default List<TagDto.GetRoomTagResponseDto> tagToRoomTagResponseDto(List<Room> roomTagList) {
         if (roomTagList == null) return null;
         List<TagDto.GetRoomTagResponseDto> list = new ArrayList<TagDto.GetRoomTagResponseDto>(roomTagList.size());
@@ -36,6 +36,7 @@ public interface TagMapper {
         responseDto.setInfo(room.getInfo());
         responseDto.setImageUrl(room.getImageUrl());
         responseDto.setPrivate(room.isPrivate());
+        responseDto.setPassword(room.getPassword());
         responseDto.setFavoriteCount(room.getFavoriteCount());
         responseDto.setFavoriteStatus(getRoomFavorite(room, room.getMemberRoomList()));
         responseDto.setMemberMaxCount(room.getMemberMaxCount());
@@ -65,8 +66,6 @@ public interface TagMapper {
     }
 
 
-
     List<TagDto.TagResponseDto> tagToGetTagResponseDtos(List<Tag> tagList);
-
 }
 
