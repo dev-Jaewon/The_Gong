@@ -23,12 +23,12 @@ export const SigninTemplate = () => {
         <AuthButton href={import.meta.env.VITE_NAVE_AUTH_URL}>
         {/* <AuthButton href='https://www.apithegong.com/oauth2/authorization/naver'> */}
           <SiNaver size={20} color="#04c500" />
-          Continue With Naver(공사중..)
+          Continue With Naver
         </AuthButton>
         <AuthButton href={import.meta.env.VITE_GOOGLE_AUTH_URL}>
         {/* <AuthButton href='https://www.apithegong.com/oauth2/authorization/google'> */}
           <FcGoogle size={20} />
-          Continue With Google(공사중..)
+          Continue With Google
         </AuthButton>
         <Divider />
         <SigninForm />
