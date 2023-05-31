@@ -148,7 +148,6 @@ export const HomeListItem = (props: RoomType) => {
         </InfoItem> */}
       </Info>
       <div className="tags">
-        <Tag onClick={(e) => handleTagClick(e, 'java')}>{'javascript'}</Tag>
         {props.tags.map((tag, index) => (
           <Tag onClick={(e) => handleTagClick(e, tag.name)} key={index}>
             {tag.name}
@@ -224,7 +223,7 @@ const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
     margin-bottom: 10px;
     width: 100%;
     height: 100%;
-
+    border: 1px solid #eee;
   }
 
   i {
