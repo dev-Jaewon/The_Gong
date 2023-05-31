@@ -47,7 +47,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         queryParams.add("refresh_token", refreshToken);
 
         return UriComponentsBuilder.newInstance()
-                .scheme("http")
+                .scheme("https")
                 .host("thegong.site")
 //                .port(3000)
                 .path("/oauth")
