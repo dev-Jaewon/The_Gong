@@ -93,9 +93,9 @@ public class JwtTokenizer {
     public String generateRefreshToken(String base64EncodedSecretKey) {
         Key key = getKey(base64EncodedSecretKey);
         log.info("[generateToken] refreshToken 생성");
-        Date now = new Date();
+        Date date = getExpiration(accessTokenExpirationMinutes);
         return Jwts.builder()
-                .setExpiration(new Date(now.getTime() + refreshTokenExpirationMinutes))
+                .setExpiration(date)
                 .signWith(key)
                 .compact();
     }
@@ -104,9 +104,10 @@ public class JwtTokenizer {
     //리프레쉬 토큰 생성
     public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey) {
         Key key = getKey(base64EncodedSecretKey);
+        Date date = getExpiration(accessTokenExpirationMinutes);
         return Jwts.builder()
                 .setSubject(subject)
-                .setIssuedAt(Calendar.getInstance().getTime())
+                .setIssuedAt(date)
                 .setExpiration(expiration)
                 .signWith(key)
                 .compact();
