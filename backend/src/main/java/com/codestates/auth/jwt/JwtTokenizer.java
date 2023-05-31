@@ -40,13 +40,12 @@ public class JwtTokenizer {
     @Value("${jwt.refresh.header}")
     @Getter
     private String refreshHeader;
-    private Key key;
 
+    private Key key;
     @PostConstruct
     public void init() {
         log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 시작 ", secretKey);
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
-        //SecretKey == Base64Encodedkey
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         key = Keys.hmacShaKeyFor(keyBytes);
         log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 완료", secretKey);
@@ -76,8 +75,10 @@ public class JwtTokenizer {
                 .signWith(key)
                 .compact();
     }
-    public String generateAccessToken(String email, List<String> roles) {
+    public String generateAccessToken(String email, List<String> roles, String base64EncodedSecretKey) {
+        Key key = getKey(base64EncodedSecretKey);
         log.info("[generateToken] accessToken 생성");
+
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", roles);
 
@@ -86,15 +87,16 @@ public class JwtTokenizer {
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(new Date(now.getTime() + accessTokenExpirationMinutes))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key)
                 .compact();
     }
-    public String generateRefreshToken() {
+    public String generateRefreshToken(String base64EncodedSecretKey) {
+        Key key = getKey(base64EncodedSecretKey);
         log.info("[generateToken] refreshToken 생성");
         Date now = new Date();
         return Jwts.builder()
                 .setExpiration(new Date(now.getTime() + refreshTokenExpirationMinutes))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key)
                 .compact();
     }
 
@@ -159,6 +161,9 @@ public class JwtTokenizer {
     //토큰에서 email분리
     public String getUserEmail(String token) {
         log.info("토큰 기반 회원 구별 정보 추출");
+        String base64EncodedSecretKey = encodedBase64SecretKey(getSecretKey());
+        Key key = getKey(base64EncodedSecretKey);
+
         String info = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

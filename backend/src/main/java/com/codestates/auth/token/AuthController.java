@@ -66,7 +66,6 @@ public class AuthController {
         log.info("token : " +token);
 
         String key = authService.getIngredients();
-        log.info("key : " +key);
         Claims claims = null;
 
         try {
