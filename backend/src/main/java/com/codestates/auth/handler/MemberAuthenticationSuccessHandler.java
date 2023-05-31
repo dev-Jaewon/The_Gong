@@ -1,6 +1,4 @@
 package com.codestates.auth.handler;
-
-import com.codestates.auth.config.MemberDetail;
 import com.codestates.auth.config.MemberDetailService;
 import com.codestates.auth.login.LoginResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
