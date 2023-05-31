@@ -7,6 +7,8 @@ import { api } from '../../../util/api';
 import { useMutation } from '@tanstack/react-query';
 import { formatDate } from '../../../util/formatDate';
 import { startTransition } from 'react';
+import { FaUser } from 'react-icons/fa';
+
 
 
 type ToogleFavorite = {
@@ -15,17 +17,22 @@ type ToogleFavorite = {
   is_favorite: boolean;
 };
 
-
-
 export const HomeListItem = (props: RoomType) => {
 
+  const [token, setToken] = useState('');
   const [memberId, setMemberId] = useState('');
 
   useEffect(() => {
     // 페이지 진입 시 로컬 스토리지 값 확인
+    // 페이지 진입 시 로컬 스토리지 값 확인
+    const userInfoString = localStorage.getItem('access_token');
     const usermemberId = localStorage.getItem('member_id');
-    if ( usermemberId) {
+
+    if (userInfoString && usermemberId) {
+      setToken(JSON.parse(userInfoString));
       setMemberId(JSON.parse(usermemberId));
+      console.log(userInfoString);
+      console.log(usermemberId);
     } else {
       console.log('스토리지 값 없음');
     }
@@ -71,10 +78,33 @@ export const HomeListItem = (props: RoomType) => {
 
   }
 
+  const roomDelete = () =>{
+
+    api
+    .delete(
+      // `${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`,
+      `https://www.apithegong.com/rooms/${props.room_id}?member=${memberId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    .then((response) => {
+      // 요청 성공 시 처리
+      window.location.reload(); // 페이지 리로드
+    })
+    .catch((error) => {
+      // 요청 실패 시 처리
+      console.error(error);
+    });
+  }
+
 
   return (
-    <Container onClick={room}>
-      <ImageContaienr>
+    <Container >
+      {/* <button onClick={roomDelete}>삭제</button> */}
+      <ImageContaienr onClick={room}>
         <img src={props.image_url} alt={`${props.title} 이미지`} />
         <i>
           {props.favorite_status === 'NONE' ? (
@@ -92,29 +122,30 @@ export const HomeListItem = (props: RoomType) => {
           )}
         </i>
       </ImageContaienr>
-      <h3>{props.title}</h3>
+      <h3 onClick={room}>{props.title}</h3>
       <p className="describe">{props.info}</p>
       <Info>
         <InfoItem>
-          <p className="subject">인원</p>
+          <p className="subject"><FaUser /></p>
           <p className="value">
             {props.member_current_count}/{props.member_max_count}명
           </p>
         </InfoItem>
+
         <InfoItem>
-          <p className="subject">그룹장</p>
-          <p className="value">{'가나다라'}</p>
-        </InfoItem>
-        <InfoItem>
-          <p className="subject">추천수</p>
+          <p className="subject"><AiFillHeart/></p>
           <p className="value">{props.favorite_count}</p>
         </InfoItem>
-        <InfoItem>
+        {/* <InfoItem>
           <p className="subject">생성일</p>
           <p className="value">
             {props.created_at ? formatDate(props.created_at) : '비공개'}
           </p>
         </InfoItem>
+        <InfoItem>
+          <p className="subject">그룹장</p>
+          <p className="value">{'가나다라'}</p>
+        </InfoItem> */}
       </Info>
       <div className="tags">
         <Tag onClick={(e) => handleTagClick(e, 'java')}>{'javascript'}</Tag>
@@ -133,23 +164,27 @@ const Container = styled.div`
 
   h3 {
     color: #333;
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: bold;
     margin-bottom: 10px;
   }
 
   .describe {
-    color: #8a8a8a;
-    font-size: 13px;
+    color: #323232;
+    font-size: 1.1rem;
     font-weight: 400;
-    margin-bottom: 10px;
+    margin-bottom: 1.5rem;
   }
 `;
 
 const Info = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
+  /* flex-wrap: wrap;
+  gap: 15px; */
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+
 `;
 
 const InfoItem = styled.div`
@@ -157,25 +192,26 @@ const InfoItem = styled.div`
   gap: 5px;
 
   .subject {
-    font-size: 15px;
-    font-weight: 700;
-    color: #666;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #4FAFB1;
   }
 
   .value {
-    font-size: 15px;
-    color: #666;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #4FAFB1
   }
 `;
 
 const Tag = styled.button`
   padding: 10px 10px;
-  border-radius: 8px;
-  background-color: #edecea;
+  border-radius: 2rem;
+  background-color: #4fafb12c;
 `;
 
 const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
-  max-width: 300px;
+  max-width: 100%;
   position: relative;
   height: 200px;
   margin-bottom: 10px;
