@@ -160,13 +160,13 @@ export const HomeListItem = (props: RoomType) => {
 };
 
 const Container = styled.div`
-  cursor: pointer;
 
   h3 {
     color: #333;
     font-size: 0.8rem;
     font-weight: bold;
     margin-bottom: 10px;
+    cursor: pointer;
   }
 
   .describe {
@@ -212,6 +212,7 @@ const Tag = styled.button`
 `;
 
 const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
+  cursor: pointer;
   max-width: 100%;
   position: relative;
   height: 200px;
