@@ -14,17 +14,19 @@ export const SigninTemplate = () => {
   return (
     <Container>
       <InputContainer>
-        <img src={logo} alt="logo image" />
+        {/* <img src={logo} alt="logo image" /> */}
         <p className="large">함께하는 스터디, 더 공</p>
         <p className="small">
           학업, 자격증, 수능 공부까지
           <br /> 자기계발의 모든 것
         </p>
-        <AuthButton href={import.meta.env.VITE_NAVE_AUTH_URL}>
+        {/* <AuthButton href={import.meta.env.VITE_NAVE_AUTH_URL}> */}
+        <AuthButton href='https://www.apithegong.com/oauth2/authorization/naver'>
           <SiNaver size={20} color="#04c500" />
           Continue With Naver(공사중..)
         </AuthButton>
-        <AuthButton href={import.meta.env.VITE_GOOGLE_AUTH_URL}>
+        {/* <AuthButton href={import.meta.env.VITE_GOOGLE_AUTH_URL}> */}
+        <AuthButton href='https://www.apithegong.com/oauth2/authorization/google'>
           <FcGoogle size={20} />
           Continue With Google(공사중..)
         </AuthButton>
