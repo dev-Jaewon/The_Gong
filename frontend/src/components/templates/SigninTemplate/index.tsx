@@ -21,12 +21,10 @@ export const SigninTemplate = () => {
           <br /> 자기계발의 모든 것
         </p>
         <AuthButton href={import.meta.env.VITE_NAVE_AUTH_URL}>
-        {/* <AuthButton href='https://www.apithegong.com/oauth2/authorization/naver'> */}
           <SiNaver size={20} color="#04c500" />
           Continue With Naver
         </AuthButton>
         <AuthButton href={import.meta.env.VITE_GOOGLE_AUTH_URL}>
-        {/* <AuthButton href='https://www.apithegong.com/oauth2/authorization/google'> */}
           <FcGoogle size={20} />
           Continue With Google
         </AuthButton>
