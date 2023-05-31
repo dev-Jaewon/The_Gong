@@ -57,7 +57,6 @@ function TagForm({ isPopupOpen, ChangeisPopupOpen, setTags }: TagFormProps) {
     try {
       const response = await api.get(
         `${import.meta.env.VITE_BASE_URL}tags?page=1&size=10`
-        // `https://www.apithegong.com/tags?page=1&size=10`
       );
       const colorData = response.data.data.map((el: any) => {
         return {

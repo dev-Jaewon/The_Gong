@@ -21,7 +21,6 @@ const Webcam = ({room, name, edge, mainColor}) => {
 
   useEffect(() => {
     rtcSocket.current = new SockJS(`${import.meta.env.VITE_BASE_URL}groupcall`);
-    // rtcSocket.current = new SockJS(`https://www.apithegong.com/groupcall`);
 
     rtcSocket.current.onopen = () => {
       console.log('연결됨');

@@ -12,7 +12,7 @@ export const Header = () => {
     ['auth'],
     () =>
       api.get(`${import.meta.env.VITE_BASE_URL}auth`).then((res) => res.data),
-    { enabled: Boolean(localStorage.getItem('accessToken')) }
+      { enabled: Boolean(localStorage.getItem('access_token')) }
   );
 
   const [nickname, setNickname] = useState();
