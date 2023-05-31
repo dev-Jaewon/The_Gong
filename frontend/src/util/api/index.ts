@@ -40,7 +40,7 @@ api.interceptors.response.use(
 
     try {
       const resToken = await axios.post<{ accessToken: string }>(
-        `${import.meta.env.VITE_BASE_URL}/auth/refresh`,
+        `${import.meta.env.VITE_BASE_URL}auth/refresh`,
         {
           refreshToken: JSON.parse(
             localStorage.getItem('refresh_token') as string

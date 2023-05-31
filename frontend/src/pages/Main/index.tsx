@@ -17,8 +17,7 @@ export const Main = () => {
         queryFn: () =>
           api
             .get(
-              // `${import.meta.env.VITE_BASE_URL}members/${localStorage.getItem(
-              `https://www.apithegong.com/members/${localStorage.getItem(
+              `${import.meta.env.VITE_BASE_URL}members/${localStorage.getItem(
                 'member_id'
               )}/created?page=1&size=4`
             )
@@ -30,8 +29,7 @@ export const Main = () => {
         queryKey: ['newRoom', 2],
         queryFn: () =>
           api
-            // .get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`)
-            .get(`https://www.apithegong.com/rooms/new?page=1&size=5`)
+            .get(`${import.meta.env.VITE_BASE_URL}rooms/new?page=1&size=5`)
             .then((res) => res.data),
         staleTime: Infinity,
       },
@@ -40,8 +38,7 @@ export const Main = () => {
         queryFn: () =>
           api
             .get(
-              // `${import.meta.env.VITE_BASE_URL}search?keyword=&sort=favoriteCount`
-              `https://www.apithegong.com/search?keyword=&sort=favoriteCount`
+              `${import.meta.env.VITE_BASE_URL}search?keyword=&sort=favoriteCount`
             )
             .then((res) => res.data),
         staleTime: Infinity,
