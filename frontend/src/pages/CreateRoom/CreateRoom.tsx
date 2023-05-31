@@ -57,8 +57,8 @@ const CreateRoomPage = () => {
 
     api
       .post(
-        // `${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`,
-        `https://www.apithegong.com/rooms/${memberId}/add`,
+        `${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`,
+        // `https://www.apithegong.com/rooms/${memberId}/add`,
         requestData,
         {
           headers: {
@@ -96,8 +96,8 @@ const CreateRoomPage = () => {
     console.log(memberId);
 
     api
-      // .post(`${import.meta.env.VITE_BASE_URL}thumbnail`, formData, {
-      .post(`https://www.apithegong.com/thumbnail`, formData, {
+      .post(`${import.meta.env.VITE_BASE_URL}thumbnail`, formData, {
+      // .post(`https://www.apithegong.com/thumbnail`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
