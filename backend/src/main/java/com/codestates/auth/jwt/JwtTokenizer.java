@@ -79,6 +79,7 @@ public class JwtTokenizer {
         Key key = getKey(base64EncodedSecretKey);
         log.info("[generateToken] accessToken 생성");
 
+        Date date = getExpiration(accessTokenExpirationMinutes);
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", roles);
 
@@ -86,7 +87,7 @@ public class JwtTokenizer {
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(new Date(now.getTime() + accessTokenExpirationMinutes))
+                .setExpiration(date)
                 .signWith(key)
                 .compact();
     }
@@ -104,10 +105,9 @@ public class JwtTokenizer {
     //리프레쉬 토큰 생성
     public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey) {
         Key key = getKey(base64EncodedSecretKey);
-        Date date = getExpiration(accessTokenExpirationMinutes);
         return Jwts.builder()
                 .setSubject(subject)
-                .setIssuedAt(date)
+                .setIssuedAt(Calendar.getInstance().getTime())
                 .setExpiration(expiration)
                 .signWith(key)
                 .compact();
