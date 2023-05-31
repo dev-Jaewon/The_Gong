@@ -250,4 +250,9 @@ public class MemberService {
 
         return memberTagDtosList;
     }
+
+    public Member findVerifedMember(String email){
+        verifyExistsEmail(email);
+        return memberRepository.findByEmail(email).get();
+    }
 }

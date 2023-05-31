@@ -1,6 +1,7 @@
 package com.codestates.auth.jwt;
 
 import com.codestates.member.entity.Member;
+import com.codestates.member.service.MemberService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
@@ -40,6 +41,8 @@ public class JwtTokenizer {
     @Value("${jwt.refresh.header}")
     @Getter
     private String refreshHeader;
+
+    private final MemberService memberService;
 
 //    private Key key;
 //    @PostConstruct
@@ -83,8 +86,12 @@ public class JwtTokenizer {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", roles);
 
+        //memberId, username, isAdmin
+        Member foundMember = memberService.findVerifiedMember(email);
+        claims.put("memberId", foundMember.getMemberId());
+        claims.put("username", foundMember.getEmail());
+        claims.put("isAdmin", foundMember.getIsAdmin());
 
-        Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(date)
