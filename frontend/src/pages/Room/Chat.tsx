@@ -44,7 +44,8 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
 
   // 렌더링 시 실행되는 코드
   useEffect(() => {
-    socketRef.current = new SockJS(`${import.meta.env.VITE_BASE_URL}stomp`);
+    // socketRef.current = new SockJS(`${import.meta.env.VITE_BASE_URL}stomp`);
+    socketRef.current = new SockJS(`https://www.apithegong.com/stomp`);
 
     //WebSocket 객체를 Stomp.js의 클라이언트 객체로 변환
     stompClientRef.current = Stomp.over(socketRef.current);
