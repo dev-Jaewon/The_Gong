@@ -41,15 +41,15 @@ public class JwtTokenizer {
     @Getter
     private String refreshHeader;
 
-    private Key key;
-    @PostConstruct
-    public void init() {
-        log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 시작 ", secretKey);
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        key = Keys.hmacShaKeyFor(keyBytes);
-        log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 완료", secretKey);
-    }
+//    private Key key;
+//    @PostConstruct
+//    public void init() {
+//        log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 시작 ", secretKey);
+//        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
+//        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+//        key = Keys.hmacShaKeyFor(keyBytes);
+//        log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 완료", secretKey);
+//    }
 
     public String encodedBase64SecretKey(String secretKey) {
         return Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));

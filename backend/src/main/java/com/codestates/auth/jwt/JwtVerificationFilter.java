@@ -3,6 +3,7 @@ package com.codestates.auth.jwt;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@Slf4j
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
 
@@ -47,6 +49,10 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private void setAuthenticationToContext(Map<String, Object> claims) { // 사용자 인증•권한정보 생성해서 SecurityContextHolder 에 저장
         Map<String, Object> principal = new HashMap<>();
+        log.info("memberId : "+claims.get("memberId"));
+        log.info("username : "+claims.get("username"));
+        log.info("isAdmin : "+claims.get("isAdmin"));
+
         principal.put("memberId", claims.get("memberId"));
         principal.put("username", claims.get("username"));
         principal.put("isAdmin", claims.get("isAdmin")); //추가 2

@@ -76,6 +76,8 @@ public class AuthController {
             // 액세스토큰이 만료된 경우
             ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.UNAUTHORIZED,"액세스 토큰 만료");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        } catch (Exception e){
+            System.out.println("토큰 파싱이 정상적으로 안되는 경우");
         }
 
         AuthDto authDto = authService.getAuthMemberInfo(claims);
