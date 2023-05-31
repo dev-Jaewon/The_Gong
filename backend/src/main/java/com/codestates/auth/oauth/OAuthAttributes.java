@@ -61,6 +61,8 @@ public class OAuthAttributes {
         Member member = new Member();
         member.setProvider(providerType.getProvider());
         member.setProviderId(oAuth2UserInfo.getProverId());
+
+        member.setImageUrl(oAuth2UserInfo.getImageUrl());
         member.setEmail(oAuth2UserInfo.getEmail());
         member.setNickname(oAuth2UserInfo.getEmail());
         member.setRoles(Collections.singletonList(Role.USER.getRole()));

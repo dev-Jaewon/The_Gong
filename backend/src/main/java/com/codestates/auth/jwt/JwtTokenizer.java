@@ -45,7 +45,8 @@ public class JwtTokenizer {
     @PostConstruct
     public void init() {
         log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 시작 ", secretKey);
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
+//        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
+        //SecretKey == Base64Encodedkey
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         key = Keys.hmacShaKeyFor(keyBytes);
         log.info("[init] JwtTokenProvider 내 secretKey : {} 초기화 완료", secretKey);
@@ -79,6 +80,7 @@ public class JwtTokenizer {
         log.info("[generateToken] accessToken 생성");
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", roles);
+
 
         Date now = new Date();
         return Jwts.builder()

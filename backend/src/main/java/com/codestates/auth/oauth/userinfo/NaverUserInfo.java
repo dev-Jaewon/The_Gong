@@ -31,6 +31,14 @@ public class NaverUserInfo extends OAuth2UserInfo {
         return (String) response.get("name");
     }
 
+    @Override
+    public String getImageUrl() {
+        Map<String, Object> response = getStringObjectMap();
+        if (response == null) return null;
+
+        return (String) response.get("profile");
+    }
+
     private Map<String, Object> getStringObjectMap() {
         return (Map<String, Object>) attributes.get("response");
     }
