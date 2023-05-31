@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -61,11 +63,15 @@ public class AuthController {
     public ResponseEntity getAuthMember(HttpServletRequest request) {
 
         String token = request.getHeader("Authorization").replace("Bearer ", "");
+        log.info("token : " +token);
+
         String key = authService.getIngredients();
+        log.info("key : " +key);
         Claims claims = null;
 
         try {
             claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+            log.info("claims : " + claims);
 
         } catch (ExpiredJwtException e) {
             // 액세스토큰이 만료된 경우
