@@ -53,7 +53,7 @@ const Container = styled.form`
   width: 100%;
   max-width: 400px;
   border: 1px solid #4fafb1;
-  border-radius: 8px;
+  border-radius: 5px;
 
   input {
     flex: 1 1 auto;
@@ -63,6 +63,10 @@ const Container = styled.form`
     font-family: Noto Sans KR;
     border: none;
   }
+
+  input::placeholder {
+  color: #aaa;
+}
 
   svg {
     cursor: pointer;
