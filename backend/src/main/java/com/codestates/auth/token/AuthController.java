@@ -66,6 +66,9 @@ public class AuthController {
         log.info("token : " +token);
 
         String key = authService.getIngredients();
+        log.info("key : " +key);
+        log.info("problem : " +Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody());
+
         Claims claims = null;
 
         try {
