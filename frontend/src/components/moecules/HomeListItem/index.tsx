@@ -102,6 +102,8 @@ export const HomeListItem = (props: RoomType) => {
 
 
   return (
+    <>
+    <div className='tlfgja'></div>
     <Container >
       {/* <button onClick={roomDelete}>삭제</button> */}
       <ImageContaienr onClick={room}>
@@ -155,10 +157,21 @@ export const HomeListItem = (props: RoomType) => {
         ))}
       </div>
     </Container>
+  </>
   );
 };
 
 const Container = styled.div`
+
+  .tlfgja{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    border: 2px solid red;
+  }
 
   h3 {
     color: #333;
