@@ -9,8 +9,8 @@ export const Oauth = () => {
     const accessToken = searchParams.get('access_token');
     const refreshToken = searchParams.get('refresh_token');
 
-    localStorage.setItem('accessToken', JSON.stringify(accessToken));
-    localStorage.setItem('refreshToken', JSON.stringify(refreshToken));
+    localStorage.setItem('access_token', JSON.stringify(accessToken));
+    localStorage.setItem('refresh_token', JSON.stringify(refreshToken));
 
     navigate('/');
   }, []);

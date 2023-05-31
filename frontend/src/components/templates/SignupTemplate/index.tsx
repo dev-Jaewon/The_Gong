@@ -11,10 +11,9 @@ export const SignupTemplate = () => {
   const [step, setStep] = useState<number>(SIGNUP_STEP.SET_INFO);
   const [errors, setErrors] = useState<SignupData | null>(null);
 
+  
   const mutation = useMutation({
-    // mutationFn: async (data: SignupData) => api.post(`${import.meta.env.VITE_BASE_URL}members/add`, data),
-    mutationFn: async (data: SignupData) => api.post(`https://www.apithegong.com/members/add`, data),
-
+    mutationFn: async (data: SignupData) => api.post(`${import.meta.env.VITE_BASE_URL}members/add`, data),
     onSuccess: () => setStep(SIGNUP_STEP.DONE),
     onError: (err: any) => {
       const message = err.response.data.message as string;

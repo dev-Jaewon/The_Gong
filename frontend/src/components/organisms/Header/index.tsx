@@ -12,23 +12,21 @@ export const Header = () => {
     ['auth'],
     () =>
       api.get(`${import.meta.env.VITE_BASE_URL}auth`).then((res) => res.data),
-    { enabled: Boolean(localStorage.getItem('accessToken')) }
+    { enabled: Boolean(localStorage.getItem('access_token')) }
   );
 
   const [nickname, setNickname] = useState();
 
   useEffect(() => {
-    const userNickname = localStorage.getItem('nickname');
-
-    if (userNickname) {
-      setNickname(JSON.parse(userNickname));
-      console.log(setNickname);
+    if (data?.nickname) {
+      setNickname(data?.nickname);
     } else {
       console.log('스토리지 값 없음');
     }
-  }, []);
+  }, [data]);
 
   const logOut = () => {
+    localStorage.removeItem('access_token');
     localStorage.clear();
     setNickname(undefined);
   };
