@@ -170,9 +170,9 @@ const Container = styled.div`
   }
 
   .describe {
-    color: #323232;
-    font-size: 1.1rem;
-    font-weight: 400;
+    color: #494949;
+    font-size: 1rem;
+    font-weight: normal;
     margin-bottom: 1.5rem;
   }
 `;
@@ -205,9 +205,10 @@ const InfoItem = styled.div`
 `;
 
 const Tag = styled.button`
-  padding: 10px 10px;
+  padding: 0.5rem 0.8rem;
   border-radius: 2rem;
   background-color: #4fafb12c;
+  font-size: 0.7rem;
 `;
 
 const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
