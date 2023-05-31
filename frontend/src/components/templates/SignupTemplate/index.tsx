@@ -11,6 +11,7 @@ export const SignupTemplate = () => {
   const [step, setStep] = useState<number>(SIGNUP_STEP.SET_INFO);
   const [errors, setErrors] = useState<SignupData | null>(null);
 
+  
   const mutation = useMutation({
     mutationFn: async (data: SignupData) => api.post(`${import.meta.env.VITE_BASE_URL}members/add`, data),
     onSuccess: () => setStep(SIGNUP_STEP.DONE),
