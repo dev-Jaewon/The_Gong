@@ -33,7 +33,7 @@
 
 |  내가 만든 스터디 / 새로운 스터디 / 인기 스터디 조회  |  검색창  |
 |-------------|-----------|
-| ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/5e8fe214-e066-4145-8f5e-cb6f69a3d05b) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/d94a6e7e-8569-4fe1-820b-05283eaabd8c) |
+| ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/296188e9-b5c0-4972-aec7-e6c0f1bb8018) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/239b64c0-0d65-432b-b06c-77cdb507986c) |
 
 
 
