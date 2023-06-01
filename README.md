@@ -6,6 +6,7 @@
 <h3 align="center"> <a href="https://thegong.site/" target='_blank'>➡️ The Gong 바로가기 ⬅️</a> </h3>
 
 
+**👤 테스트 계정: (ID) test@gmail.com / (PW) abc12345** 
 
 **📜 서비스메뉴얼: <a href="https://github.com/codestates-seb/seb43_main_025/files/11567075/SEB43_Main25_._.pdf" target='_blank'>pdf</a>** 
 
