@@ -31,25 +31,25 @@
 
 ### 메인 페이지
 
-|  내가 만든 스터디 조회  |  새로운 스터디 조회  |  인기 스터디 조회  | 
-|-----------|-----------|-----------|
-| ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/9d6d7b69-588a-4180-9323-8684a97adfd4) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/f2fa3405-5052-4805-9135-45421a1fe537) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/ee229197-421a-45ac-8d7c-afe1920d06d4) |
-
-|  스터디 만들기  |  검색창  |
-|-----------|-----------|
-| ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/397bfa19-25ec-4d6b-a202-0cd6b2517003) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/f2fa3405-5052-4805-9135-45421a1fe537) |
+|  내가 만든 스터디 / 새로운 스터디 / 인기 스터디 조회  |  검색창  |
+|-------------|-----------|
+| ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/5e8fe214-e066-4145-8f5e-cb6f69a3d05b) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/d94a6e7e-8569-4fe1-820b-05283eaabd8c) |
 
 
-* 
 
 
 
 ### 스터디룸
 
-|  화상회의  |  채팅  |  참여자 목록  |
-|-----------|-----------|-----------|
-| ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/386add6e-2bcf-4cee-8e27-ff796eabd0e7) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/cedfd63e-48af-433f-9502-61acbc050fa3) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/386add6e-2bcf-4cee-8e27-ff796eabd0e7) |
-* 
+|  스터드 만들기  | 스터디룸(채팅) | 스터디룸(참여자 목록) |  
+|-----------|-----------|-------------|
+| ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/397bfa19-25ec-4d6b-a202-0cd6b2517003) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/cedfd63e-48af-433f-9502-61acbc050fa3) |![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/aa54657d-2605-4903-ae4a-ce1559472770) |
+
+
+| 스터디룸(화상회의) |
+|-----------|
+| ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/b56ebdd2-24ef-4c5d-a91e-bff794d6cf0c) | 
+
 
 
 ## 👀 Team "맑은 눈의 광인들"
