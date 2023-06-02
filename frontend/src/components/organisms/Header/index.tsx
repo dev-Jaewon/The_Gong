@@ -50,8 +50,9 @@ export const Header = () => {
               MyStudy
             </Link>
           </div>
-
+          
           <SearchBar />
+
         </div>
 
         <div className='leftHeader userContainer'>
@@ -75,6 +76,12 @@ export const Header = () => {
 };
 
 const Container = styled.div`
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  background-color: white;
 
   .headerContainer{
     display: flex;
@@ -83,7 +90,6 @@ const Container = styled.div`
     height: 4rem;
     max-width: 74rem;
     margin: 0 auto;
-    border: 1px solid red;
     padding: 1rem;
   }
 
@@ -95,9 +101,9 @@ const Container = styled.div`
   }
 
   .navContainer{
-      display: flex;
-      gap: 1rem;
-    }
+    display: flex;
+    gap: 1rem;
+  }
 
   .leftHeader{
     display: flex;
@@ -126,9 +132,11 @@ const Container = styled.div`
     font-weight: 900;
   }
 
-  @media screen and (max-width: 1024px) {
+
+  @media screen and (max-width: 64rem) {
     .headerContainer{
       padding: 0 1rem;
+      height: 3rem;
     }
 
     .navContainer{
@@ -148,7 +156,7 @@ const Container = styled.div`
     }
   }
 
-  @media screen and (max-width: 576px) {
+  @media screen and (max-width: 36rem) {
     .leftHeader{
       display: none;
     }

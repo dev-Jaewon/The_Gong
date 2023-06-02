@@ -36,17 +36,17 @@ export const SearchBar = () => {
       {value && (
         <AiFillCloseCircle
           color="#cccccc"
-          size={18}
           onClick={() => setValue('')}
+          className='AiFillCloseCircle'
         />
       )}
-      <TfiSearch size={25} />
+      <TfiSearch className='TfiSearch'/>
     </Container>
   );
 };
 
 const Container = styled.form`
-  padding: 5px 5px 5px 10px;
+  padding: 0.4rem 0.5rem;
   display: flex;
   align-items: center;
   height: 40px;
@@ -59,15 +59,50 @@ const Container = styled.form`
     flex: 1 1 auto;
     width: 100%;
     height: 100%;
-    font-size: 15px;
+    font-size: 0.9rem;
     font-weight: 300;
     font-family: Noto Sans KR;
     border: none;
   }
 
   input::placeholder {
-  color: #aaa;
-}
+    color: #aaa;
+    font-size: 0.9rem; 
+  }
+
+  .AiFillCloseCircle{
+    color: #555555;
+    font-size: 1.3rem;
+    margin-right: 0.4rem;
+  }
+
+  .TfiSearch{
+    color: #555555;
+    font-size: 1.5rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+    padding: 0.4rem 0.4rem;
+    height: 2rem;
+
+
+    input {
+      font-size: 0.8rem;
+    }
+
+    input::placeholder {
+      color: #aaa;
+      font-size: 0.8rem; 
+    }
+
+    .AiFillCloseCircle{
+      font-size: 1rem;
+    }
+
+    .TfiSearch{
+      font-size: 1rem;
+    }
+  }
 
   svg {
     cursor: pointer;

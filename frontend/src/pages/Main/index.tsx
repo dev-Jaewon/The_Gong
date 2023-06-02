@@ -6,7 +6,7 @@ import { useQueries } from '@tanstack/react-query';
 import { api } from '../../util/api';
 import { Skeleton } from '../../components/atoms/Skeleton/Skeleton';
 import { Banner } from '../../components/organisms/Banner';
-import { useEffect } from 'react';
+import { BottomHeader } from '../../components/organisms/BottomHeader';
 
 export const Main = () => {
 
@@ -87,12 +87,19 @@ export const Main = () => {
           popularRoom={popularRoom.data}
         />
       )}
+      <BottomHeader />
       <Footer />
     </Container>
   );
 };
 
-const Container = styled.div``;
+
+
+const Container = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
 
 const LodingContainer = styled.div`
   display: flex;

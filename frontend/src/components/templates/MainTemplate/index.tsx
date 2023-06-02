@@ -103,10 +103,10 @@ const Container = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 8rem;
   width: 100%;
-  padding-top: 50px;
-  max-width: 1050px;
+  padding: 4rem 1rem 1rem 1rem;
+  max-width: 74rem;
 `;
 
 const NoneValueContainer = styled.div`
