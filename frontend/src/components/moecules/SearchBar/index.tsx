@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { RxMagnifyingGlass } from 'react-icons/rx';
+import { TfiSearch } from 'react-icons/tfi';
 import { AiFillCloseCircle } from 'react-icons/ai';
 
 import { ChangeEvent, FormEvent, useState } from 'react';
@@ -40,7 +40,7 @@ export const SearchBar = () => {
           onClick={() => setValue('')}
         />
       )}
-      <RxMagnifyingGlass size={30} />
+      <TfiSearch size={25} />
     </Container>
   );
 };
@@ -53,13 +53,14 @@ const Container = styled.form`
   width: 100%;
   max-width: 400px;
   border: 1px solid #4fafb1;
-  border-radius: 5px;
+  border-radius: 0.2rem;
 
   input {
     flex: 1 1 auto;
     width: 100%;
     height: 100%;
     font-size: 15px;
+    font-weight: 300;
     font-family: Noto Sans KR;
     border: none;
   }
