@@ -6,6 +6,7 @@ import { BiUser } from 'react-icons/bi';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../util/api';
 import { useEffect, useState } from 'react';
+import { Button } from '../../atoms/Button';
 
 export const Header = () => {
   const { data } = useQuery(
@@ -33,138 +34,138 @@ export const Header = () => {
 
   return (
     <Container>
-      <div className="content">
-        <div className="auth_container">
-          {!nickname ? (
-            <>
-              <Link to="/signin">로그인</Link>
-              <div className="divider"></div>
-              <Link to="/signup">회원가입</Link>
-            </>
-          ) : (
-            <div className="user">
-              <div>
-                <span className="userName">{nickname}</span>님 환영합니다.
-              </div>
-              <button onClick={logOut}>로그아웃</button>
-            </div>
-          )}
-        </div>
-        <div className="service_container">
-          <Link className="logo" to="/">
+      
+      <div className='headerContainer'>
+        <div className='rightHeader'>
+          <Link className="logo title" to="/">
             THE GONG
           </Link>
-          <div className="search">
-            <SearchBar />
-          </div>
-          <div className="icons">
-            {/* <Link to="/my" className="my">
-              <BiUser size={30} color="#4a4a4a" />
-            </Link> */}
-            <Link to="/createRoom">
-              <BsPencilSquare size={30} color="#4a4a4a" />
+
+          <div className='navContainer'>
+            <Link className="logo" to="/">
+              Home
+            </Link>
+
+            <Link className="logo" to="/">
+              MyStudy
             </Link>
           </div>
+          
+          <SearchBar />
+
         </div>
+
+        <div className='leftHeader userContainer'>
+          <Link className='hidden' to="/createRoom">
+            <button>
+              스터디 만들기
+            </button>
+          </Link>
+
+          <Link to="/signin">
+            로그인
+          </Link>
+          
+          <Link className='hidden' to="/signup">
+            회원가입
+          </Link>
+        </div> 
       </div>
     </Container>
   );
 };
 
 const Container = styled.div`
-  display: flex;
-  padding-bottom: 15px;
-  justify-content: center;
-  width: 100%;
-  user-select: none;
-  box-shadow: rgba(0, 0, 0, 0.07) 0px 3px 4px 0px;
-  font-family: Noto Sans KR;
-  position: relative;
+  position: sticky;
+  top: 0;
+  left: 0;
   z-index: 10;
+  width: 100%;
+  background-color: white;
 
-  .user {
+  .headerContainer{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+    height: 4rem;
+    max-width: 74rem;
+    margin: 0 auto;
+    padding: 1rem;
+  }
 
-    width: fit-content;
-    font-size: 0.9rem;
-    color: rgb(61, 61, 61);
+  .rightHeader{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
 
-    .userName {
-      color: #4fafb1;
-    }
+  .navContainer{
+    display: flex;
+    gap: 1rem;
+  }
 
-    button {
-      padding: 0.3rem;
-      border: 1px solid #4fafb1;
+  .leftHeader{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 1rem;
+
+    button{
+      background-color: #4FAFB1;
+      height: 40px;
+      color: white;
+      padding: 0 1rem;
       border-radius: 0.2rem;
+      
+    }
+  }
+  
+  .logo{
+    color: #404447;
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+
+  .title{  
+    color: #4FAFB1;
+    font-weight: 900;
+  }
+
+
+  @media screen and (max-width: 64rem) {
+    .headerContainer{
+      padding: 0 1rem;
+      height: 3rem;
+    }
+
+    .navContainer{
+      display: none;
+    }
+
+    .logo{
+      font-size: 1.2rem;
+    }
+
+    .hidden{
+      display: none;
+    }
+
+    .title{ 
+      min-width: fit-content;
     }
   }
 
-  > div {
-    width: 100%;
-  }
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1050px;
-  }
-
-  .auth_container {
-    padding: 10px 0;
-    width: 100%;
-    display: flex;
-    justify-content: end;
-
-    .divider {
-      width: 1px;
-      height: 13px;
-      margin: 0px 12px;
-      background-color: rgb(217, 217, 217);
+  @media screen and (max-width: 36rem) {
+    .leftHeader{
+      display: none;
     }
   }
 
-  .service_container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 0;
-    width: 100%;
 
-    .logo {
-      color: #4fafb1;
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .search {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 400px;
-      transform: translate(-50%, -50%);
-    }
-
-    .my {
-      padding: 0 10px;
-      font-size: 25px;
-      font-weight: 700;
-    }
-
-    .icons {
-      svg {
-        margin-left: 30px;
-      }
-    }
-  }
 `;
 
 const Link = styled(LinkButton)`
-  color: #333333;
-  font-size: 12px;
+  color: #555555;
+  font-size: 0.9rem;
 `;
