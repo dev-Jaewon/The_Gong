@@ -123,7 +123,7 @@ export const HomeListItem = (props: RoomType) => {
         </i>
       </ImageContaienr>
       <h3 onClick={room}>{props.title}</h3>
-      <p className="describe">{props.info}</p>
+      <Description className="describe">{props.info}</Description>
       <Info>
         <InfoItem>
           <p className="subject"><FaUser /></p>
@@ -136,16 +136,7 @@ export const HomeListItem = (props: RoomType) => {
           <p className="subject"><AiFillHeart/></p>
           <p className="value">{props.favorite_count}</p>
         </InfoItem>
-        {/* <InfoItem>
-          <p className="subject">생성일</p>
-          <p className="value">
-            {props.created_at ? formatDate(props.created_at) : '비공개'}
-          </p>
-        </InfoItem>
-        <InfoItem>
-          <p className="subject">그룹장</p>
-          <p className="value">{'가나다라'}</p>
-        </InfoItem> */}
+
       </Info>
       <div className="tags">
         {props.tags.map((tag, index) => (
@@ -168,12 +159,6 @@ const Container = styled.div`
     cursor: pointer;
   }
 
-  .describe {
-    color: #494949;
-    font-size: 1rem;
-    font-weight: normal;
-    margin-bottom: 1.5rem;
-  }
 `;
 
 const Info = styled.div`
@@ -214,7 +199,7 @@ const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
   cursor: pointer;
   max-width: 100%;
   position: relative;
-  height: 200px;
+  aspect-ratio: 16 / 9; /* 16:9 비율 지정 */
   margin-bottom: 10px;
 
   img {
@@ -233,4 +218,14 @@ const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
 
     z-index: 10;
   }
+`;
+
+const Description = styled.p`
+  color: #494949;
+  font-size: 1rem;
+  font-weight: normal;
+  margin-bottom: 1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;

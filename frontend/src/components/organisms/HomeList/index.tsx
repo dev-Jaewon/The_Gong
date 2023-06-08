@@ -118,7 +118,7 @@ const ItemContainer = styled.div<{ imgMaxWidth?: string }>`
 const SwiperContainer = styled.div`
   position: relative;
   width: 100%;
-  max-width: 1050px;
+  max-width: 74rem;
   margin-top: 10px;
 
   .swiper-button {

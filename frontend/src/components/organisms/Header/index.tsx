@@ -43,11 +43,11 @@ export const Header = () => {
 
           <div className='navContainer'>
             <Link className="logo" to="/">
-              Home
+              HOME
             </Link>
 
-            <Link className="logo" to="/">
-              MyStudy
+            <Link className="logo" to="/my">
+              MYSTUDY
             </Link>
           </div>
           
@@ -82,13 +82,14 @@ const Container = styled.div`
   z-index: 10;
   width: 100%;
   background-color: white;
+  border-bottom: 1px solid #eee;
 
   .headerContainer{
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 4rem;
-    max-width: 74rem;
+    max-width: 70rem;
     margin: 0 auto;
     padding: 1rem;
   }
@@ -103,6 +104,7 @@ const Container = styled.div`
   .navContainer{
     display: flex;
     gap: 1rem;
+    margin-left: 0.5rem;
   }
 
   .leftHeader{
@@ -123,12 +125,13 @@ const Container = styled.div`
   
   .logo{
     color: #404447;
-    font-size: 1.4rem;
-    font-weight: bold;
+    font-size: 1.2rem;
+    font-weight: 700;
   }
 
   .title{  
     color: #4FAFB1;
+    font-size: 1.3rem;
     font-weight: 900;
   }
 

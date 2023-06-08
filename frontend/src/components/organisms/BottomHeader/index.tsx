@@ -42,6 +42,7 @@ const Container = styled.div`
   width: 100%;
   background-color: white;
   display: none;
+  border-top: 1px solid #eee;
 
 
   .headerContainer{

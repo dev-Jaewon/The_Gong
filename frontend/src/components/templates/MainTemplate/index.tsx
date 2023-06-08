@@ -1,7 +1,5 @@
 import styled from 'styled-components';
-import { Banner } from '../../organisms/Banner';
 import { HomeList } from '../../organisms/HomeList';
-import { IoMdAddCircle } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
@@ -46,33 +44,6 @@ export const MainTemplate = ({
   return (
     <Container>
       <Content>
-        {myRoom?.data?.length ? (
-          <HomeList
-            id="createRoom"
-            title="내가 만든 스터디"
-            description="내가 만든 스터디 목록입니다."
-            imgMaxWidth="550px"
-            slidesToShow={2}
-            list={myRoom.data}
-          />
-        ) : (
-          <NoneValueContainer>
-            <h2>내가 만든 스터디</h2>
-            <p className="subject_describe">스터디를 만들어주세요!.</p>
-            <CreateButton onClick={() => {
-                if(memberId){
-                  navigate('/createRoom');
-                } else {
-                  alert('로그인이 필요한 서비스 입니다.')
-                  navigate(`/signin`);
-                }
-            }}>
-              <IoMdAddCircle size={35} color={'rgb(138, 138, 138)'} />
-              <p>스터디 만들기</p>
-            </CreateButton>
-          </NoneValueContainer>
-        )}
-
         <HomeList
           id="newRoom"
           title="새로운 스터디"
@@ -83,7 +54,7 @@ export const MainTemplate = ({
         />
         <HomeList
           id="popularRoom"
-          title="인기 스터디"
+          title="추천 스터디"
           description="가장 인기있는 스터디 목록입니다."
           imgMaxWidth="400px"
           slidesToShow={3}
@@ -105,35 +76,9 @@ const Content = styled.div`
   flex-direction: column;
   gap: 8rem;
   width: 100%;
-  padding: 4rem 1rem 1rem 1rem;
-  max-width: 74rem;
+  padding: 4rem 3rem 1rem 3rem;
+  max-width: 72rem;
+
 `;
 
-const NoneValueContainer = styled.div`
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  width: 100%;
 
-  h2 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 15px;
-  }
-
-  .subject_describe {
-    font-size: 15px;
-    font-weight: 400;
-    color: #8a8a8a;
-    margin-bottom: 15px;
-  }
-`;
-
-const CreateButton = styled.button`
-  font-size: 12px;
-  font-weight: 500;
-  border-radius: 8px;
-  padding: 10px;
-  color: rgb(138, 138, 138);
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-`;
