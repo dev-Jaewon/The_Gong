@@ -24,7 +24,6 @@ export const HomeListItem = (props: RoomType) => {
 
   useEffect(() => {
     // 페이지 진입 시 로컬 스토리지 값 확인
-    // 페이지 진입 시 로컬 스토리지 값 확인
     const userInfoString = localStorage.getItem('access_token');
     const usermemberId = localStorage.getItem('member_id');
 
@@ -63,13 +62,13 @@ export const HomeListItem = (props: RoomType) => {
 
     if(memberId){
 
-      if(props.member_current_count >= props.member_max_count){
-        alert('입장 인원을 초과했습니다.')
-      } else {
-        startTransition(() => {
-          navigate(`/room?roomId=${props.title}`);
-        });
-      }
+    if(props.member_current_count >= props.member_max_count){
+      alert('입장 인원을 초과했습니다.')
+    } else {
+      startTransition(() => {
+        navigate(`/room?roomId=${props.title}`);
+      });
+    }
 
     } else {
       alert('로그인이 필요한 서비스 입니다.')
@@ -103,7 +102,7 @@ export const HomeListItem = (props: RoomType) => {
 
   return (
     <Container >
-      {/* <button onClick={roomDelete}>삭제</button> */}
+      <button onClick={roomDelete}>삭제</button>
       <ImageContaienr onClick={room}>
         <img src={props.image_url} alt={`${props.title} 이미지`} />
         <i>

@@ -28,8 +28,10 @@ const CreateRoomPage = () => {
   const [memberId, setMemberId] = useState('');
   const imgUrl = useRef('')
 
+  const [selectedFile, setSelectedFile] = useState('');
+  const [formError, setError] = useState(false);
+
   useEffect(() => {
-    // 페이지 진입 시 로컬 스토리지 값 확인
     // 페이지 진입 시 로컬 스토리지 값 확인
     const userInfoString = localStorage.getItem('access_token');
     const usermemberId = localStorage.getItem('member_id');
@@ -45,47 +47,67 @@ const CreateRoomPage = () => {
   }, []);
 
   const sendFormData = async (data: any) => {
-    const requestData = {
-      ...data,
-      image_url: imgUrl.current,
-      admin_member_id: memberId + '',
-    };
-
-    console.log('@@@이거 보냅니다@@@');
-    console.log(requestData);
-    console.log(imgUrl);
-
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+  
     api
-      .post(
-        `${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`,
-        requestData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .post(`${import.meta.env.VITE_BASE_URL}thumbnail`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then((response) => {
         // 요청 성공 시 처리
-        console.log('@@@이거 받았습니다@@@');
-        console.log(response.data);
-        console.log(imgUrl);
-        navigate('/');
-        window.location.reload(); // 페이지 리로드
+        imgUrl.current = response.data;
+        console.log('@@@이미지 성공@@@');
+        setError(false);
+        console.log(imgUrl.current);
+  
+        if (imgUrl.current === response.data) {
+          const requestData = {
+            ...data,
+            image_url: imgUrl.current,
+            admin_member_id: memberId + '',
+          };
+  
+          api
+            .post(
+              `${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`,
+              requestData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+            .then((response) => {
+              // 요청 성공 시 처리
+              console.log('@@@스터디 성공@@@');
+              console.log(response.data);
+              navigate('/');
+              window.location.reload(); // 페이지 리로드
+            })
+            .catch((error) => {
+              // 요청 실패 시 처리
+              console.error(error);
+            });
+        }
       })
       .catch((error) => {
         // 요청 실패 시 처리
-        console.error(error);
+        console.log('애러');
+        console.log(error);
+        setError(true);
       });
   };
+  
 
   const handleSubmit = (data: any) => {
     sendFormData(data);
   };
   const isLoading = false;
 
-  const [selectedFile, setSelectedFile] = useState('');
-  const [formError, setError] = useState(false);
 
   const handleFileUpload = (e: any) => {
     e.preventDefault();

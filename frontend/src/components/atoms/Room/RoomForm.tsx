@@ -14,6 +14,11 @@ const RoomFormContainer = styled.div`
     color: #464646;
   }
 
+  .title{
+    font-size: 13px;
+    color: red;
+  }
+
 `;
 
 const RadioContainer = styled.div`
@@ -204,17 +209,45 @@ const RoomForm = (props: RoomFormProps) => {
     setSelectedFile(event.target.files[0]);
   };
 
+
+  const [duplicate, isDuplicate] = useState(false)
+
+  const handleInputChange = (event:any) => {
+    handleChange('title')(event);
+
+    api
+      .post(`${import.meta.env.VITE_BASE_URL}rooms/check`, {
+        "title" : event
+    }, {})
+      .then((response) => {
+        // 요청 성공 시 처리
+        console.log('성공');
+        console.log(response.data);
+        isDuplicate(false)
+      })
+      .catch((error) => {
+        // 요청 실패 시 처리
+        console.log(error);
+        isDuplicate(true)
+      });
+
+  };
+
+
   return (
     <RoomFormContainer>
       <TagForm isPopupOpen={isPopupOpen} ChangeisPopupOpen={ChangeIsPopupOpen} setTags={setTags}/>
       <ContainerForm onSubmit={handleSubmit}>
-        <InputLabel
-          label="방 제목"
-          onChange={handleChange('title')}
-          placeholder="방의 이름을 입력해주세요."
-          errorMessage={errors.title}
-          isValid={errors.title ? false : true}
-        />
+        <div>
+          <InputLabel
+            label="방 제목"
+            onChange={handleInputChange}
+            placeholder="방의 이름을 입력해주세요."
+            errorMessage={errors.title}
+            isValid={errors.title ? false : true}
+          />
+          {duplicate && <span className="title">중복된 방 제목 입니다.</span>}
+        </div>
         <InputLabel
           label="방 소개"
           onChange={handleChange('info')}
@@ -238,8 +271,8 @@ const RoomForm = (props: RoomFormProps) => {
 
           <div className="imgBox">
             <input type="file" onChange={handleFileChange} />
-            <div onClick={handleFileUpload}>Upload</div>
-            <span className="imsi">(선택 이후 업로드 눌려주세요!!)</span>
+            {/* <div onClick={handleFileUpload}>Upload</div>
+            <span className="imsi">(선택 이후 업로드 눌려주세요!!)</span> */}
           </div>
 
         {formError && <span className="error">파일의 용량이 너무 큽니다</span>}
