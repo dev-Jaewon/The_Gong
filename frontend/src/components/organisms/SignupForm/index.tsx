@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { Button } from '../../atoms/Button';
 import { useForm } from '../../../hooks/useForm';
 import { InputLabel } from '../../moecules/InputLabel';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { api } from '../../../util/api';
 
 export type SignupData = {
   nickname: string;
@@ -57,15 +58,44 @@ export const SignupForm = (props: SignupFormProps) => {
     if (props.errors) setErrors(props.errors);
   }, [props.errors]);
 
+
+  const [duplicate, isDuplicate] = useState(false)
+
+  const handleInputChange = (event:any) => {
+
+    handleChange('nickname')(event);
+
+    api
+      .post(`${import.meta.env.VITE_BASE_URL}members/check`, {
+        "nickname" : event
+    }, {})
+      .then((response) => {
+        // 요청 성공 시 처리
+        console.log('성공');
+        console.log(response.data);
+        isDuplicate(false)
+      })
+      .catch((error) => {
+        // 요청 실패 시 처리
+        console.log(error);
+        isDuplicate(true)
+      });
+
+  };
+
   return (
     <ContainerForm onSubmit={handleSubmit}>
-      <InputLabel
-        label="닉네임"
-        onChange={handleChange('nickname')}
-        placeholder="닉네임을 입력해주세요."
-        errorMessage={errors.nickname}
-        isValid={errors.nickname ? false : true}
-      />
+      <div>
+        <InputLabel 
+          label="닉네임"
+          onChange={handleInputChange}
+          placeholder="닉네임을 입력해주세요."
+          errorMessage={errors.nickname}
+          isValid={errors.nickname ? false : true}
+        />
+        {duplicate && <span className="title">중복된 닉네임 입니다.</span>}
+      </div>
+
       <InputLabel
         label="이메일"
         onChange={handleChange('email')}
@@ -106,5 +136,10 @@ const ContainerForm = styled.form`
 
   button {
     margin-top: 20px;
+  }
+  
+  .title{
+    font-size: 13px;
+    color: red;
   }
 `;

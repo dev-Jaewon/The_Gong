@@ -24,7 +24,6 @@ export const HomeListItem = (props: RoomType) => {
 
   useEffect(() => {
     // 페이지 진입 시 로컬 스토리지 값 확인
-    // 페이지 진입 시 로컬 스토리지 값 확인
     const userInfoString = localStorage.getItem('access_token');
     const usermemberId = localStorage.getItem('member_id');
 
@@ -63,13 +62,13 @@ export const HomeListItem = (props: RoomType) => {
 
     if(memberId){
 
-      if(props.member_current_count >= props.member_max_count){
-        alert('입장 인원을 초과했습니다.')
-      } else {
-        startTransition(() => {
-          navigate(`/room?roomId=${props.title}`);
-        });
-      }
+    if(props.member_current_count >= props.member_max_count){
+      alert('입장 인원을 초과했습니다.')
+    } else {
+      startTransition(() => {
+        navigate(`/room?roomId=${props.title}`);
+      });
+    }
 
     } else {
       alert('로그인이 필요한 서비스 입니다.')
@@ -103,7 +102,7 @@ export const HomeListItem = (props: RoomType) => {
 
   return (
     <Container >
-      {/* <button onClick={roomDelete}>삭제</button> */}
+      <button onClick={roomDelete}>삭제</button>
       <ImageContaienr onClick={room}>
         <img src={props.image_url} alt={`${props.title} 이미지`} />
         <i>
@@ -123,7 +122,7 @@ export const HomeListItem = (props: RoomType) => {
         </i>
       </ImageContaienr>
       <h3 onClick={room}>{props.title}</h3>
-      <p className="describe">{props.info}</p>
+      <Description className="describe">{props.info}</Description>
       <Info>
         <InfoItem>
           <p className="subject"><FaUser /></p>
@@ -136,16 +135,7 @@ export const HomeListItem = (props: RoomType) => {
           <p className="subject"><AiFillHeart/></p>
           <p className="value">{props.favorite_count}</p>
         </InfoItem>
-        {/* <InfoItem>
-          <p className="subject">생성일</p>
-          <p className="value">
-            {props.created_at ? formatDate(props.created_at) : '비공개'}
-          </p>
-        </InfoItem>
-        <InfoItem>
-          <p className="subject">그룹장</p>
-          <p className="value">{'가나다라'}</p>
-        </InfoItem> */}
+
       </Info>
       <div className="tags">
         {props.tags.map((tag, index) => (
@@ -168,12 +158,6 @@ const Container = styled.div`
     cursor: pointer;
   }
 
-  .describe {
-    color: #494949;
-    font-size: 1rem;
-    font-weight: normal;
-    margin-bottom: 1.5rem;
-  }
 `;
 
 const Info = styled.div`
@@ -214,7 +198,7 @@ const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
   cursor: pointer;
   max-width: 100%;
   position: relative;
-  height: 200px;
+  aspect-ratio: 16 / 9; /* 16:9 비율 지정 */
   margin-bottom: 10px;
 
   img {
@@ -233,4 +217,14 @@ const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
 
     z-index: 10;
   }
+`;
+
+const Description = styled.p`
+  color: #494949;
+  font-size: 1rem;
+  font-weight: normal;
+  margin-bottom: 1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;

@@ -35,6 +35,7 @@ export const Banner = () => {
 };
 
 const Container = styled.div`
+overflow: hidden;
 `;
 
 const ImgContainer = styled.div`

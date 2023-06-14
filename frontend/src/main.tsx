@@ -9,6 +9,7 @@ import { Signin } from './pages/Signin/index.tsx';
 import { Oauth } from './pages/Oauth/index.tsx';
 import { Search } from './pages/search/index.tsx';
 import { Main } from './pages/Main/index.tsx';
+import { MyStudy } from './pages/MyStudy/index.tsx';
 import RoomPage from './pages/Room/RoomPage.tsx';
 
 if (process.env.NODE_ENV === 'development') {
@@ -21,6 +22,10 @@ let router = createBrowserRouter([
   {
     path: '/',
     Component: () => <Main />,
+  },
+  {
+    path: '/my',
+    Component: () => <MyStudy />,
   },
   {
     path: '/signup',
