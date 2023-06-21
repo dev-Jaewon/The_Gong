@@ -62,7 +62,7 @@ export const Main = () => {
     <Container>
       <Header />
       
-      <Carousel contentList = {banner} contentNumber = {1} contentwidth = {500} contentheight = {19} ></Carousel>
+      <Carousel contentList = {banner} contentNumber = {1} contentwidth = {500} contentheight = {20}></Carousel>
       {myRoom.isFetching || newRoom.isFetching || popularRoom.isFetching ? (
         <LodingContainer>
           <LodingContent>
@@ -101,7 +101,7 @@ export const Main = () => {
         />
       )}
       <BottomHeader />
-      <Footer />
+      {/* <Footer /> */}
     </Container>
   );
 };

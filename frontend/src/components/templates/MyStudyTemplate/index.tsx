@@ -23,12 +23,14 @@ export type MyStudyTemplateProps = {
   myRoom: { data: Array<RoomType> };
   newRoom: { data: Array<RoomType> };
   popularRoom: { data: Array<RoomType> };
+  historyRoom: { data: Array<RoomType> };
 };
 
 export const MyStudyTemplate = ({
   myRoom,
   newRoom,
   popularRoom,
+  historyRoom,
 }: MyStudyTemplateProps) => {
   const navigate = useNavigate();
   const [memberId, setMemberId] = useState('');

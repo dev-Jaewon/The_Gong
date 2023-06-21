@@ -12,12 +12,12 @@ export const BottomHeader = () => {
       <div className='headerContainer'>
           <Link className="logo" to="/">
             <BiHome className='icon'/>
-            Home
+            홈
           </Link>
 
-          <Link className="logo" to="/">
+          <Link className="logo" to="/my">
             <BiBook className='icon'/>
-            MyStudy
+            마이스터디
           </Link>
 
           <Link className='logo' to="/createRoom">

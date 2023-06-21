@@ -7,6 +7,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 import 'swiper/swiper.min.css';
 import 'swiper/swiper-bundle.min.css';
+import { useEffect, useState } from 'react';
 
 export type HomeListItemProps = {
   id: string;
@@ -18,11 +19,35 @@ export type HomeListItemProps = {
 };
 
 export const HomeList = (props: HomeListItemProps) => {
+  const [contentCount, setContentCount] = useState(3);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth <= 34 * 16) { // 36rem 이하일 때
+        setContentCount(1);
+      } else if (windowWidth <= 58 * 16) { // 64rem 이하일 때
+        setContentCount(2);
+      } else {
+        setContentCount(3); // 기본값
+      }
+    };
+
+    // 초기 렌더링 시 handleResize 함수 호출
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // 컴포넌트 언마운트 시 이벤트 제거
+    };
+  }, []);
+
   const swiperSetProperty: SwiperProps = {
     modules: [FreeMode, Navigation],
     spaceBetween: 20,
-    slidesPerView: 3,
-    slidesPerGroup: 4,
+    slidesPerView: contentCount,
+    slidesPerGroup: contentCount,
     wrapperTag: 'ul',
     navigation: {
       nextEl: `.next-button-${props.id}`,
@@ -73,13 +98,13 @@ const Container = styled.div`
   }
 
   h2 {
-    font-size: 22px;
+    font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 15px;
+    margin-bottom: 0.6rem;
   }
 
   .subject_describe {
-    font-size: 15px;
+    font-size: 0.8rem;
     font-weight: 400;
     color: #8a8a8a;
     margin-bottom: 15px;

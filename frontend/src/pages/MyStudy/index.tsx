@@ -5,12 +5,11 @@ import { Footer } from '../../components/moecules/Footer';
 import { useQueries } from '@tanstack/react-query';
 import { api } from '../../util/api';
 import { Skeleton } from '../../components/atoms/Skeleton/Skeleton';
-import { Banner } from '../../components/organisms/Banner';
 import { BottomHeader } from '../../components/organisms/BottomHeader';
 
 export const MyStudy = () => {
 
-  const [myRoom, newRoom, popularRoom] = useQueries({
+  const [myRoom, newRoom, popularRoom, historyRoom] = useQueries({
     queries: [
       {
         queryKey: ['myRoom', 1],
@@ -34,7 +33,7 @@ export const MyStudy = () => {
         staleTime: Infinity,
       },
       {
-        queryKey: ['popularRoom', 2],
+        queryKey: ['popularRoom', 3],
         queryFn: () =>
           api
             .get(
@@ -43,13 +42,27 @@ export const MyStudy = () => {
             .then((res) => res.data),
         staleTime: Infinity,
       },
+      {
+        queryKey: ['historyRoom', 4],
+        queryFn: () =>
+          api
+            .get(
+              `${import.meta.env.VITE_BASE_URL}members/${localStorage.getItem(
+                'member_id'
+              )}/history`)
+            .then((res) => {
+              console.log(res.data)
+              return res.data
+            }),
+        staleTime: Infinity,
+      },
     ],
   });
 
   return (
     <Container>
       <Header />
-      {myRoom.isFetching || newRoom.isFetching || popularRoom.isFetching ? (
+      {myRoom.isFetching || newRoom.isFetching || popularRoom.isFetching || historyRoom.isFetching ? (
         <LodingContainer>
           <LodingContent>
             <div>
@@ -84,10 +97,10 @@ export const MyStudy = () => {
           myRoom={myRoom.data}
           newRoom={newRoom.data}
           popularRoom={popularRoom.data}
+          historyRoom={historyRoom.data}
         />
       )}
       <BottomHeader />
-      <Footer />
     </Container>
   );
 };
