@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 type CarouselButtonProps = {
 children: React.ReactNode;
-dr: string;
+direction: string;
 func: (direction: string) => void;
 };
 
@@ -17,9 +17,9 @@ background-color: transparent;
 cursor: pointer;
 `;
 
-function CarouselButton({ children, dr, func }: CarouselButtonProps) {
+function CarouselButton({ children, direction, func }: CarouselButtonProps) {
 return (
-<CarouselButtonContainer onClick={() => func(dr)}>
+<CarouselButtonContainer onClick={() => func(direction)}>
 {children}
 </CarouselButtonContainer>
 );
