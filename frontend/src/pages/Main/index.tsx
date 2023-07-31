@@ -5,8 +5,13 @@ import { Footer } from '../../components/moecules/Footer';
 import { useQueries } from '@tanstack/react-query';
 import { api } from '../../util/api';
 import { Skeleton } from '../../components/atoms/Skeleton/Skeleton';
-import { Banner } from '../../components/organisms/Banner';
 import { BottomHeader } from '../../components/organisms/BottomHeader';
+import Carousel from '../../components/organisms/Carousel/Carousel';
+
+import Banner1 from './1.png';
+import Banner2 from './2.png';
+import Banner3 from './3.png';
+import Banner4 from './4.png';
 
 export const Main = () => {
 
@@ -46,10 +51,18 @@ export const Main = () => {
     ],
   });
 
+  let banner = [
+    <img src={Banner1}></img>,
+    <img src={Banner2}></img>,
+    <img src={Banner3}></img>,
+    <img src={Banner4}></img>,
+  ];
+
   return (
     <Container>
       <Header />
-      <Banner />
+      
+      <Carousel contentList = {banner} contentNumber = {1} contentwidth = {500} contentheight = {20}></Carousel>
       {myRoom.isFetching || newRoom.isFetching || popularRoom.isFetching ? (
         <LodingContainer>
           <LodingContent>
@@ -88,7 +101,7 @@ export const Main = () => {
         />
       )}
       <BottomHeader />
-      <Footer />
+      {/* <Footer /> */}
     </Container>
   );
 };
@@ -122,3 +135,15 @@ const LodingContent = styled.div`
     width: 100%;
   }
 `;
+
+const ZContainer = styled.div`
+  width: 200px;
+  height: 200px;
+  border: 2px solid red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  font-weight: 900;
+`;
+

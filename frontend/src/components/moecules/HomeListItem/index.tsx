@@ -12,26 +12,23 @@ import { FaUser } from 'react-icons/fa';
 
 
 type ToogleFavorite = {
-  room_id: number;
+  room_id?: number;
   member_id: number;
   is_favorite: boolean;
 };
 
 export const HomeListItem = (props: RoomType) => {
-
   const [token, setToken] = useState('');
   const [memberId, setMemberId] = useState('');
 
   useEffect(() => {
     // 페이지 진입 시 로컬 스토리지 값 확인
     const userInfoString = localStorage.getItem('access_token');
-    const usermemberId = localStorage.getItem('member_id');
+    const userMemberId = localStorage.getItem('member_id');
 
-    if (userInfoString && usermemberId) {
+    if (userInfoString && userMemberId) {
       setToken(JSON.parse(userInfoString));
-      setMemberId(JSON.parse(usermemberId));
-      console.log(userInfoString);
-      console.log(usermemberId);
+      setMemberId(JSON.parse(userMemberId));
     } else {
       console.log('스토리지 값 없음');
     }
@@ -45,17 +42,31 @@ export const HomeListItem = (props: RoomType) => {
   };
 
   const mutation = useMutation({
-    mutationFn: async (data: ToogleFavorite) =>
-      api.post(`/rooms/${data.room_id}/favorite`, data),
-    onSuccess: ({ data }) => {},
+    mutationFn: async (data: ToogleFavorite) =>{
+      console.log(data)
+      api.post(`/rooms/${data.room_id}/favorite`, data)
+      .then((response) => {
+        // 요청 성공 시 처리
+        console.log(response)
+      })
+    }
   });
 
   const handleToogleFavorite = (is_favorite: boolean) => {
-    mutation.mutate({
-      room_id: 2,
-      member_id: 1,
-      is_favorite,
-    });
+    console.log('눌림')
+    if(is_favorite){
+      mutation.mutate({
+        room_id: props.room_id,
+        member_id: Number(memberId),
+        is_favorite,
+      });
+    } else {
+      mutation.mutate({
+        member_id: Number(memberId),
+        is_favorite,
+      });
+    }
+
   };
 
   const room = () => {
@@ -102,10 +113,10 @@ export const HomeListItem = (props: RoomType) => {
 
   return (
     <Container >
-      <button onClick={roomDelete}>삭제</button>
-      <ImageContaienr onClick={room}>
-        <img src={props.image_url} alt={`${props.title} 이미지`} />
-        <i>
+      {/* <button onClick={roomDelete}>삭제</button> */}
+      <ImageContaienr>
+        <img onClick={room} src={props.image_url} alt={`${props.title} 이미지`} />
+        {/* <i>
           {props.favorite_status === 'NONE' ? (
             <AiOutlineHeart
               size={'2rem'}
@@ -119,7 +130,7 @@ export const HomeListItem = (props: RoomType) => {
               onClick={() => handleToogleFavorite(false)}
             />
           )}
-        </i>
+        </i> */}
       </ImageContaienr>
       <h3 onClick={room}>{props.title}</h3>
       <Description className="describe">{props.info}</Description>
@@ -157,7 +168,19 @@ const Container = styled.div`
     margin-bottom: 10px;
     cursor: pointer;
   }
+  
+  @media screen and (max-width: 64rem) {
+    .tags{
+     /* border: 1px solid red; */
+    }
+  }
+`;
 
+const Tag = styled.button`
+  padding: 0.5rem 0.8rem;
+  border-radius: 2rem;
+  background-color: #4fafb12c;
+  font-size: 0.7rem;
 `;
 
 const Info = styled.div`
@@ -167,7 +190,6 @@ const Info = styled.div`
   justify-content: space-between;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #eee;
-
 `;
 
 const InfoItem = styled.div`
@@ -185,13 +207,6 @@ const InfoItem = styled.div`
     font-weight: bold;
     color: #4FAFB1
   }
-`;
-
-const Tag = styled.button`
-  padding: 0.5rem 0.8rem;
-  border-radius: 2rem;
-  background-color: #4fafb12c;
-  font-size: 0.7rem;
 `;
 
 const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
@@ -214,8 +229,8 @@ const ImageContaienr = styled.div<{ imgMaxWidth?: string }>`
     position: absolute;
     right: 10px;
     top: 10px;
-
-    z-index: 10;
+    cursor: pointer;
+    z-index: 20;
   }
 `;
 

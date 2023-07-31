@@ -24,9 +24,7 @@ interface ChatProps {
 
 const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
   // 받아온 메시지를 관리하는 state
-  const [ReceivedMessage, setReceivedMessage] = useState([
-
-  ]);
+  const [ReceivedMessage, setReceivedMessage] = useState([]);
 
   // 보낸 메시지를 관리하는 state
   const [sendMessage, setSendMessage] = useState('');
@@ -51,6 +49,8 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
 
     // 연결될 때 실행되는 이벤트 핸들러 코드
     stompClientRef.current.connect({}, onConnected);
+
+    
 
     // 연결이 끊어졌을 때 실행되는 코드
     return () => {
@@ -234,8 +234,8 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
       </RoomParts>
 
       <RoomParts bottomRight={edge} height={4} bgColor={mainColer}>
-        <FaUserCircle></FaUserCircle>
-        <RiMessage2Fill></RiMessage2Fill>
+        <FaUserCircle onClick={()=>console.log(chatParticipants)}></FaUserCircle>
+        <RiMessage2Fill onClick={()=> setChatParticipants([])}></RiMessage2Fill>
         <HiPencil></HiPencil>
         <AiFillSetting></AiFillSetting>
       </RoomParts>
@@ -388,4 +388,3 @@ const ChatList = styled.div`
 `
 
 export default Chat;
-

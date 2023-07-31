@@ -15,15 +15,27 @@ import { IoLogOut } from 'react-icons/io5';
 
 
 const Webcam = ({room, name, edge, mainColor}) => {
+
+  // 참여자들을 관리하는 변수
   let participants = useRef({});
+
+  // 웹소켓 객체를 관리하는 변수
   const rtcSocket = useRef(null);
   const navigate = useNavigate();
 
+  // 컴포넌트가 처음 마운트 되었을 때 실행되는 코드
   useEffect(() => {
+
+    // 웹소켓 객체 생성 후 변수에 저장
     rtcSocket.current = new SockJS(`${import.meta.env.VITE_BASE_URL}groupcall`);
 
+    // 웹소켓이 연결 되었을 때 실행되는 코드
     rtcSocket.current.onopen = () => {
       console.log('연결됨');
+
+      // if (rtcSocket.current && rtcSocket.current.readyState === SockJS.OPEN) {
+      //   sendMessage(message);
+      // }
 
       var message = {
         id: 'joinRoom',
@@ -31,13 +43,27 @@ const Webcam = ({room, name, edge, mainColor}) => {
         room: room,
       };
 
-      // if (rtcSocket.current && rtcSocket.current.readyState === SockJS.OPEN) {
-      //   sendMessage(message);
-      // }
-
+      // 서버로 입장 메시지를 보냅니다.
       sendMessage(message);
       
     };
+
+    // const MyComponent = () => {
+    //   useEffect(() => {
+    //     const handleBeforeUnload = () => {
+    //       // 클린업 작업 수행
+    //     };
+    
+    //     window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    //     return () => {
+    //       window.removeEventListener('beforeunload', handleBeforeUnload);
+    //       // 컴포넌트 언마운트 시에 이벤트 핸들러 제거
+    //     };
+    //   }, []);
+    
+    //   // 컴포넌트 렌더링 및 기타 로직
+    // };
 
     // 연결이 끊어졌을 때 실행되는 코드
     return () => {
@@ -47,37 +73,49 @@ const Webcam = ({room, name, edge, mainColor}) => {
     };
   }, []);
 
+  // 브라우저를 닫거나 다른 페이지로 이동할 때 소켓 연결을 명시적으로 끊어주는 코드
   window.onbeforeunload = function() {
      rtcSocket.current.close();
   };
 
+
   // 컴포넌트가 렌더링 될 때 마다 실행되는 코드
   useEffect(() => {
     
+    // 서버로부터 메시지를 받을 실행되는 코드
     rtcSocket.current.onmessage = (message) => {
       var parsedMessage = JSON.parse(message.data);
 
       console.log('========== 이거 받았다 ==========');
       console.log(parsedMessage);
 
+      // 받은 메시지에 따라 실행되는 함수들
       switch (parsedMessage.id) {
+
+        // case 1번 
         case 'existingParticipants':
           onExistingParticipants(parsedMessage);
           break;
 
+        // case 2번 
         case 'newParticipantArrived':
           onNewParticipant(parsedMessage);
           break;
 
+        // case 3번 
         case 'participantLeft':
           onParticipantLeft(parsedMessage);;
           break;
 
+        // case 4번 
         case 'receiveVideoAnswer':
           receiveVideoResponse(parsedMessage);
           break;
 
+        // case 5번 
         case 'iceCandidate':
+          // 상대방의 피어객체에
+          // 상대방이 전달한 ICE Candidate를 추가
           participants.current[parsedMessage.name].rtcPeer.addIceCandidate(
             parsedMessage.candidate,
             function (error) {
@@ -96,29 +134,6 @@ const Webcam = ({room, name, edge, mainColor}) => {
     };
   });
 
-  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
-function onParticipantLeft(request) {  
-  const element = document.getElementById(request.name);
-  element.parentNode.removeChild(element);
-	delete participants.current[request.name];
-}
-
-  function onNewParticipant(request) {
-    receiveVideo(request.name);
-  }
-
-
-  function receiveVideoResponse(result) {
-    participants.current[result.name].rtcPeer.processAnswer(
-      result.sdpAnswer,
-      function (error) {
-        if (error) return console.error(error);
-      }
-    );
-  }
-
 
   function sendMessage(message) {
     if (rtcSocket.current && rtcSocket.current.readyState === SockJS.OPEN) {
@@ -130,19 +145,28 @@ function onParticipantLeft(request) {
   }
 
 
-  // function callResponse(message) {
-  //   if (message.response != 'accepted') {
-  //     // console.info("Call not accepted by peer. Closing call");
-  //     // stop();
-  //   } else {
-  //     kurentoUtils.processAnswer(message.sdpAnswer, function (error) {
-  //       if (error) return console.error(error);
-  //     });
-  //   }
-  // }
+  // case 1번 
+  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  // SFU서버는 클라이언트가 서버로 자신의 영상 데이터를 보내는 방식입니다.
+  // 하지만 상대방의 데이터는 상대방 수 만큼 그대로 받습니다.
+  // 참여자수: n
+  // Uplink: 1
+  // Downlin: n
 
 
+  // Uplink
+  // 기존 참여자들에게 내 영상을 송신하기 위해 
+  // offer(미디어 스트림을 교환하기 위한 설정 정보)를 서버로 보내는 코드
   function onExistingParticipants(msg) {
+
+    // 나의 정보를 수집하기 위한 객체 생성
+    let participant = new Participant(name);
+
+    // 화상채팅 참가자 명단에 나를 추가
+    participants.current[name] = participant;
+
+    // 미디어 스트림을 저장한 변수
     let constraints = {
       audio: true,
       video: {
@@ -154,40 +178,57 @@ function onParticipantLeft(request) {
       },
     };
 
-
-    let participant = new Participant(name);
-    participants.current[name] = participant;
+    // 나의 비디오 요소를 담고 있는 변수
     let video = participant.getVideoElement();
 
+    // offer를 보내기 위한 설정을 담고있는 변수
     let options = {
       localVideo: video,
       mediaConstraints: constraints,
+      // Offer를 생성한 이후에 ICE Candidate를 수집하기 위한 옵션
       onicecandidate: participant.onIceCandidate.bind(participant),
     };
+    
+    // rtcPeer를 WebRtcPeerSendonly 객체로 설정하는 코드
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
       options,
       function (error) {
         if (error) {
           return console.error(error);
         }
+        // 생성된 WebRtcPeerSendonly객체에 대해 Offer를 생성하고 
+        // 해당 Offer를 콜백 함수로 전달
+        // 이후 콜백 함수에서 상대방에게 Offer를 전송
         this.generateOffer(participant.offerToReceiveVideo.bind(participant));
       }
     );
 
+    // 기존 참여자들의 
     msg.data.forEach(receiveVideo);
   }
 
 
+  // Downlin
+  // 기존 참여자들의 영상을 수신하기 위해 offer를 보내는 코드
   function receiveVideo(sender) {
+
+    // 기존 참여자들의 정보를 수집하기 위한 객체 생성
     let participant = new Participant(sender);
+
+    // 화상채팅 참가자 명단에 기존 참여자를 추가
     participants.current[sender] = participant;
+
+    // 기존 참여자들의 비디오 요소를 담고 있는 변수
     let video = participant.getVideoElement();
 
+    // offer를 보내기 위한 설정을 담고있는 변수
     let options = {
       remoteVideo: video,
+      // Offer를 생성한 이후에 ICE Candidate를 수집하기 위한 옵션
       onicecandidate: participant.onIceCandidate.bind(participant),
     };
 
+    // rtcPeer를 WebRtcPeerRecvonly 객체로 설정하는 코드
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
       function (error) {
@@ -199,15 +240,18 @@ function onParticipantLeft(request) {
     );
   }
 
-
+  // Participant 객체 생성 코드
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-
+  
+  // 참가자의 비디오 정보를 관리하는 객체
   function Participant(name) {
+
+    // 이름
     this.name = name;
     let rtcPeer;
 
-
+    // 비디오와 사용자 이름을 저장한 컨테이너
     let container = document.createElement('div');
     container.id = name;
     container.classList.add('container');
@@ -220,38 +264,39 @@ function onParticipantLeft(request) {
     let video = document.createElement('video');
     video.classList.add('video');
     video.classList.add('roomCam');
+    video.id = 'video-' + name;
+    video.autoplay = true;
+    video.controls = false;
 
     container.appendChild(video);
     container.appendChild(span);
 
-
-
-    // participants 값이 비동기적으로 할당되기 떄문에
-    // 현재 존재하는 video요소의 갯수로 판별
+    // 참여자의 수에 따른 화면 배치
+    // participants 값이 비동기적으로 할당되기 때문에
+    // video요소의 갯수로 판별
     const isOdd = document.querySelectorAll('video').length % 2 === 0;
+
     if (isOdd) {
       document.getElementById('participants1').appendChild(container);
     } else {
       document.getElementById('participants2').appendChild(container);
     }
 
-
-
-    video.id = 'video-' + name;
-    video.autoplay = true;
-    video.controls = false;
-
+    // 컨테이너를 리턴하는 함수
     this.getElement = function () {
       return container;
     };
 
+    // 비디오를 리턴하는 함수
     this.getVideoElement = function () {
       return video;
     };
 
-    this.offerToReceiveVideo = function (error, offerSdp, wp) {
-      if (error) return console.error('sdp offer error');
-      // console.log("Invoking SDP offer callback function");
+    // 상대방에게 offer를 보내는 함수
+    this.offerToReceiveVideo = function (error, offerSdp) {
+      if(error){
+        return console.error('sdp offer error');
+      } 
 
       let msg = {
         id: 'receiveVideoFrom',
@@ -262,8 +307,7 @@ function onParticipantLeft(request) {
       sendMessage(msg);
     };
 
-    this.onIceCandidate = function (candidate, wp) {
-      // console.log("Local candidate" + JSON.stringify(candidate));
+    this.onIceCandidate = function (candidate) {
 
       let message = {
         id: 'onIceCandidate',
@@ -276,10 +320,45 @@ function onParticipantLeft(request) {
     Object.defineProperty(this, 'rtcPeer', { writable: true });
   }
 
+
+  // case 2번 
+  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   
- //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  // 내 영상을 송신하기 위한 코드
+  function onNewParticipant(request) {
+    receiveVideo(request.name);
+  }
 
 
+  // case 3번 
+  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  // 참여자가 화상채팅에서 퇴장했을 때 코드
+  function onParticipantLeft(request) {  
+    const element = document.getElementById(request.name);
+    element.parentNode.removeChild(element);
+    delete participants.current[request.name];
+  }
+
+
+  // case 4번 
+  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  // 상대방이 보낸 answer를 받아 자신의 브라우저에서 처리하여 미디어 스트림을 생성하는 코드
+  // result.sdpAnswer - answer로 받은 상대방의 SDP 정보
+  function receiveVideoResponse(result) {
+    participants.current[result.name].rtcPeer.processAnswer(
+      result.sdpAnswer,
+      function (error) {
+        if (error) return console.error(error);
+      }
+    );
+  }
+
+
+  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+// view 코드
  const [isCameraOn, setCameraOn] = useState(true);
  const [isMicOn, setMicOn] = useState(true);
 
@@ -355,10 +434,11 @@ for (const key in party) {
   
  };
 
-  // let view = false;
-  let view = true;
+ let view = true;
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  
+
   return (
     <WebcamContainer>
       <CamContainer>

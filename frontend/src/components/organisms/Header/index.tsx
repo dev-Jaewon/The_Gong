@@ -18,6 +18,7 @@ export const Header = () => {
 
   const [nickname, setNickname] = useState();
 
+
   useEffect(() => {
     if (data?.nickname) {
       setNickname(data?.nickname);
@@ -43,11 +44,11 @@ export const Header = () => {
 
           <div className='navContainer'>
             <Link className="logo" to="/">
-              HOME
+              홈
             </Link>
 
             <Link className="logo" to="/my">
-              MYSTUDY
+              마이스터디
             </Link>
           </div>
           
@@ -61,14 +62,29 @@ export const Header = () => {
               스터디 만들기
             </button>
           </Link>
+          {nickname
+            ?
+            <>
+              <span className='login name'>
+                {data?.nickname}
+              </span>
+              <span  className='login' onClick={logOut}>
+                로그아웃
+              </span>
+            </>
+            :
+            <>
+              <Link to="/signin">
+                로그인
+              </Link>
+              
+              <Link className='hidden' to="/signup">
+                회원가입
+              </Link>
+            </>
+   
+          }
 
-          <Link to="/signin">
-            로그인
-          </Link>
-          
-          <Link className='hidden' to="/signup">
-            회원가입
-          </Link>
         </div> 
       </div>
     </Container>
@@ -124,17 +140,25 @@ const Container = styled.div`
   }
   
   .logo{
-    color: #404447;
+    color: #202020;
     font-size: 1.2rem;
     font-weight: 700;
   }
 
   .title{  
-    color: #4FAFB1;
+    /* color: #4FAFB1; */
     font-size: 1.3rem;
     font-weight: 900;
   }
 
+  .login{
+    color: #303030;
+    font-size: 0.9rem;
+  }
+
+  /* .name{
+    font-weight: 500;
+  } */
 
   @media screen and (max-width: 64rem) {
     .headerContainer{
@@ -169,6 +193,6 @@ const Container = styled.div`
 `;
 
 const Link = styled(LinkButton)`
-  color: #555555;
+  color: #303030;
   font-size: 0.9rem;
 `;
