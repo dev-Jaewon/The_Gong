@@ -107,41 +107,7 @@ function Carousel({contentList, contentNumber, contentwidth, contentheight, cont
         return prev - 1
       });
     }
-        // // 방향이 오른쪽일 때
-    // if(direction === 'right'){
-      
-    //   // 현재 슬라이드 순번에 + 1
-    //   setCurrentContent(prev => {  
-    //     setTransitionTime(0.5);
-
-    //     // 만약 현재 슬라이드가 클론 슬라이드를 제외한 마지막 슬라이드 라면
-    //     // 0.5초 뒤에 보여주는 콘텐츠의 갯수 - 1로 이동
-    //     // (prev의 업데이트는 늦기 때문에 -1)
-    //     if(prev >= content.length - contentNumber - contentNumber){
-    //       // 첫번째 슬라이드로 한 칸 뒤로 이동
-    //       replaceContent(contentNumber)
-    //     }
-        
-    //     return prev + 1
-    //   });
-
-    // // 방향이 왼쪽일 때
-    // } else if(direction === 'left'){
-
-    //   // 현재 순번의 슬라이드 - 1
-    //   setCurrentContent(prev => {
-    //     setTransitionTime(0.5);
-
-    //     // 만약 현재 슬라이드의 인덱스가 1 이라면
-    //     // 0.5초 뒤에 전체 길이의 - 클론 길이 - 보여주는 콘텐츠의 갯수 + 1로 이동
-    //     // (prev의 업데이트는 늦기 때문에 -1)
-    //     if(prev <= contentNumber){
-    //       replaceContent(content.length - contentNumber - contentNumber)
-    //     }
-
-    //     return prev - 1
-    //   });
-    // }
+  
   }
 
   // 점을 클릭했을 때 실행되는 함수

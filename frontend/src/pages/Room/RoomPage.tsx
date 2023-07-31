@@ -12,6 +12,7 @@ import Webcam from './Webcam';
 
 const RoomPage = () => {
   const [userName, setUserName] = useState('');
+  const [chatOn, setchatON] = useState(true);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const roomId = searchParams.get('roomId');
@@ -61,6 +62,7 @@ const RoomPage = () => {
               name={userName}
               edge={edge}
               mainColor={mainColor}
+              
             />
           </RoomPageLeft>
 
