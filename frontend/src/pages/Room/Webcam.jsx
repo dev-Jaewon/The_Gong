@@ -48,23 +48,6 @@ const Webcam = ({room, name, edge, mainColor}) => {
       
     };
 
-    // const MyComponent = () => {
-    //   useEffect(() => {
-    //     const handleBeforeUnload = () => {
-    //       // 클린업 작업 수행
-    //     };
-    
-    //     window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    //     return () => {
-    //       window.removeEventListener('beforeunload', handleBeforeUnload);
-    //       // 컴포넌트 언마운트 시에 이벤트 핸들러 제거
-    //     };
-    //   }, []);
-    
-    //   // 컴포넌트 렌더링 및 기타 로직
-    // };
-
     // 연결이 끊어졌을 때 실행되는 코드
     return () => {
         // 예상하지 못한 오류를 방지하기위해 명시적으로 연결을 끊어주는 코드
@@ -324,7 +307,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
   // case 2번 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   
-  // 내 영상을 송신하기 위한 코드
+  // 새로운 참가자의 영상을 송신하기 위한 코드
   function onNewParticipant(request) {
     receiveVideo(request.name);
   }
@@ -358,83 +341,82 @@ const Webcam = ({room, name, edge, mainColor}) => {
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-// view 코드
- const [isCameraOn, setCameraOn] = useState(true);
- const [isMicOn, setMicOn] = useState(true);
+  // view 코드
+  const [isCameraOn, setCameraOn] = useState(true);
+  const [isMicOn, setMicOn] = useState(true);
 
- const videoOn = () => {
-   setCameraOn((prev) => !prev);
-   participants.current[name].rtcPeer.videoEnabled =
-     !participants.current[name].rtcPeer.videoEnabled;
- };
+  const videoOn = () => {
+    setCameraOn((prev) => !prev);
+    participants.current[name].rtcPeer.videoEnabled =
+      !participants.current[name].rtcPeer.videoEnabled;
+  };
 
- const audioOn = () => {
-   setMicOn((prev) => !prev);
-   participants.current[name].rtcPeer.audioEnabled =
-     !participants.current[name].rtcPeer.audioEnabled;
- };
+  const audioOn = () => {
+    setMicOn((prev) => !prev);
+    participants.current[name].rtcPeer.audioEnabled =
+      !participants.current[name].rtcPeer.audioEnabled;
+  };
 
- const party = participants.current; // participants.current에서 참여자 정보를 가져옴
+  // participants.current에서 참여자 정보를 가져옴
+  const party = participants.current; 
 
-const toggleDiv = (element, className, enabled) => {
-  let div = element.querySelector('div');
+  const toggleDiv = (element, className, enabled) => {
+    let div = element.querySelector('div');
 
-  if (enabled) {
-    if (!div) {
-      div = document.createElement('div');
-      div.classList.add(className);
-      element.appendChild(div);
+    if (enabled) {
+      if (!div) {
+        div = document.createElement('div');
+        div.classList.add(className);
+        element.appendChild(div);
 
-      // 'TheGong' 텍스트가 추가된 span 요소 생성
-      if (className === 'stopVideo') {
-        const span = document.createElement('span');
-        span.textContent = 'TheGong';
-        span.classList.add('additional-text'); // CSS 스타일을 위한 클래스 추가
-        div.appendChild(span);
+        // 'TheGong' 텍스트가 추가된 span 요소 생성
+        if (className === 'stopVideo') {
+          const span = document.createElement('span');
+          span.textContent = 'TheGong';
+          // CSS 스타일을 위한 클래스 추가
+          span.classList.add('additional-text'); 
+          div.appendChild(span);
+        }
       }
-    }
-  } else {
-    if (div && div.classList.contains(className)) {
-      div.remove();
+    } else {
+      if (div && div.classList.contains(className)) {
+        div.remove();
 
-      // 'TheGong' 텍스트를 포함한 span 요소 제거
-      const span = element.querySelector('.additional-text');
-      if (span) {
-        span.remove();
+        // 'TheGong' 텍스트를 포함한 span 요소 제거
+        const span = element.querySelector('.additional-text');
+        if (span) {
+          span.remove();
+        }
       }
     }
   }
-}
 
-for (const key in party) {
-  if (party.hasOwnProperty(key)) {
-    const participant = party[key];
-    const element = document.querySelector(`.${key}`);
+  for (const key in party) {
+    if (party.hasOwnProperty(key)) {
+      const participant = party[key];
+      const element = document.querySelector(`.${key}`);
 
-    toggleDiv(element, 'stopVideo', !participant.rtcPeer.videoEnabled);
-    toggleDiv(element, 'stopAudio', !participant.rtcPeer.audioEnabled);
+      toggleDiv(element, 'stopVideo', !participant.rtcPeer.videoEnabled);
+      toggleDiv(element, 'stopAudio', !participant.rtcPeer.audioEnabled);
+    }
   }
-}
 
 
- const roomLeave = () => {
+  const roomLeave = () => {
 
-    sendMessage({
-      id: 'leaveRoom',
-    });
+      sendMessage({
+        id: 'leaveRoom',
+      });
 
-    rtcSocket.current.close();
+      rtcSocket.current.close();
 
-    navigate(`/`);
-    // for ( var key in participants) {
-    //   participants.current[key].dispose();
-    // }
+      navigate(`/`);
 
-    console.log('========== 화상채팅 연결 종료 ==========');
-  
- };
+      console.log('========== 화상채팅 연결 종료 ==========');
+    
+  };
 
- let view = true;
+  let view = true;
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   

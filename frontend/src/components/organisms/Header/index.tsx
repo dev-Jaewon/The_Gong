@@ -30,7 +30,8 @@ export const Header = () => {
   const logOut = () => {
     localStorage.removeItem('access_token');
     localStorage.clear();
-    setNickname(undefined);
+    setNickname(null);
+    window.location.reload(); // 페이지 리로드
   };
 
   return (
