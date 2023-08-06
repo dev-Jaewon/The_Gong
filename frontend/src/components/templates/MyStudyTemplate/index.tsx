@@ -42,6 +42,8 @@ export const MyStudyTemplate = ({
       setMemberId(JSON.parse(usermemberId));
     } else {
       console.log('스토리지 값 없음');
+      alert(`로그인이 필요한 서비스 입니다!`)
+      navigate(`/signin`);
     }
   }, []);
 
@@ -77,7 +79,7 @@ export const MyStudyTemplate = ({
 
         <HomeList
           id="newRoom"
-          title="참여한 스터디"
+          title="새로운 스터디"
           description="최근에 만들어진 스터디 목록입니다."
           imgMaxWidth="400px"
           slidesToShow={3}

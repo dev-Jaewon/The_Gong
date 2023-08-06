@@ -45,7 +45,6 @@ const Webcam = ({room, name, edge, mainColor}) => {
       
     };
 
-
     // 연결이 끊어졌을 때 실행되는 코드
     return () => {
         // 예상하지 못한 오류를 방지하기위해 명시적으로 연결을 끊어주는 코드
@@ -310,7 +309,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
   // case 2번 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   
-  // 내 영상을 송신하기 위한 코드
+  // 새로운 참가자의 영상을 송신하기 위한 코드
   function onNewParticipant(request) {
     receiveVideo(request.name);
   }
@@ -362,7 +361,8 @@ const Webcam = ({room, name, edge, mainColor}) => {
       !participants.current[name].rtcPeer.audioEnabled;
   };
 
-  const party = participants.current; // participants.current에서 참여자 정보를 가져옴
+  // participants.current에서 참여자 정보를 가져옴
+  const party = participants.current; 
 
   const toggleDiv = (element, className, enabled) => {
     let div = element.querySelector('div');
@@ -377,7 +377,10 @@ const Webcam = ({room, name, edge, mainColor}) => {
         if (className === 'stopVideo') {
           const span = document.createElement('span');
           span.textContent = 'TheGong';
-          span.classList.add('additional-text'); // CSS 스타일을 위한 클래스 추가
+
+          // CSS 스타일을 위한 클래스 추가
+          span.classList.add('additional-text'); 
+
           div.appendChild(span);
         }
       }
@@ -414,9 +417,6 @@ const Webcam = ({room, name, edge, mainColor}) => {
       rtcSocket.current.close();
 
       navigate(`/`);
-      // for ( var key in participants) {
-      //   participants.current[key].dispose();
-      // }
 
       console.log('========== 화상채팅 연결 종료 ==========');
     

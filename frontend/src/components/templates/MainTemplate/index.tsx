@@ -46,20 +46,21 @@ export const MainTemplate = ({
       <Content>
         <HomeList
           id="newRoom"
-          title="새로운 스터디"
-          description="최근에 만들어진 스터디 목록입니다."
+          title="전체 스터디"
+          description="The Gong 전체 스터디 목록입니다."
           imgMaxWidth="400px"
           slidesToShow={3}
           list={newRoom.data}
         />
-        <HomeList
+        {/* <HomeList
           id="popularRoom"
           title="추천 스터디"
           description="가장 인기있는 스터디 목록입니다."
           imgMaxWidth="400px"
           slidesToShow={3}
           list={popularRoom.data}
-        />
+        /> */}
+
       </Content>
     </Container>
   );

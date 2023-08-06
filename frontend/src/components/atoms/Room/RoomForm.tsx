@@ -263,7 +263,7 @@ const RoomForm = (props: RoomFormProps) => {
           errorMessage={errors.member_max_count}
           isValid={errors.member_max_count ? false : true}
         />
-
+        
         <ImgContainer>
           <InputTitle>
             <span>썸네일</span>
@@ -271,12 +271,13 @@ const RoomForm = (props: RoomFormProps) => {
 
           <div className="imgBox">
             <input type="file" onChange={handleFileChange} />
-            {/* <div onClick={handleFileUpload}>Upload</div>
-            <span className="imsi">(선택 이후 업로드 눌려주세요!!)</span> */}
+            {/* <div onClick={handleFileUpload}>Upload</div> */}
+            {/* <span className="imsi">(선택 이후 업로드 눌려주세요!!)</span> */}
           </div>
 
-        {formError && <span className="error">파일의 용량이 너무 큽니다</span>}
-        </ImgContainer>
+        {/* {formError && <span className="error">파일의 용량이 너무 큽니다</span>} */}
+        </ImgContainer> 
+
 
 
         <RadioContainer>

@@ -5,13 +5,19 @@ import { SiNaver } from 'react-icons/si';
 import { SigninForm } from '../../organisms/SigninForm';
 import { Button } from '../../atoms/Button';
 import { useNavigate } from 'react-router-dom';
+import { Header } from '../../organisms/Header';
+import { BottomHeader } from '../../organisms/BottomHeader';
 
 export const SigninTemplate = () => {
   const navigate = useNavigate();
 
-
+  const handleButtonClick = () => {
+    alert('서비스 준비중입니다. 회원가입을 진행해 주세요.');
+  };
 
   return (
+    <>
+    <Header />
     <Container>
       <InputContainer>
         <img src={logo} alt="logo image" />
@@ -20,21 +26,32 @@ export const SigninTemplate = () => {
           학업, 자격증, 수능 공부까지
           <br /> 자기계발의 모든 것
         </p>
-        <AuthButton href={import.meta.env.VITE_NAVE_AUTH_URL}>
+        <AuthButton onClick={handleButtonClick}>
+          <SiNaver size={20} color="#04c500" />
+          Continue With Naver
+        </AuthButton>
+        <AuthButton onClick={handleButtonClick}>
+          <FcGoogle size={20} />
+          Continue With Google
+        </AuthButton>
+        {/* <AuthButton href={import.meta.env.VITE_NAVE_AUTH_URL}>
           <SiNaver size={20} color="#04c500" />
           Continue With Naver
         </AuthButton>
         <AuthButton href={import.meta.env.VITE_GOOGLE_AUTH_URL}>
           <FcGoogle size={20} />
           Continue With Google
-        </AuthButton>
+        </AuthButton> */}
         <Divider />
         <SigninForm />
         <Button outline onClick={() => navigate('/signup')}>
           회원가입
         </Button>
       </InputContainer>
+      
     </Container>
+    <BottomHeader/>
+    </>
   );
 };
 
