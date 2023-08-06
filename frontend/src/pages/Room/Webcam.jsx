@@ -14,6 +14,7 @@ import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { IoLogOut } from 'react-icons/io5';
 
 
+
 const Webcam = ({room, name, edge, mainColor}) => {
 
   // 참여자들을 관리하는 변수
@@ -32,10 +33,6 @@ const Webcam = ({room, name, edge, mainColor}) => {
     // 웹소켓이 연결 되었을 때 실행되는 코드
     rtcSocket.current.onopen = () => {
       console.log('연결됨');
-
-      // if (rtcSocket.current && rtcSocket.current.readyState === SockJS.OPEN) {
-      //   sendMessage(message);
-      // }
 
       var message = {
         id: 'joinRoom',
@@ -60,6 +57,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
   window.onbeforeunload = function() {
      rtcSocket.current.close();
   };
+
 
 
   // 컴포넌트가 렌더링 될 때 마다 실행되는 코드
@@ -128,6 +126,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
   }
 
 
+
   // case 1번 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -191,6 +190,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
   }
 
 
+
   // Downlin
   // 기존 참여자들의 영상을 수신하기 위해 offer를 보내는 코드
   function receiveVideo(sender) {
@@ -223,10 +223,11 @@ const Webcam = ({room, name, edge, mainColor}) => {
     );
   }
 
+
+
   // Participant 객체 생성 코드
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-  
   // 참가자의 비디오 정보를 관리하는 객체
   function Participant(name) {
 
@@ -304,6 +305,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
   }
 
 
+
   // case 2번 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   
@@ -311,6 +313,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
   function onNewParticipant(request) {
     receiveVideo(request.name);
   }
+
 
 
   // case 3번 
@@ -322,6 +325,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
     element.parentNode.removeChild(element);
     delete participants.current[request.name];
   }
+
 
 
   // case 4번 
@@ -373,8 +377,10 @@ const Webcam = ({room, name, edge, mainColor}) => {
         if (className === 'stopVideo') {
           const span = document.createElement('span');
           span.textContent = 'TheGong';
+
           // CSS 스타일을 위한 클래스 추가
           span.classList.add('additional-text'); 
+
           div.appendChild(span);
         }
       }
@@ -418,8 +424,8 @@ const Webcam = ({room, name, edge, mainColor}) => {
 
   let view = true;
 
+
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  
 
   return (
     <WebcamContainer>
@@ -485,6 +491,10 @@ const Webcam = ({room, name, edge, mainColor}) => {
     </WebcamContainer>
   );
 };
+
+
+
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 const WebcamContainer = styled.div`
   flex: 1;

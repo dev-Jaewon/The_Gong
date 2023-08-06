@@ -5,12 +5,15 @@
 
 <h3 align="center"> <a href="https://thegong.site/" target='_blank'>➡️ The Gong 바로가기 ⬅️</a> </h3>
 
+<br>
 
+**👤 테스트 계정: (ID) test@gmail.com / (PW) abc12345** 
 
 **📜 서비스메뉴얼: <a href="https://github.com/codestates-seb/seb43_main_025/files/11567075/SEB43_Main25_._.pdf" target='_blank'>pdf</a>** 
 
 **📹 기술발표영상: <a href="https://www.youtube.com/watch?v=QVOPZTOya_4" target='_blank'>youtube</a>** 
 
+<br>
 
 ## ✨ Introduction
 - **프로젝트 :** The Gong
@@ -19,38 +22,7 @@
 
 ![image](https://user-images.githubusercontent.com/115343734/240970908-ce5c6c69-8899-4ff8-84f7-ea1d027e2330.png)
 
-## 🧑‍💻 서비스 화면
-### 유저 관리
-
-|  회원가입  |  로그인/로그아웃  |
-|-----------|-----------|
-|![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/80147dbd-a568-4379-8d4f-8803c66a7d70)|![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/ba5128c2-13d3-4339-afb4-fe051c25383e)|
-* 회원가입시 유효성 검사
-* 일반/OAuth 회원가입
-
-
-### 메인 페이지
-
-|  내가 만든 스터디 조회  |  새로운 스터디 조회  |  인기 스터디 조회  | 
-|-----------|-----------|-----------|
-| ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/9d6d7b69-588a-4180-9323-8684a97adfd4) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/f2fa3405-5052-4805-9135-45421a1fe537) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/ee229197-421a-45ac-8d7c-afe1920d06d4) |
-
-|  스터디 만들기  |  검색창  |
-|-----------|-----------|
-| ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/397bfa19-25ec-4d6b-a202-0cd6b2517003) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/f2fa3405-5052-4805-9135-45421a1fe537) |
-
-
-* 
-
-
-
-### 스터디룸
-
-|  화상회의  |  채팅  |  참여자 목록  |
-|-----------|-----------|-----------|
-| ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/386add6e-2bcf-4cee-8e27-ff796eabd0e7) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/cedfd63e-48af-433f-9502-61acbc050fa3) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/386add6e-2bcf-4cee-8e27-ff796eabd0e7) |
-* 
-
+<br>
 
 ## 👀 Team "맑은 눈의 광인들"
 <li><a href="https://pandaryu.notion.site/Main-Project-5c882381d3b347e2a224a21be38400aa" target='_blank'>팀 노션 페이지</a></li>
@@ -64,7 +36,7 @@
 
 
 
-
+<br>
 
 
 ## 🔧 Tech Stack
@@ -76,7 +48,6 @@
 
 </p>
 
- <br>
 
 ### Collaboration Tools
 
@@ -84,8 +55,8 @@
   <img src="https://github.com/codestates-seb/seb43_main_025/assets/76944115/c4aed8ad-0b2c-4a24-a37e-75c3e6958637" width="500" >
 </p>
 
-<br>
 
+<br>
 
 ## 🏡 Architecture
 
@@ -95,7 +66,6 @@
  
 </p>
 
- <br>
 
 
 ## Docs
@@ -106,6 +76,43 @@
    <li><a href="https://dbdiagram.io/d/644f6ba7dca9fb07c44c7995" target='_blank'>ERD</a></li>
 
  </ul>
+ 
+<br>
+
+## 🧑‍💻 서비스 화면
+### 유저 관리
+
+|  회원가입  |  로그인/로그아웃  |
+|-----------|-----------|
+|![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/80147dbd-a568-4379-8d4f-8803c66a7d70)|![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/ba5128c2-13d3-4339-afb4-fe051c25383e)|
+* 회원가입시 유효성 검사
+* 일반/OAuth 회원가입
+
+
+### 메인 페이지
+
+|  내가 만든 스터디 / 새로운 스터디 / 인기 스터디 조회  |  검색창  |
+|-------------|-----------|
+| ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/296188e9-b5c0-4972-aec7-e6c0f1bb8018) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/239b64c0-0d65-432b-b06c-77cdb507986c) |
+
+
+
+
+
+### 스터디룸
+
+|  스터드 만들기  | 스터디룸(채팅) | 스터디룸(참여자 목록) |  
+|-----------|-----------|-------------|
+| ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/397bfa19-25ec-4d6b-a202-0cd6b2517003) | ![image](https://github.com/codestates-seb/seb43_main_025/assets/110800593/cedfd63e-48af-433f-9502-61acbc050fa3) |![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/aa54657d-2605-4903-ae4a-ce1559472770) |
+
+
+| 스터디룸(화상회의) |
+|-----------|
+| ![image](https://github.com/codestates-seb/seb43_main_025/assets/76944115/b56ebdd2-24ef-4c5d-a91e-bff794d6cf0c) | 
+
+
+
+
 
 </br>
 </br>
