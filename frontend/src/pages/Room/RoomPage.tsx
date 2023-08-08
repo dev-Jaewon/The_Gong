@@ -132,8 +132,12 @@ const RoomPageContainer = styled.div`
 
   @media screen and (max-width: 50rem) {
     .icon {
-      font-size: 0.8rem;
+      font-size: 0.5rem;
     }
+  }
+
+  @media screen and (max-width: 36rem) {
+    padding: 1rem;
   }
 
 `;
@@ -151,17 +155,14 @@ const RoomPageLeft = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-
-  @media screen and (max-width: 64rem) {
-
-  }
-
-  @media screen and (max-width: 36rem) {
-
-  }
 `;
+
 const RoomPageTitle = styled.div`
   height: 5%;
+
+  @media screen and (max-width: 36rem) {
+    display: none;
+  }
 `;
 
 export default RoomPage;

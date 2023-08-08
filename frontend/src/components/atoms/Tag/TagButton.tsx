@@ -25,6 +25,10 @@ const TagButtonContainer = styled.span<TagButtonProps>`
   color: rgb(80, 80, 80);
 
   cursor: pointer;
+
+  @media screen and (max-width: 36rem) {
+    font-size: 0.7rem;
+  }
 `;
 
 function TagButton({children, fontSize, bg, content, func = () => { console.log('전달 된 태그 기능 없음') } }: TagButtonProps) {
