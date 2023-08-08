@@ -161,11 +161,6 @@ const CarouselContainer = styled.div<ContainerProps>`
   width: 100%;
   margin: 0 auto;
 
-
-
-  @media screen and (max-width: 64rem) {
-
-  }
 `;
 
 const CarouselController = styled.div<MainProps>`

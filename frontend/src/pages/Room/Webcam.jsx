@@ -426,8 +426,28 @@ const Webcam = ({room, name, edge, mainColor}) => {
     alert('준비 중인 서비스 입니다.')
   }
 
+  const [num, setNum] = useState(1); // 초기값 설정
+
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth / parseFloat(getComputedStyle(document.documentElement).fontSize);
+      if (screenWidth <= 36) {
+        setNum(2);
+      } else {
+        setNum(4);
+      }
+    };
+
+    handleResize(); // 초기 렌더링시 한번 실행
+    window.addEventListener('resize', handleResize); // 리사이즈 이벤트 핸들링
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // 컴포넌트 언마운트시 이벤트 리스너 제거
+    };
+  }, []);
   let view = true;
 
+  console.log(num)
 
   //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -439,7 +459,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
       </CamContainer>
 
       <RoomController>
-        <RoomParts
+        {num === 4 && <RoomParts
           radius={edge}
           bottomLeft={edge}
           width={4}
@@ -447,6 +467,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
         >
           The
         </RoomParts>
+        } 
 
         <RoomParts width={20} color={mainColor}>
           {isCameraOn ? (
@@ -492,7 +513,7 @@ const Webcam = ({room, name, edge, mainColor}) => {
           ></IoLogOut>
         </RoomParts>
 
-        <div className="dummy"></div>
+        {num === 4 && <div className="dummy"></div>}
       </RoomController> 
     </WebcamContainer>
   );
@@ -507,6 +528,10 @@ const WebcamContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1.5rem 0 0;
+
+  @media screen and (max-width: 36rem) {
+    padding: 0rem 0rem 0 0;
+  }
 `;
 
 const CamContainer = styled.div`
@@ -537,6 +562,7 @@ const CamContainer = styled.div`
     border-radius: 2.5rem;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
     overflow: hidden;
+
   }
 
   .video {
@@ -552,17 +578,18 @@ const CamContainer = styled.div`
     padding: 0.5rem;
     background-color: white;
     border-radius: 0.5rem;
+
   }
 
   .additional-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate( -50%, -50%);
-  display: inline-block; 
-  color: #4FAFB1; 
-  font-size: 2rem; 
-}
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate( -50%, -50%);
+    display: inline-block; 
+    color: #4FAFB1; 
+    font-size: 2rem; 
+  }
 
   .stopVideo{
     position: absolute;
@@ -580,12 +607,30 @@ const CamContainer = styled.div`
     border: 0.3rem solid tomato;
     border-radius: 2.5rem;
   }
+  
+  @media screen and (max-width: 36rem) {
+    gap: 0.5rem;
+
+    #participants1,
+    #participants2 {
+      gap: 0.5rem;
+    }
+  
+    .roomCam {
+      border-radius: 1rem;
+    }
+
+    .name {
+      padding: 0.3rem;
+      font-size: 0.7rem;
+    }
+  
+  }
 `;
 
 const RoomController = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 0.5rem;
   height: 4rem;
   margin-top: 2rem;
 
@@ -599,6 +644,10 @@ const RoomController = styled.div`
 
   .logOut {
     font-size: 1.7rem;
+  }
+
+  @media screen and (max-width: 36rem) {
+    justify-content: center;
   }
 `;
 

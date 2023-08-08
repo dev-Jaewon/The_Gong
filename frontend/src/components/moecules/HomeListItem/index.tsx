@@ -89,11 +89,10 @@ export const HomeListItem = (props: RoomType) => {
   }
 
   const roomDelete = () =>{ 
-    const num = 1;
     api
     .delete(
       // `${import.meta.env.VITE_BASE_URL}rooms/${memberId}/add`,
-      `https://www.apithegong.com/rooms/${props.room_id}?member=${num}`,
+      `https://www.apithegong.com/rooms/${props.room_id}?member=${memberId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

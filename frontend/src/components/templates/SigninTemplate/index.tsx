@@ -60,6 +60,12 @@ const Container = styled.div`
   width: 100%;
   height: 100vh;
   justify-content: center;
+  padding: 1.5rem;;
+
+  @media screen and (max-width: 36rem) {
+    margin: 4rem 0 8rem 0;
+    padding: 1.5rem;;
+  }
 
   h1 {
     font-size: 25px;
@@ -136,4 +142,5 @@ const AuthButton = styled.a`
   font-weight: 500;
   color: #8c98ba;
   user-select: none;
+  padding: 1rem;
 `;

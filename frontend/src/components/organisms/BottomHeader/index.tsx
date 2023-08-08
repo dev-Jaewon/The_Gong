@@ -25,9 +25,9 @@ export const BottomHeader = () => {
             스터디 만들기
           </Link>
           
-          <Link className='logo' to="/signup">
+          <Link className='logo' to="/signin">
             <FiUserPlus className='icon'/>
-            회원가입
+            로그인
           </Link>
       </div>
     </Container>
@@ -50,7 +50,7 @@ const Container = styled.div`
     justify-content: space-between;
     max-width: 36rem;
     width: 100%;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 2rem;
   }
 
   .logo{

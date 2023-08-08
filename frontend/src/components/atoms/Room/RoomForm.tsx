@@ -62,6 +62,11 @@ const ContainerForm = styled.form`
     font-size: 0.8rem;
     color: #FF0100;
   }
+
+
+  @media screen and (max-width: 36rem) {
+    min-width: 350px;
+  }
 `
 const TagsContainer = styled.div`
   display: flex;
@@ -275,7 +280,7 @@ const RoomForm = (props: RoomFormProps) => {
             {/* <span className="imsi">(선택 이후 업로드 눌려주세요!!)</span> */}
           </div>
 
-        {/* {formError && <span className="error">파일의 용량이 너무 큽니다</span>} */}
+        {formError && <span className="error">파일의 용량이 너무 큽니다</span>}
         </ImgContainer> 
 
 

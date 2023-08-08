@@ -92,13 +92,13 @@ const CreateRoomPage = () => {
             })
             .catch((error) => {
               // 요청 실패 시 처리
-              console.error(error);
+              console.error('게시물 애러');
             });
         }
       })
       .catch((error) => {
         // 요청 실패 시 처리
-        console.log('애러');
+        console.log('파일 애러');
         console.log(error);
         setError(true);
       });
@@ -110,7 +110,7 @@ const CreateRoomPage = () => {
   };
   const isLoading = false;
 
-
+  // 수동
   const handleFileUpload = (e: any) => {
     e.preventDefault();
     const formData = new FormData();

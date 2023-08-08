@@ -133,6 +133,7 @@ const ContainerForm = styled.form`
   justify-content: center;
   min-width: 400px;
   font-family: Noto Sans KR;
+  padding: 0.5rem;
 
   button {
     margin-top: 20px;
@@ -141,5 +142,9 @@ const ContainerForm = styled.form`
   .title{
     font-size: 13px;
     color: red;
+  }
+
+  @media screen and (max-width: 36rem) {
+    min-width: 350px;
   }
 `;

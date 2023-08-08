@@ -45,6 +45,15 @@ const TagFormContainer = styled.div<TagFormProps>`
     display: flex;
     justify-content: end;
   }
+
+  @media screen and (max-width: 36rem) {
+    width: 350px;
+
+    h2 {
+      font-size: 1rem;
+    }
+  }
+
 `;
 
 function TagForm({ isPopupOpen, ChangeisPopupOpen, setTags }: TagFormProps) {
