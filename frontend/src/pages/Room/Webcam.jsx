@@ -422,6 +422,10 @@ const Webcam = ({room, name, edge, mainColor}) => {
     
   };
 
+  const clickAlert = () => {
+    alert('준비 중인 서비스 입니다.')
+  }
+
   let view = true;
 
 
@@ -477,7 +481,9 @@ const Webcam = ({room, name, edge, mainColor}) => {
             ></BsFillMicMuteFill>
           )}
 
-          <MdScreenShare className="ControllerIcon"></MdScreenShare>
+          <MdScreenShare className="ControllerIcon"
+            onClick={()=>{clickAlert()}}
+          ></MdScreenShare>
           <IoLogOut
             className="ControllerIcon off logOut"
             onClick={() => {

@@ -233,12 +233,12 @@ const Chat: React.FC<ChatProps> = ({ roomId, userName, edge, mainColer }) => {
         </ChatContainer>
       </RoomParts>
 
-      <RoomParts bottomRight={edge} height={4} bgColor={mainColer}>
+      {/* <RoomParts bottomRight={edge} height={4} bgColor={mainColer}>
         <FaUserCircle onClick={()=>console.log(chatParticipants)}></FaUserCircle>
         <RiMessage2Fill onClick={()=> setChatParticipants([])}></RiMessage2Fill>
         <HiPencil></HiPencil>
         <AiFillSetting></AiFillSetting>
-      </RoomParts>
+      </RoomParts> */}
     </Verticality>
   );
 };

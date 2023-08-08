@@ -59,7 +59,7 @@ export const Header = () => {
 
         <div className='leftHeader userContainer'>
           <Link className='hidden' to="/createRoom">
-            <button>
+            <button className='makeStudy'>
               스터디 만들기
             </button>
           </Link>
@@ -155,6 +155,10 @@ const Container = styled.div`
   .login{
     color: #303030;
     font-size: 0.9rem;
+  }
+
+  .makeStudy{
+    font-weight: bold;
   }
 
   /* .name{
