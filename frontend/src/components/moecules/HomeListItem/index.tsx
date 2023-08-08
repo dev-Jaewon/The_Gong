@@ -77,7 +77,7 @@ export const HomeListItem = (props: RoomType) => {
       alert('입장 인원을 초과했습니다.')
     } else {
       startTransition(() => {
-        navigate(`/room?roomId=${props.title}`);
+        navigate(`/room?roomId=${props.title}&roomInfo=${props.info}`);
       });
     }
 

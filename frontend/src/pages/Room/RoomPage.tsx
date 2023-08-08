@@ -16,6 +16,8 @@ const RoomPage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const roomId = searchParams.get('roomId');
+  const roomInfo = searchParams.get('roomInfo');
+  console.log(roomInfo)
 
   const edge = 1.5;
   const mainColor = '#4FAFB1';
@@ -31,9 +33,10 @@ const RoomPage = () => {
     }
   }, []);
 
+
   return (
     <RoomPageContainer>
-      {userName && roomId && (
+      {userName && roomId && roomInfo &&(
         <>
           <RoomPageLeft>
             <RoomPageTitle>
@@ -44,14 +47,16 @@ const RoomPage = () => {
                   </div>
                 </RoomParts>
                 <RoomParts flex={4} color={'rgb(75, 75, 75)'}>
-                  <span className="icon">
-                    공지사항 : 모두 너무너무 수고하셨습니다:)
-                  </span>
+                  <div className='iconContainer'>
+                    <span className="icon left">
+                      {roomInfo}
+                    </span>
+                  </div>
                 </RoomParts>
-                <RoomParts flex={0.3} color={mainColor} gap={1}>
+                {/* <RoomParts flex={0.3} color={mainColor} gap={1}>
                   <MdViewModule></MdViewModule>
                   <MdViewQuilt></MdViewQuilt>
-                </RoomParts>
+                </RoomParts> */}
               </Horizontal>
             </RoomPageTitle>
 
@@ -108,6 +113,14 @@ const RoomPageContainer = styled.div`
     line-height: 1.5rem;
   }
 
+  .iconContainer{
+    width: 100%;
+  }
+
+  .left{
+    margin: 0 2rem;
+  }
+
   .spanDiv {
     width: 70%;
     display: flex;
@@ -116,17 +129,36 @@ const RoomPageContainer = styled.div`
   }
 
   font-family: 'BMDOHYEON';
+
+  @media screen and (max-width: 50rem) {
+    .icon {
+      font-size: 0.8rem;
+    }
+  }
+
 `;
 
 const RoomPageRight = styled.div`
   display: flex;
   width: 20rem;
+
+  @media screen and (max-width: 50rem) {
+    display: none;
+  }
 `;
 const RoomPageLeft = styled.div`
   flex: 4;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  @media screen and (max-width: 64rem) {
+
+  }
+
+  @media screen and (max-width: 36rem) {
+
+  }
 `;
 const RoomPageTitle = styled.div`
   height: 5%;
