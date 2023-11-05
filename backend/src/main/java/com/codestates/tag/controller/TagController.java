@@ -1,5 +1,6 @@
 package com.codestates.tag.controller;
 
+import com.codestates.common.base.BaseDto;
 import com.codestates.common.response.MultiResponseDto;
 import com.codestates.room.entity.Room;
 import com.codestates.tag.dto.TagCustomResponseDto;
@@ -35,7 +36,7 @@ public class TagController {
 
         Page<Room> roomTagPage = tagService.findTagSortedByFavorite(page - 1, size, tagId, sort);
         List<Room> roomTagList = roomTagPage.getContent();
-        List<TagDto.GetRoomTagResponseDto> tagResponseDtoList = mapper.tagToRoomTagResponseDto(roomTagList);
+        List<BaseDto.FillRoomResponseDtos> tagResponseDtoList = mapper.tagToRoomTagResponseDto(roomTagList);
 
         Tag tag = tagService.findVerifiedTag(tagId);
         String name = tag.getName();
