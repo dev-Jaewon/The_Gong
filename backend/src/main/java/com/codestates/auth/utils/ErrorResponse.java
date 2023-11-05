@@ -12,9 +12,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
-public class ErrorResponse {
+public class ErrorResponse extends Throwable {
     private int status;
     private String message;
+    private HttpStatus httpStatus;
     private List<FieldError> fieldErrorList;
     private List<ConstraintViolationError> violationErrors;
 
@@ -26,6 +27,12 @@ public class ErrorResponse {
     public ErrorResponse(List<FieldError> fieldErrorList, List<ConstraintViolationError> violationErrors) {
         this.fieldErrorList = fieldErrorList;
         this.violationErrors = violationErrors;
+    }
+
+    //AOP 로직에서 사용하려고 만들 생성자.
+    public ErrorResponse(String s, HttpStatus httpStatus) {
+        this.message = s;
+        this.httpStatus = httpStatus;
     }
 
 
