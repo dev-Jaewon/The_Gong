@@ -3,7 +3,6 @@ package com.codestates.member.entity;
 import com.codestates.common.entity.BaseEntity;
 import com.codestates.common.history.RoomHistory;
 import com.codestates.favorite.Favorite;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -86,7 +85,7 @@ public class Member extends BaseEntity {
 
     //리팩토링 1차
     @Builder
-    public Member(Long memberId, String email, String password, String nickname, String imageUrl, int favoriteCount, int createdCount, int recordeCount, Boolean isAdmin, boolean isVoted, LocalDateTime deletionDate, MemberStatus status, List<MemberRoom> memberRoomList, List<MemberTag> memberTagList, List<RoomHistory> roomHistoryList, String provider, String providerId, List<String> roles, List<Favorite> favoriteList) {
+    public Member(Long memberId, String email, String password, String nickname, String imageUrl, int favoriteCount, int createdCount, int recordeCount, Boolean isAdmin, boolean isVoted, LocalDateTime deletionDate, List<MemberRoom> memberRoomList, List<MemberTag> memberTagList, List<RoomHistory> roomHistoryList, String provider, String providerId, List<String> roles, List<Favorite> favoriteList) {
         this.memberId = memberId;
         this.email = email;
         this.password = password;

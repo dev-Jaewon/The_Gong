@@ -61,6 +61,13 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
 
+//가독성을 위한 구성
+//                .oauth2Login()
+//                .userInfoEndpoint()
+//                .userService(oAuth2UserService)
+//                .and()
+//                .successHandler(oAuth2LoginSuccessHandler)
+//                .failureHandler(oAuth2LoginFailureHandler);
                 .oauth2Login()
                 .successHandler(oAuth2LoginSuccessHandler)
                 .failureHandler(oAuth2LoginFailureHandler)

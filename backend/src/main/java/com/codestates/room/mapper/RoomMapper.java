@@ -1,8 +1,7 @@
 package com.codestates.room.mapper;
 
-import com.codestates.member.entity.MemberRoom;
+import com.codestates.member.entity.Member;
 import com.codestates.room.dto.RoomDto;
-import com.codestates.room.dto.RoomTagDto;
 import com.codestates.tag.dto.TagDto;
 import com.codestates.room.entity.Room;
 import com.codestates.room.entity.RoomTag;
@@ -85,7 +84,7 @@ public interface RoomMapper {
         room.setInfo(requestBody.getInfo());
 
         room.setPassword(requestBody.getPassword());
-        System.out.println(requestBody.getPassword()); // 비밀번호 가져오기
+        //System.out.println(requestBody.getPassword()); // 비밀번호 가져오기
 
         room.setPrivate(requestBody.isPrivate());
         room.setMemberMaxCount(requestBody.getMemberMaxCount());
@@ -93,32 +92,27 @@ public interface RoomMapper {
         return room;
     }
 
-    default List<RoomTag> patchRoomTags(List<RoomTagDto> tags) {
-        if (tags == null) {
-            return new ArrayList<>();
-        }
+    default List<RoomTag> patchRoomTags(List<TagDto.TagResponseDto> tags) {
+        if (tags == null) return new ArrayList<>();
         List<RoomTag> list = new ArrayList<>(tags.size());
-        for (RoomTagDto roomTagDto : tags) {
+        for (TagDto.TagResponseDto roomTagDto : tags)
             list.add(roomTagDtoToRoomTag(roomTagDto));
-        }
         return list;
     }
 
-    default RoomTag roomTagDtoToRoomTag(RoomTagDto tag) {
+    default RoomTag roomTagDtoToRoomTag(TagDto.TagResponseDto tag) {
         if (tag == null) return null;
-
         RoomTag roomTag = new RoomTag();
         Tag tag1 = new Tag();
         tag1.setTagId(tag.getTagId());
         tag1.setName(tag.getName());
-
         roomTag.setTag(tag1);
         return roomTag;
     }
 
 
     //Todo : 방수정 응답
-    default RoomDto.PatchResponseDto roomToPatchResponseDto(Room room) {
+    default RoomDto.PatchResponseDto roomToPatchResponseDto(Room room, Member member) {
         if (room == null) return null;
         RoomDto.PatchResponseDto patchResponseDto = new RoomDto.PatchResponseDto();
 
@@ -131,31 +125,17 @@ public interface RoomMapper {
         patchResponseDto.setMemberCurrentCount(room.getMemberCurrentCount());
         patchResponseDto.setPrivate(room.isPrivate());
         patchResponseDto.setPassword(room.getPassword());
-        patchResponseDto.setTags(getRoomTags(room.getRoomTagList()));
-        patchResponseDto.setPassword(room.getPassword());
         patchResponseDto.setFavoriteCount(room.getFavoriteCount());
-        patchResponseDto.setFavoriteStatus(getRoomFavorite(room, room.getMemberRoomList()));
+        patchResponseDto.setFavorite((room.getFavoriteRoomList().stream().anyMatch(favorite -> favorite.getMember().equals(member) && favorite.isFavorite())));
         patchResponseDto.setTags(getRoomTags(room.getRoomTagList()));
 
         return patchResponseDto;
     }
 
 
-    //Todo : 찜하기 & 찜취소
-    default Room PostFavoriteDtoToRoom(RoomDto.PostFavorite requestBody) {
-        if (requestBody == null) return null;
-
-        Room room = new Room();
-        room.setFavoriteCount(room.getFavoriteCount());
-        room.setRoomId(requestBody.getRoomId());
-        return room;
-    }
-
-
     //Todo : 방장권한 위임 & 응답
     default Room patchAdminDtoToRoom(RoomDto.PatchAdmin requestBody) {
         if (requestBody == null) return null;
-
         Room room = new Room();
         room.setAdminMemberId(requestBody.getNewAdminId());
         room.setRoomId(requestBody.getRoomId());
@@ -172,25 +152,23 @@ public interface RoomMapper {
         patchAdminResponseDto.setAdminMemberId(room.getAdminMemberId());
         patchAdminResponseDto.setAdminNickname(room.getAdminNickname());
         patchAdminResponseDto.setImageUrl(room.getImageUrl());
-
         return patchAdminResponseDto;
     }
 
 
     //Todo : 최신순 방목록조회 응답
-    default List<RoomDto.GetNewRoomResponseDtos> roomToNewRoomResponseDtos(List<Room> roomList) {
+    default List<RoomDto.GetRoomResponseDtos> roomToNewRoomResponseDtos(List<Room> roomList) {
         if (roomList == null) return null;
-        List<RoomDto.GetNewRoomResponseDtos> list = new ArrayList<RoomDto.GetNewRoomResponseDtos>(roomList.size());
+        List<RoomDto.GetRoomResponseDtos> list = new ArrayList<RoomDto.GetRoomResponseDtos>(roomList.size());
 
-        for (Room room : roomList) {
+        for (Room room : roomList)
             list.add(roomToGetNewRoomResponseDtos(room));
-        }
         return list;
     }
 
-    default RoomDto.GetNewRoomResponseDtos roomToGetNewRoomResponseDtos(Room room) {
+    default RoomDto.GetRoomResponseDtos roomToGetNewRoomResponseDtos(Room room) {
         if (room == null) return null;
-        RoomDto.GetNewRoomResponseDtos getNewRoomResponseDtos = new RoomDto.GetNewRoomResponseDtos();
+        RoomDto.GetRoomResponseDtos getNewRoomResponseDtos = new RoomDto.GetRoomResponseDtos();
 
         if (room.getRoomId() != null) getNewRoomResponseDtos.setRoomId(room.getRoomId());
         getNewRoomResponseDtos.setTitle(room.getTitle());
@@ -201,7 +179,7 @@ public interface RoomMapper {
         getNewRoomResponseDtos.setPrivate(room.isPrivate());
         getNewRoomResponseDtos.setPassword(room.getPassword());
         getNewRoomResponseDtos.setFavoriteCount(room.getFavoriteCount());
-        getNewRoomResponseDtos.setFavoriteStatus(getRoomFavorite(room, room.getMemberRoomList()));
+        getNewRoomResponseDtos.setFavorite(room.getFavoriteRoomList().isEmpty()); // 최근생성한 룸....... 처음 오는 사람은 조항요가 안보이는데 회원은 보여야 한다.....
         getNewRoomResponseDtos.setTags(getRoomTags(room.getRoomTagList()));
 
         return getNewRoomResponseDtos;
@@ -213,41 +191,20 @@ public interface RoomMapper {
                 .collect(Collectors.toList());
     }
 
-    default MemberRoom.Favorite getRoomFavorite(Room room, List<MemberRoom> memberRoomList) {
-        if (memberRoomList == null) return null;
-
-        MemberRoom memberRoom = memberRoomList.stream()
-                .filter(r -> r.getRoom().getRoomId().equals(room.getRoomId())).findFirst().get();
-
-        return memberRoom.getFavorite();
-    }
-
-    default List<RoomDto.RoomAdminDto> getRoomAdmin(Room room) {
-        if (room == null) return null;
-        List<RoomDto.RoomAdminDto> responseDtoList = new ArrayList<>();
-        RoomDto.RoomAdminDto roomAdminDto = new RoomDto.RoomAdminDto();
-        roomAdminDto.setAdminMemberId(room.getAdminMemberId());
-        roomAdminDto.setAdminNickname(room.getAdminNickname());
-        responseDtoList.add(roomAdminDto);
-
-        return responseDtoList;
-    }
-
 
     //Todo : 추천스터디방 조회 (비회원)
-    default List<RoomDto.GetRecommendRoomResponseDtos> memberToNonMemberRecommendResponseDtos(List<Room> recommendList) {
+    default List<RoomDto.GetRoomResponseDtos> memberToNonMemberRecommendResponseDtos(List<Room> recommendList) {
         if (recommendList == null) return null;
-        List<RoomDto.GetRecommendRoomResponseDtos> list = new ArrayList<RoomDto.GetRecommendRoomResponseDtos>(recommendList.size());
+        List<RoomDto.GetRoomResponseDtos> list = new ArrayList<RoomDto.GetRoomResponseDtos>(recommendList.size());
 
-        for (Room room : recommendList) {
+        for (Room room : recommendList)
             list.add(roomToGetNonMemberResponseDtos(room));
-        }
         return list;
     }
 
-    default RoomDto.GetRecommendRoomResponseDtos roomToGetNonMemberResponseDtos(Room room) {
+    default RoomDto.GetRoomResponseDtos roomToGetNonMemberResponseDtos(Room room) {
         if (room == null) return null;
-        RoomDto.GetRecommendRoomResponseDtos recommendRoomResponseDtos = new RoomDto.GetRecommendRoomResponseDtos();
+        RoomDto.GetRoomResponseDtos recommendRoomResponseDtos = new RoomDto.GetRoomResponseDtos();
 
         if (room.getRoomId() != null) recommendRoomResponseDtos.setRoomId(room.getRoomId());
         recommendRoomResponseDtos.setTitle(room.getTitle());
@@ -259,27 +216,24 @@ public interface RoomMapper {
         recommendRoomResponseDtos.setPassword(room.getPassword());
         recommendRoomResponseDtos.setFavoriteCount(room.getFavoriteCount());
         recommendRoomResponseDtos.setTags(getRoomTags(room.getRoomTagList()));
-
         return recommendRoomResponseDtos;
     }
 
 
     //Todo : 추천스터디방 조회 (회원)
-    default List<RoomDto.GetRecommendRoomResponseDtos> memberToRecommendResponseDtos(List<Room> recommendList) {
+    default List<RoomDto.GetRoomResponseDtos> memberToRecommendResponseDtos(List<Room> recommendList, Member member) {
         if (recommendList == null) return null;
-        List<RoomDto.GetRecommendRoomResponseDtos> list = new ArrayList<RoomDto.GetRecommendRoomResponseDtos>(recommendList.size());
+        List<RoomDto.GetRoomResponseDtos> list = new ArrayList<RoomDto.GetRoomResponseDtos>(recommendList.size());
 
-        for (Room room : recommendList) {
-            list.add(roomToGetRecommendResponseDtos(room));
-        }
+        for (Room room : recommendList)
+            list.add(roomToGetRecommendResponseDtos(room, member));
         return list;
     }
 
 
-    default RoomDto.GetRecommendRoomResponseDtos roomToGetRecommendResponseDtos(Room room) {
+    default RoomDto.GetRoomResponseDtos roomToGetRecommendResponseDtos(Room room, Member member) {
         if (room == null) return null;
-        RoomDto.GetRecommendRoomResponseDtos recommendRoomResponseDtos = new RoomDto.GetRecommendRoomResponseDtos();
-
+        RoomDto.GetRoomResponseDtos recommendRoomResponseDtos = new RoomDto.GetRoomResponseDtos();
         if (room.getRoomId() != null) recommendRoomResponseDtos.setRoomId(room.getRoomId());
         recommendRoomResponseDtos.setTitle(room.getTitle());
         recommendRoomResponseDtos.setInfo(room.getInfo());
@@ -289,9 +243,8 @@ public interface RoomMapper {
         recommendRoomResponseDtos.setPrivate(room.isPrivate());
         recommendRoomResponseDtos.setPassword(room.getPassword());
         recommendRoomResponseDtos.setFavoriteCount(room.getFavoriteCount());
-        recommendRoomResponseDtos.setFavoriteStatus(getRoomFavorite(room, room.getMemberRoomList()));
+        recommendRoomResponseDtos.setFavorite(room.getFavoriteRoomList().stream().anyMatch(favorite -> favorite.getMember().equals(member) && favorite.isFavorite()));
         recommendRoomResponseDtos.setTags(getRoomTags(room.getRoomTagList()));
-
         return recommendRoomResponseDtos;
     }
 }

@@ -1,6 +1,7 @@
 package com.codestates.common.search;
 
 import com.codestates.common.sort.SortMethod;
+import com.codestates.favorite.Favorite;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.room.dto.RoomDto;
 import com.codestates.room.entity.Room;
@@ -85,11 +86,12 @@ public class SearchService {
                 .MemberMaxCount(room.getMemberMaxCount())
                 .MemberCurrentCount(room.getMemberCurrentCount())
                 .isPrivate(room.isPrivate())
-                .favoriteStatus(memberRoom.getFavorite())
+                .isFavorite(room.getFavoriteRoomList().stream().anyMatch(Favorite::isFavorite))//불러와 진다!
                 .favoriteCount(room.getFavoriteCount())
                 .createdAt(LocalDateTime.now())
                 .tags(tagResponseDtos).build();
     }
+
 
 
 

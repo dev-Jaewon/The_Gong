@@ -2,6 +2,7 @@ package com.codestates.member.dto;
 
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.entity.MemberTag;
+import com.codestates.tag.dto.TagDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -53,8 +54,9 @@ public class MemberDto {
     }
 
 
-    @Getter
-    @Setter
+    @Getter @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class PatchResponseDto {
         private long memberId;
@@ -62,7 +64,7 @@ public class MemberDto {
         private String email;
         @JsonProperty("image_url")
         private String imageUrl;
-        private List<MemberTagDtos> tags;
+        private List<TagDto.TagResponseDto> tags;
     }
 
 

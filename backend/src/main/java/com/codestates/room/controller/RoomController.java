@@ -2,6 +2,7 @@ package com.codestates.room.controller;
 
 import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.common.response.MultiResponseDto;
+import com.codestates.member.entity.Member;
 import com.codestates.member.service.MemberService;
 import com.codestates.room.dto.RoomDto;
 import com.codestates.room.entity.Room;
@@ -21,6 +22,7 @@ import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Validated
@@ -79,7 +81,8 @@ public class RoomController {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        boolean isAdmin = (boolean) principal.get("isAdmin");
+        // NPE발생으로 로직 수정(테스트 정상동작 완료)
+        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
 
         if (isAdmin == false) {
             if (jwtMemberId != requestBody.getAdminMemberId()) {
@@ -89,13 +92,14 @@ public class RoomController {
         }
 
         requestBody.setRoomId(roomId);
-        //log.info("비밀번호 확인 1 {}",requestBody.getPassword());
+        Member member = memberService.findMember(requestBody.getAdminMemberId()); //10월 09일 태경 추가
         Room room = mapper.patchDtoToRoom(requestBody);
-        //log.info("비밀번호 확인 2 {}", room.getPassword());
         room = roomService.updateRoom(room, requestBody.getAdminMemberId());
-        //log.info("비밀번호 확인 3 {}", room.getPassword());
-        return new ResponseEntity<>(mapper.roomToPatchResponseDto(room),HttpStatus.OK);
+        return new ResponseEntity<>(mapper.roomToPatchResponseDto(room,member),HttpStatus.OK);
     }
+    //log.info("비밀번호 확인 1 {}",requestBody.getPassword());
+    //log.info("비밀번호 확인 2 {}", room.getPassword());
+    //log.info("비밀번호 확인 3 {}", room.getPassword());
 
 
 
@@ -123,41 +127,16 @@ public class RoomController {
     }
 
 
-
-
-    @PostMapping("/{room-id}/favorite")
-    public ResponseEntity postFavorite(@PathVariable("room-id") @Positive long roomId,
-                                       @Valid @RequestBody RoomDto.PostFavorite requestBody,
-                                       Authentication authentication) {
-
-        if(authentication==null){
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "로그인이 필요한 서비스입니다.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-        }
-        requestBody.setRoomId(roomId);
-        Room room = mapper.PostFavoriteDtoToRoom(requestBody);
-
-        if(requestBody.isFavorite()) {
-            roomService.addFavorite(room, requestBody.isFavorite(), requestBody.getMemberId());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        roomService.undoFavorite(room, requestBody.isFavorite(), requestBody.getMemberId());
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-
-
     @GetMapping("/new")
     public ResponseEntity getNewRooms(@RequestParam(value = "page", defaultValue = "1") @Positive int page,
                                       @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
+
         Page<Room> roomPage = roomService.findNewRooms(page-1, size);
         List<Room> roomList = roomPage.getContent();
-        List<RoomDto.GetNewRoomResponseDtos> responseDtosList = mapper.roomToNewRoomResponseDtos(roomList);
+        List<RoomDto.GetRoomResponseDtos> responseDtosList = mapper.roomToNewRoomResponseDtos(roomList);
         return new ResponseEntity<>(
                 new MultiResponseDto<>(responseDtosList, roomPage), HttpStatus.OK);
     }
-
 
 
     @GetMapping("/0/recommend") //url 수정
@@ -166,7 +145,7 @@ public class RoomController {
 
             Page<Room> nonMemberPage = roomService.findRecommendRoomsNonMember(page - 1, size);
             List<Room> nonMemberList = nonMemberPage.getContent();
-            List<RoomDto.GetRecommendRoomResponseDtos> responseDtoList = mapper.memberToNonMemberRecommendResponseDtos(nonMemberList);
+            List<RoomDto.GetRoomResponseDtos> responseDtoList = mapper.memberToNonMemberRecommendResponseDtos(nonMemberList);
 
             return new ResponseEntity<>(
                     new MultiResponseDto<>(responseDtoList, nonMemberPage), HttpStatus.OK);
@@ -178,20 +157,18 @@ public class RoomController {
                                             @RequestParam(value = "page", defaultValue = "1") @Positive int page,
                                             @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
 
-        memberService.findMember(memberId);
+        Member member = memberService.findMember(memberId);
         //log.info("# 회원 {}",member);
         Page<Room> recommendPage = roomService.findRecommendRooms(page-1, size);
 
         //null 일 경우 빈응답 페이지 반환
         if (recommendPage == null || recommendPage.isEmpty()) {
             return new ResponseEntity<>(
-                    new MultiResponseDto<>(new ArrayList<>(), Page.empty()),
-                    HttpStatus.OK
-            );
+                    new MultiResponseDto<>(new ArrayList<>(), Page.empty()), HttpStatus.OK);
         }
 
         List<Room> recommendList = recommendPage.getContent();
-        List<RoomDto.GetRecommendRoomResponseDtos> responseDtoList = mapper.memberToRecommendResponseDtos(recommendList);
+        List<RoomDto.GetRoomResponseDtos> responseDtoList = mapper.memberToRecommendResponseDtos(recommendList, member);
         //log.info("# 응답리스트 {}",responseDtoList.isEmpty());
 
         return new ResponseEntity<>(
@@ -212,7 +189,7 @@ public class RoomController {
         Room room = roomService.findRoom(roomId);
         long adminId = room.getAdminMemberId();
 
-        if (isAdmin == false) {
+        if (!isAdmin) {
             if (jwtMemberId != memberId || jwtMemberId != adminId || memberId != adminId) {
                 ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
