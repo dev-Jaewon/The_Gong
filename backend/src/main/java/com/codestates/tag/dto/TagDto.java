@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Getter
@@ -51,9 +53,17 @@ public class TagDto {
     @NoArgsConstructor
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class TagResponseDto {
+        @Positive
         private long tagId;
+        @Positive
+        private long roomId;
+        @NotBlank
         private String name;
 
+        public TagResponseDto(long tagId, String name) {
+            this.tagId = tagId;
+            this.name = name;
+        }
     }
 
 

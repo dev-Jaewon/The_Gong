@@ -1,6 +1,7 @@
 package com.codestates.room.entity;
 
 import com.codestates.common.history.RoomHistory;
+import com.codestates.favorite.Favorite;
 import com.codestates.member.entity.MemberRoom;
 import com.codestates.common.entity.BaseEntity;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class Room extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
 
-    @Column(nullable = false) //member 고유식별자랑 달라도 상관없는지. 요청시 그냥 파라미터로 넣을지.
+    @Column(nullable = false)
     private Long adminMemberId;
 
     @Column
@@ -64,6 +65,10 @@ public class Room extends BaseEntity {
         this.roomTagList = roomTagList;
         return roomTagList;
     }
+
+    //리팩토링 1차
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Favorite> favoriteRoomList;
 }
 
 

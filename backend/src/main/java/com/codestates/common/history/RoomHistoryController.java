@@ -3,7 +3,6 @@ package com.codestates.common.history;
 import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.common.response.MultiResponseDto;
 import com.codestates.room.mapper.RoomMapper;
-import com.codestates.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -12,8 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +33,7 @@ public class RoomHistoryController {
     public ResponseEntity getUserRoomHistories(@PathVariable("member-id") Long memberId,
                                                @RequestParam(value = "page", defaultValue = "1") @Positive int page,
                                                @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                                                  Authentication authentication) {
+                                               Authentication authentication) {
 
         Map<String, Object> principal = (Map<String, Object>) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();

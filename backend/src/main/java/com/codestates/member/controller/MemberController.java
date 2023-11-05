@@ -1,6 +1,8 @@
 package com.codestates.member.controller;
 
 import com.codestates.auth.utils.ErrorResponse;
+import com.codestates.common.base.BaseDto;
+import com.codestates.common.image.S3ImageService;
 import com.codestates.common.response.MultiResponseDto;
 import com.codestates.member.dto.MemberDto;
 import com.codestates.member.dto.MemberTagDtos;
@@ -9,7 +11,6 @@ import com.codestates.member.entity.MemberRoom;
 import com.codestates.member.mapper.MemberMapper;
 import com.codestates.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Validated
@@ -31,18 +33,16 @@ import java.util.Map;
 public class MemberController {
     private final MemberService memberService;
     private final MemberMapper mapper;
-
-    @Value("${default.profile.image}")
-    private String profile;
+    private final S3ImageService s3ImageService;
 
 
     @PostMapping("/add")
     public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post requestBody) {
-
         Member member = mapper.postDtoToMember(requestBody);
         ResponseEntity checkMember = memberService.verifyExistsCheck(member.getEmail());
 
         if (checkMember != null) return checkMember;
+        String profile = s3ImageService.getDefaultProfileImage();
         memberService.createMember(member, profile);
         return new ResponseEntity<>(profile, HttpStatus.CREATED);
     }
@@ -66,7 +66,7 @@ public class MemberController {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        boolean isAdmin = (boolean) principal.get("isAdmin");
+        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
 
         if (isAdmin == false) {
             if (jwtMemberId != requestBody.getMemberId() || memberId != requestBody.getMemberId() || jwtMemberId != memberId) {
@@ -87,7 +87,7 @@ public class MemberController {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        boolean isAdmin = (boolean) principal.get("isAdmin");
+        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
 
         if (isAdmin == false) {
             if (jwtMemberId != requestBody.getMemberId() || memberId != requestBody.getMemberId() || jwtMemberId != memberId) {
@@ -112,7 +112,7 @@ public class MemberController {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        boolean isAdmin = (boolean) principal.get("isAdmin");
+        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
 
         if (isAdmin == false) {
             if (jwtMemberId != requestBody.getMemberId() || memberId != requestBody.getMemberId() || jwtMemberId != memberId) {
@@ -125,38 +125,7 @@ public class MemberController {
         if (checkMemberPassword != null) return checkMemberPassword;
 
         memberService.updateMemberPassword(requestBody, memberId);
-
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @GetMapping("/{member-id}/like")
-    public ResponseEntity getLikeRooms(@PathVariable("member-id") @Positive long memberId,
-                                       @RequestParam(value = "page", defaultValue = "1") @Positive int page,
-                                       @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-                                       Authentication authentication) {
-
-        Map<String, Object> principal = (Map<String, Object>) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-
-        if (jwtMemberId != (memberId)) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-        }
-
-        Page<MemberRoom> memberRoomPage = memberService.findLikeRooms(page - 1, size, memberId);
-        if (memberRoomPage == null || memberRoomPage.isEmpty()) {
-            return new ResponseEntity<>(
-                    new MultiResponseDto<>(new ArrayList<>(), Page.empty()),
-                    HttpStatus.OK
-            );
-        }
-
-        List<MemberRoom> memberRoomList = memberRoomPage.getContent();
-        List<MemberDto.LikeRoomResponseDtos> responseDtosList = mapper.memberToLikeResponseDtos(memberRoomList, memberId);
-
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(responseDtosList, memberRoomPage), HttpStatus.OK);
     }
 
 
@@ -176,15 +145,12 @@ public class MemberController {
 
         Page<MemberRoom> memberRoomPage = memberService.findCreatedRooms(page - 1, size, memberId);
 
-        if (memberRoomPage == null || memberRoomPage.isEmpty()) {
+        if (memberRoomPage == null || memberRoomPage.isEmpty())
             return new ResponseEntity<>(
-                    new MultiResponseDto<>(new ArrayList<>(), Page.empty()),
-                    HttpStatus.OK
-            );
-        }
+                    new MultiResponseDto<>(new ArrayList<>(), Page.empty()), HttpStatus.OK);
 
         List<MemberRoom> memberRoomList = memberRoomPage.getContent();
-        List<MemberDto.CreatedRoomResponseDtos> responseDtosList = mapper.memberToCreatedResponseDtos(memberRoomList);
+        List<BaseDto.FillRoomResponseDtos> responseDtosList = mapper.memberToCreatedResponseDtos(memberRoomList);
 
         return new ResponseEntity<>(
                 new MultiResponseDto<>(responseDtosList, memberRoomPage), HttpStatus.OK);
@@ -200,7 +166,7 @@ public class MemberController {
 
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        boolean isAdmin = (boolean) principal.get("isAdmin");
+        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
 
         if (isAdmin == false) {
             if (jwtMemberId != requestBody.getMemberId() || memberId != requestBody.getMemberId() || jwtMemberId != memberId) {

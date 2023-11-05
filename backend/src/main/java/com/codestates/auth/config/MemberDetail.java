@@ -68,8 +68,6 @@ public class MemberDetail extends Member implements UserDetails, OAuth2User {
         return true;
     }
 
-
-
     @Override
     public String getName() {
         return attributes.get("sub").toString();
