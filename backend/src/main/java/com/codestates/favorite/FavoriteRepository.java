@@ -12,6 +12,5 @@ import java.util.Optional;
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     Optional<Favorite> findByRoomAndMember(Room room, Member member);
-    Optional<Favorite> findByRoom(Room room);
     Page<Favorite> findByMemberMemberId(Long memberId, Pageable pageable);
 }

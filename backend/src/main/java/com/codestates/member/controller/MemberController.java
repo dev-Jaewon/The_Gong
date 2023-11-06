@@ -1,5 +1,6 @@
 package com.codestates.member.controller;
 
+import com.codestates.auth.jwt.custom.CheckUserPermission;
 import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.common.base.BaseDto;
 import com.codestates.common.image.S3ImageService;
@@ -23,7 +24,6 @@ import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Validated
@@ -60,20 +60,10 @@ public class MemberController {
 
 
     @PatchMapping("/{member-id}/profile/edit")
+    @CheckUserPermission
     public ResponseEntity patchMemberImage(@PathVariable("member-id") @Positive long memberId,
-                                           @Valid @RequestBody MemberDto.PatchImage requestBody,
-                                           Authentication authentication) {
+                                           @Valid @RequestBody MemberDto.PatchImage requestBody) {
 
-        Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
-
-        if (isAdmin == false) {
-            if (jwtMemberId != requestBody.getMemberId() || memberId != requestBody.getMemberId() || jwtMemberId != memberId) {
-                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-            }
-        }
         Member member = mapper.patchImageDtoToMember(requestBody);
         Member responseMember = memberService.updateMemberImage(member, memberId);
         return new ResponseEntity<>(mapper.memberToPatchImageResponseDto(responseMember), HttpStatus.OK);
@@ -81,55 +71,34 @@ public class MemberController {
 
 
     @PatchMapping("/{member-id}/nickname/edit")
+    @CheckUserPermission
     public ResponseEntity patchMemberNickname(@PathVariable("member-id") long memberId,
-                                              @Valid @RequestBody MemberDto.PatchNickname requestBody,
-                                              Authentication authentication) {
+                                              @Valid @RequestBody MemberDto.PatchNickname requestBody) {
 
-        Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
-
-        if (isAdmin == false) {
-            if (jwtMemberId != requestBody.getMemberId() || memberId != requestBody.getMemberId() || jwtMemberId != memberId) {
-                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-            }
-        }
         // requestBody.setMemberId(memberId);
         Member member = mapper.patchNicknameDtoToMember(requestBody);
         ResponseEntity checkMember = memberService.verifyExistsNickname(member.getNickname());
-        if (checkMember != null) return checkMember;
 
+        if (checkMember != null) return checkMember;
         Member responseMember = memberService.updateMemberNickname(member, memberId);
         return new ResponseEntity<>(mapper.memberToPatchResponseDto(responseMember), HttpStatus.OK);
     }
 
 
     @PatchMapping("/{member-id}/password/edit")
+    @CheckUserPermission
     public ResponseEntity patchMemberPassword(@PathVariable("member-id") @Positive long memberId,
-                                              @Valid @RequestBody MemberDto.PatchPassword requestBody,
-                                              Authentication authentication) {
-
-        Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
-
-        if (isAdmin == false) {
-            if (jwtMemberId != requestBody.getMemberId() || memberId != requestBody.getMemberId() || jwtMemberId != memberId) {
-                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-            }
-        }
+                                              @Valid @RequestBody MemberDto.PatchPassword requestBody) {
 
         ResponseEntity<ErrorResponse> checkMemberPassword = memberService.checkPassword(requestBody, memberId);
         if (checkMemberPassword != null) return checkMemberPassword;
-
         memberService.updateMemberPassword(requestBody, memberId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @GetMapping("/{member-id}/created")
+    //@CheckUserPermission requestBody가 아닌경우
     public ResponseEntity getCreatedRoom(@PathVariable("member-id") @Positive long memberId,
                                          @RequestParam(value = "page", defaultValue = "1") @Positive int page,
                                          @RequestParam(value = "size", defaultValue = "10") @Positive int size,
@@ -159,21 +128,10 @@ public class MemberController {
 
     //회원탈퇴
     @DeleteMapping("/{member-id}")
+    @CheckUserPermission
     public ResponseEntity deleteMember(@PathVariable("member-id") @Positive long memberId,
-                                       @Valid @RequestBody MemberDto.DeleteMember requestBody,
-                                       Authentication authentication) {
+                                       @Valid @RequestBody MemberDto.DeleteMember requestBody) {
 
-
-        Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
-
-        if (isAdmin == false) {
-            if (jwtMemberId != requestBody.getMemberId() || memberId != requestBody.getMemberId() || jwtMemberId != memberId) {
-                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-            }
-        }
         memberService.removeUser(requestBody.getMemberId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -181,6 +139,7 @@ public class MemberController {
 
     //관심태그
     @GetMapping("{member-id}/add/myTag")
+    //@CheckUserPermission requestBody가 아닌경우
     public ResponseEntity addMyTag(@PathVariable("member-id") @Positive long memberId,
                                    @RequestParam("name") String name,
                                    Authentication authentication) {
@@ -200,6 +159,7 @@ public class MemberController {
 
 
     @GetMapping("/{member-id}/myTag")
+    //@CheckUserPermission requestBody가 아닌경우
     public ResponseEntity getMyTag(@PathVariable("member-id") @Positive long memberId, Authentication authentication) {
         Map<String, Object> principal = (Map) authentication.getPrincipal();
         long jwtMemberId = ((Number) principal.get("memberId")).longValue();
