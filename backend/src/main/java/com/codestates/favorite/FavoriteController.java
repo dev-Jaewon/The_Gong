@@ -1,5 +1,6 @@
 package com.codestates.favorite;
 
+import com.codestates.auth.jwt.custom.CheckUserPermission;
 import com.codestates.common.base.BaseDto;
 import com.codestates.common.response.MultiResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class FavoriteController {
     private final FavoriteMapper mapper;
 
     @PostMapping("/rooms/{room-id}/favorite")
+    @CheckUserPermission
     public ResponseEntity postFavorite(@Valid @RequestBody FavoriteDto.Post requestBody,
                                        @PathVariable("room-id") @Positive long roomId) {
 
@@ -36,6 +38,7 @@ public class FavoriteController {
 
 
     @GetMapping("/members/{member-id}/like")
+    //@CheckUserPermission request가 아닌경우
     public ResponseEntity getFavorites(@PathVariable("member-id") @Positive long memberId,
                                        @RequestParam(value = "page", defaultValue = "1") @Positive int page,
                                        @RequestParam(value = "size", defaultValue = "5") @Positive int size) {
@@ -48,65 +51,3 @@ public class FavoriteController {
         return new ResponseEntity<>(new MultiResponseDto<>(responsDtos, favoritePage), HttpStatus.OK);
     }
 }
-
-
-
-
-
-
-
-
-
-
-//개선전 '찜' 로직
-//    @PostMapping("/{room-id}/favorite")
-//    public ResponseEntity postFavorite(@PathVariable("room-id") @Positive long roomId,
-//                                       @Valid @RequestBody RoomDto.PostFavorite requestBody,
-//                                       Authentication authentication) {
-//
-//        if(authentication==null){
-//            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, "로그인이 필요한 서비스입니다.");
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-//        }
-//        requestBody.setRoomId(roomId);
-//        Room room = mapper.PostFavoriteDtoToRoom(requestBody);
-//
-//        if(requestBody.isFavorite()) {
-//            roomService.addFavorite(room, requestBody.isFavorite(), requestBody.getMemberId());
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        }
-//        roomService.undoFavorite(room, requestBody.isFavorite(), requestBody.getMemberId());
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-
-
-//    @GetMapping("/{member-id}/like")
-//    public ResponseEntity getLikeRooms(@PathVariable("member-id") @Positive long memberId,
-//                                       @RequestParam(value = "page", defaultValue = "1") @Positive int page,
-//                                       @RequestParam(value = "size", defaultValue = "10") @Positive int size,
-//                                       Authentication authentication) {
-//
-//        Map<String, Object> principal = (Map<String, Object>) authentication.getPrincipal();
-//        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-//
-//        if (jwtMemberId != (memberId)) {
-//            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-//        }
-//
-//        Page<MemberRoom> memberRoomPage = memberService.findLikeRooms(page - 1, size, memberId);
-//        if (memberRoomPage == null || memberRoomPage.isEmpty()) {
-//            return new ResponseEntity<>(
-//                    new MultiResponseDto<>(new ArrayList<>(), Page.empty()),
-//                    HttpStatus.OK
-//            );
-//        }
-//
-//        List<MemberRoom> memberRoomList = memberRoomPage.getContent();
-//        List<MemberDto.FillRoomResponseDtos> responseDtosList = mapper.memberToLikeResponseDtos(memberRoomList, memberId);
-//
-//        return new ResponseEntity<>(
-//                new MultiResponseDto<>(responseDtosList, memberRoomPage), HttpStatus.OK);
-//    }
-

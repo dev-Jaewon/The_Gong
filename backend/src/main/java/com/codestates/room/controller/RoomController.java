@@ -1,5 +1,6 @@
 package com.codestates.room.controller;
 
+import com.codestates.auth.jwt.custom.CheckUserPermission;
 import com.codestates.auth.utils.ErrorResponse;
 import com.codestates.common.response.MultiResponseDto;
 import com.codestates.member.entity.Member;
@@ -22,7 +23,6 @@ import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Validated
@@ -39,24 +39,12 @@ public class RoomController {
     private String thumbnail;
 
     @PostMapping("/{member-id}/add")
+    @CheckUserPermission
     public ResponseEntity postRoom(@PathVariable("member-id") long memberId,
-                                   @Valid @RequestBody RoomDto.Post requestBody,
-                                   Authentication authentication) {
-
-        Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-
-        if(jwtMemberId != requestBody.getAdminMemberId() || jwtMemberId != memberId) {
-            ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-        }
+                                   @Valid @RequestBody RoomDto.Post requestBody) {
 
         requestBody.setAdminMemberId(memberId);
-
-        if(requestBody.getImageUrl() == null) {
-            requestBody.setImageUrl(thumbnail);
-        }
-
+        if(requestBody.getImageUrl() == null) requestBody.setImageUrl(thumbnail);
         Room room = mapper.postDtoToRoom(requestBody);
         room = roomService.createRoom(room, requestBody);
 
@@ -75,22 +63,9 @@ public class RoomController {
 
 
     @PatchMapping("/{room-id}/edit")
-    public ResponseEntity patchRoom(@PathVariable("room-id") @Positive long roomId,
-                                    @Valid @RequestBody RoomDto.Patch requestBody,
-                                    Authentication authentication) {
-
-        Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        // NPE발생으로 로직 수정(테스트 정상동작 완료)
-        boolean isAdmin = Optional.ofNullable((Boolean) principal.get("isAdmin")).orElse(false);
-
-        if (isAdmin == false) {
-            if (jwtMemberId != requestBody.getAdminMemberId()) {
-                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-            }
-        }
-
+    @CheckUserPermission
+    public ResponseEntity patchRoom(@Valid @RequestBody RoomDto.Patch requestBody,
+                                    @PathVariable("room-id") @Positive long roomId) {
         requestBody.setRoomId(roomId);
         Member member = memberService.findMember(requestBody.getAdminMemberId()); //10월 09일 태경 추가
         Room room = mapper.patchDtoToRoom(requestBody);
@@ -105,21 +80,8 @@ public class RoomController {
 
 
     @PatchMapping("/{room-id}/switch")
-    public ResponseEntity patchAdmin(@PathVariable("room-id") @Positive long roomId,
-                                     @Valid @RequestBody RoomDto.PatchAdmin requestBody,
-                                     Authentication authentication) {
-
-        Map<String, Object> principal = (Map) authentication.getPrincipal();
-        long jwtMemberId = ((Number) principal.get("memberId")).longValue();
-        Room findRoom = roomService.findVerifiedRoom(roomId);
-        boolean isAdmin = (boolean) principal.get("isAdmin");
-
-        if (isAdmin == false) {
-            if (jwtMemberId != findRoom.getAdminMemberId()){
-                ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.FORBIDDEN, "권한이 없는 사용자 입니다.");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-            }
-        }
+    public ResponseEntity patchAdmin(@Valid @RequestBody RoomDto.PatchAdmin requestBody,
+                                     @PathVariable("room-id") @Positive long roomId) {
         requestBody.setRoomId(roomId);
         Room room = mapper.patchAdminDtoToRoom(requestBody);
         room = roomService.switchAdmin(room, requestBody.getNewAdminId());
@@ -162,10 +124,9 @@ public class RoomController {
         Page<Room> recommendPage = roomService.findRecommendRooms(page-1, size);
 
         //null 일 경우 빈응답 페이지 반환
-        if (recommendPage == null || recommendPage.isEmpty()) {
+        if (recommendPage == null || recommendPage.isEmpty())
             return new ResponseEntity<>(
                     new MultiResponseDto<>(new ArrayList<>(), Page.empty()), HttpStatus.OK);
-        }
 
         List<Room> recommendList = recommendPage.getContent();
         List<RoomDto.GetRoomResponseDtos> responseDtoList = mapper.memberToRecommendResponseDtos(recommendList, member);
@@ -179,6 +140,7 @@ public class RoomController {
 
 
     @DeleteMapping("/{room-id}")
+    //@CheckUserPermission requestBody가 아님
     public ResponseEntity deleteRoom(@PathVariable("room-id") @Positive long roomId,
                                      @RequestParam("member") @Positive long memberId,
                                      Authentication authentication){
